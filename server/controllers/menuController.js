@@ -125,3 +125,57 @@ exports.addMenuItem = async (req, res) => {
 		}
 	);
 };
+
+// {
+//     "item_id": "39"
+// }
+//Xóa món ăn khỏi menu
+exports.deleteMenuItem = async (req, res) => {
+	const { item_id } = req.body;
+	//Kiểm tra item_id có phải là số nguyên hay không
+	if (isNaN(item_id)) {
+		return RegExp.status(400).json({
+			status: "Failed",
+			message: "Item ID must be an integer",
+		});
+	}
+	//Kiểm tra item_id có tồn tại hay không
+	connection.query(
+		`SELECT * FROM menu WHERE item_id = ?`,
+		[item_id],
+		(err, result, fields) => {
+			if (err) {
+				return res.status(500).json({
+					status: "Failed",
+					error: err,
+				});
+			}
+			//Kiểm tra nếu không tìm thấy bản ghi phù hợp
+			if (result.length === 0) {
+				return res.status(404).json({
+					status: "Failed",
+					message: "No menu item found",
+					data: result,
+				});
+			}
+			//Tìm thấy bản ghi phù hợp
+			connection.query(
+				`DELETE FROM menu WHERE item_id = ?`,
+				[item_id],
+				(err_delete, result_delete, fields_delete) => {
+					if (err_delete) {
+						return res.status(500).json({
+							status: "Failed",
+							error: err_delete,
+						});
+					} else {
+						return res.status(200).json({
+							status: "Success",
+							message: "Done delete",
+						});
+					}
+				}
+			);
+		}
+	);
+};
