@@ -3,8 +3,9 @@ const app = express();
 const bodyParser = require("body-parser");
 const authRoute = require("./routes/authRoute");
 const orderRoute = require("./routes/orderRoute");
-
+const menuRoute = require("./routes/menuRoute");
 app.use(bodyParser.json());
 app.use("/auth", authRoute);
 app.use("/order", orderRoute);
+app.use("/menu",menuRoute);
 module.exports = app;
