@@ -18,7 +18,8 @@ exports.createOrder = async (req, res) => {
 	// const item_id = req.body.item_id;
 	// const quantity = req.body.quantity;
 	// const { table_id, centre_id, item_id, quantity } = req.body;
-	const { table_id, centre_id, items } = req.body;
+	const { centre_id } = req.body;
+	const { table_id, items } = req.body;
 	//Kiem tra  table_id co phai dang so nguyen hay khong
 	if (isNaN(table_id)) {
 		return res.status(400).json({
@@ -100,6 +101,71 @@ exports.createOrder = async (req, res) => {
 							}
 						}
 					);
+				}
+			);
+		}
+	);
+};
+
+// sửa giá menu
+exports.updatePrice = async (req, res) => {
+	const { item_id, price } = req.body;
+	//Kiểm tra item_id có phải là số nguyên hay không
+	if (isNaN(item_id)) {
+		return res.status(400).json({
+			status: "Failed",
+			message: "Item ID must be an integer",
+		});
+	}
+	//Kiểm tra price có phải là số thực hay không
+	if (isNaN(price)) {
+		return res.status(400).json({
+			status: "Failed",
+			message: "Price must be a float",
+		});
+	}
+	//Kiểm tra price có lớn hơn 0 hay không
+	if (!(price > 0)) {
+		return res.status(400).json({
+			status: "Failed",
+			message: "Price must be greater than 0",
+		});
+	}
+	//Kiểm tra item_id có tồn tại hay không
+	connection.query(
+		`SELECT * FROM menu WHERE item_id = ?`,
+		[item_id],
+		(err, result, fields) => {
+			if (err) {
+				return res.status(500).json({
+					status: "Failed",
+					error: err,
+				});
+			}
+			//Kiểm tra nếu không tìm thấy bản ghi phù hợp
+			if (result.length === 0) {
+				return res.status(404).json({
+					status: "Failed",
+					message: "No menu item found",
+					data: result,
+				});
+			}
+			//Tìm thấy bản ghi phù hợp
+			connection.query(
+				`UPDATE menu SET price = ? WHERE item_id = ?`,
+				[price, item_id],
+				(err_update, result_update, fields_update) => {
+					if (err_update) {
+						return res.status(500).json({
+							status: "Failed",
+							error: err_update,
+						});
+					} else {
+						return res.status(200).json({
+							status: "Success",
+							message: "Done update",
+						});
+					}
 				}
 			);
 		}
