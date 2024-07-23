@@ -1,8 +1,8 @@
 const connection = require("../config/connection");
 
-//{
-//     "item_id" : "1",
-//     "price" : "15000"
+// {
+//     "item_id" : 1,
+//     "price" : 15000
 // }
 // sửa giá menu
 exports.updatePrice = async (req, res) => {
@@ -11,7 +11,7 @@ exports.updatePrice = async (req, res) => {
 	if (!Number.isInteger(item_id) || item_id <= 0) {
 		return res.status(400).json({
 			status: "Failed",
-			message: "Item ID must be an integer",
+			message: "Item ID must be an integer greater than 0",
 		});
 	}
 	//Kiểm tra price có phải là số thực hay không
@@ -127,7 +127,7 @@ exports.addMenuItem = async (req, res) => {
 };
 
 // {
-//     "item_id": "39"
+//     "item_id": 15
 // }
 //Xóa món ăn khỏi menu
 exports.deleteMenuItem = async (req, res) => {
@@ -136,7 +136,7 @@ exports.deleteMenuItem = async (req, res) => {
 	if (!Number.isInteger(item_id) || item_id <= 0) {
 		return RegExp.status(400).json({
 			status: "Failed",
-			message: "Item ID must be an integer",
+			message: "Item ID must be an integer greater than 0",
 		});
 	}
 	//Kiểm tra item_id có tồn tại hay không
