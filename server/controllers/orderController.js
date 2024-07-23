@@ -13,18 +13,13 @@ const connection = require("../config/connection");
 // }
 
 exports.createOrder = async (req, res) => {
-	// const table_id = req.body.table_id;
-	// const centre_id = req.body.centre_id;
-	// const item_id = req.body.item_id;
-	// const quantity = req.body.quantity;
-	// const { table_id, centre_id, item_id, quantity } = req.body;
 	const { centre_id } = req.body;
 	const { table_id, items } = req.body;
 	//Kiem tra  table_id co phai dang so nguyen hay khong
-	if (isNaN(table_id)) {
+	if (!Number.isInteger(table_id) || table_id <= 0) {
 		return res.status(400).json({
 			status: "Failed",
-			message: "Table ID must be an integer",
+			message: "Table ID must be an integer greater than 0",
 		});
 	}
 	// kiem tra xem table_id có kha dung hay khong

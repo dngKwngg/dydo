@@ -7,8 +7,8 @@ const connection = require("../config/connection");
 // sửa giá menu
 exports.updatePrice = async (req, res) => {
 	const { item_id, price } = req.body;
-	//Kiểm tra item_id có phải là số nguyên hay không
-	if (isNaN(item_id)) {
+	//Kiểm tra item_id có phải là số nguyên lớn hơn 0 hay không
+	if (!Number.isInteger(item_id) || item_id <= 0) {
 		return res.status(400).json({
 			status: "Failed",
 			message: "Item ID must be an integer",
@@ -132,8 +132,8 @@ exports.addMenuItem = async (req, res) => {
 //Xóa món ăn khỏi menu
 exports.deleteMenuItem = async (req, res) => {
 	const { item_id } = req.body;
-	//Kiểm tra item_id có phải là số nguyên hay không
-	if (isNaN(item_id)) {
+	//Kiểm tra item_id có phải là số nguyên lớn hơn 0 hay không
+	if (!Number.isInteger(item_id) || item_id <= 0) {
 		return RegExp.status(400).json({
 			status: "Failed",
 			message: "Item ID must be an integer",
