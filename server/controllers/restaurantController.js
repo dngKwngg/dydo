@@ -78,3 +78,23 @@ exports.addNewRestaurant = async (req, res) => {
 		}
 	);
 };
+
+//update một cơ sở không còn hoạt động (chỉ admin của cửa hàng tại 1 cơ sở mới đóng cửa được cơ sở đấy)
+exports.closeRestaurant = async (req,res) => {
+    const centre_id = req.body.centre_id; // sau này sẽ đổi thành req.user
+    connection.query(
+        `UPDATE restaurant_centre SET active = 0 WHERE centre_id = ?`, [centre_id],
+        (err, result, fields)  => {
+            if(err) {
+                return res.status(400).json({
+                    status: "Failed",
+                    error: err,
+                });
+            }
+            return res.status(200).json({
+                status: "Success",
+                message: "Done close this restaurant"
+            })
+        }
+    );
+}
