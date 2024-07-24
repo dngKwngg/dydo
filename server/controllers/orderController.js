@@ -22,6 +22,13 @@ exports.createOrder = async (req, res) => {
 			message: "Table ID must be an integer greater than 0",
 		});
 	}
+	// kiểm tra xem table_id tại centre_id có phải là một bàn đang trống hay không
+	function isAvailableTable(result) {
+		for (let i of result) {
+			if (i.active === 1) return false;
+		}
+		return true;
+	}
 	// kiem tra xem table_id có kha dung hay khong
 	connection.query(
 		`SELECT * FROM restaurant_centre WHERE centre_id = ?`,
@@ -55,18 +62,33 @@ exports.createOrder = async (req, res) => {
 			// tìm thấy bản ghi phù hợp
 			// tạo bản ghi bảng orders
 			connection.query(
-				`INSERT INTO orders (orders_id, table_id, centre_id)
-					SELECT COALESCE(MAX(orders_id), 0) + 1, ?, ?
-					FROM orders`,
+				`SELECT * FROM orders WHERE table_id = ? AND centre_id = ?`,
 				[table_id, centre_id],
-				(err_orders, result_orders, fields_orders) => {
-					if (err_orders) {
+				(err, result, fields) => {
+					if (err) {
 						return res.status(500).json({
 							status: "Failed",
-							error: err_orders,
+							error: err,
 						});
 					}
 
+					//Kiểm tra nếu không tìm thấy bản ghi phù hợp
+					if (result.length === 0 || isAvailableTable(result)) {
+						connection.query(
+							`INSERT INTO orders (orders_id, table_id, centre_id)
+					SELECT COALESCE(MAX(orders_id), 0) + 1, ?, ?
+					FROM orders`,
+							[table_id, centre_id],
+							(err_orders, result_orders, fields_orders) => {
+								if (err_orders) {
+									return res.status(500).json({
+										status: "Failed",
+										error: err_orders,
+									});
+								}
+							}
+						);
+					}
 					const values = items.map((item) => [
 						centre_id,
 						table_id,
@@ -101,6 +123,3 @@ exports.createOrder = async (req, res) => {
 		}
 	);
 };
-
-
-
