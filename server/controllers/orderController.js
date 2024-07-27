@@ -29,6 +29,35 @@ exports.createOrder = async (req, res) => {
 		}
 		return true;
 	}
+	function getPrice(item_id) {
+		connection.query(
+			`SELECT * FROM menu WHERE item_id = ?`,
+			[item_id],
+			(err, result, fields) => {
+				if (err) {
+					console.log("Error: ", err);
+					return res.status(500).json({
+						status: "Failed",
+						error: err,
+					});
+				}
+				if (result.length === 0) {
+					console.log("No menu item found");
+					return res.status(404).json({
+						status: "Failed",
+						message: "No menu item found",
+						data: result,
+					});
+				}
+				console.log(result[0].price);
+				// console.log(typeof result[0]);
+				return result[0].price;
+			}
+		);
+		// return 100;
+	}
+
+	console.log("Price: ", getPrice(11));
 	// kiem tra xem table_id có kha dung hay khong
 	connection.query(
 		`SELECT * FROM restaurant_centre WHERE centre_id = ?`,
@@ -94,10 +123,11 @@ exports.createOrder = async (req, res) => {
 						table_id,
 						item.item_id,
 						item.quantity,
+						getPrice(item.item_id),
 					]);
 					//tạo bản ghi bảng order_item
 					connection.query(
-						`INSERT INTO order_item (centre_id, table_id, item_id, quantity)
+						`INSERT INTO order_item (centre_id, table_id, item_id, quantity, price_item)
 						VALUES ?`,
 						[values],
 						(
@@ -123,3 +153,4 @@ exports.createOrder = async (req, res) => {
 		}
 	);
 };
+
