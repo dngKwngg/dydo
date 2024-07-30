@@ -22,18 +22,20 @@
 .form {
 	.login-form {
 		margin-top: 40px;
-	}
-	.login-button {
-		margin-top: 12px;
 		button {
-			width: 100%;
-            background: #ddc092;
+			background: #ddc092;
 		}
 
-        button:hover{
-            background: #ddc092 !important;
-        }
+		button:hover {
+			background: #a1dd92 !important;
+		}
+
+		.ant-checkbox-checked .ant-checkbox-inner{
+			background-color: #a1dd92;
+    		border-color: #a1dd92;
+		}
 	}
+	
     .login-footer{
         margin-top: 12px;
     }
