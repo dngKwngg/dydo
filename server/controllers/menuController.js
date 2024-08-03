@@ -1,10 +1,18 @@
 const connection = require("../config/connection");
-
+async function queryDatabase(query, params) {
+	return new Promise((resolve, reject) => {
+		connection.query(query, params, (err, result, fields) => {
+			if (err) reject(err);
+			resolve(result);
+		});
+	});
+}
 // {
-//     "item_id" : 1,
-//     "price" : 15000
+// "item_id" : 1,
+// "price" : 15000
 // }
 // sửa giá menu
+//http://localhost:8080/menu/updatePrice
 exports.updatePrice = async (req, res) => {
 	const { item_id, price } = req.body;
 	//Kiểm tra item_id có phải là số nguyên lớn hơn 0 hay không
@@ -28,53 +36,42 @@ exports.updatePrice = async (req, res) => {
 			message: "Price must be greater than 0",
 		});
 	}
-	//Kiểm tra item_id có tồn tại hay không
-	connection.query(
-		`SELECT * FROM menu WHERE item_id = ?`,
-		[item_id],
-		(err, result, fields) => {
-			if (err) {
-				return res.status(500).json({
-					status: "Failed",
-					error: err,
-				});
-			}
-			//Kiểm tra nếu không tìm thấy bản ghi phù hợp
-			if (result.length === 0) {
-				return res.status(404).json({
-					status: "Failed",
-					message: "No menu item found",
-					data: result,
-				});
-			}
-			//Tìm thấy bản ghi phù hợp
-			connection.query(
-				`UPDATE menu SET price = ? WHERE item_id = ?`,
-				[price, item_id],
-				(err_update, result_update, fields_update) => {
-					if (err_update) {
-						return res.status(500).json({
-							status: "Failed",
-							error: err_update,
-						});
-					} else {
-						return res.status(200).json({
-							status: "Success",
-							message: "Done update",
-						});
-					}
-				}
-			);
+
+	try {
+		const result = await queryDatabase(
+			`SELECT * FROM menu WHERE item_id = ?`,
+			[item_id]
+		);
+		if (result.length === 0) {
+			return res.status(404).json({
+				status: "Failed",
+				message: "No menu item found",
+			});
 		}
-	);
+		await queryDatabase(`UPDATE menu SET price = ? WHERE item_id = ?`, [
+			price,
+			item_id,
+		]);
+		return res.status(200).json({
+			status: "Success",
+			message: "Done update",
+		});
+	} catch (err) {
+		return res.status(500).json({
+			status: "Failed",
+			error: err,
+		});
+	}
 };
 
 // {
-//     "type" : "Đồ uống",
-//     "item_name": "Apple meo meo",
-//     "price": "50000"
+// "type" : "Đồ uống",
+// "item_name": "Apple meo meo",
+// "price": "50000"
 // }
 // Thêm một món ăn vào menu
+//http://localhost:8080/menu/addMenuItem
+
 exports.addMenuItem = async (req, res) => {
 	const { type, item_name, price } = req.body;
 	//Kiểm tra type có phải là chuỗi hay không
@@ -106,30 +103,46 @@ exports.addMenuItem = async (req, res) => {
 		});
 	}
 	//Thêm một món ăn vào menu
-	connection.query(
-		`INSERT INTO menu (type, item_name, price)
-		VALUES (?, ?, ?)`,
-		[type, item_name, price],
-		(err, result, fields) => {
-			if (err) {
-				return res.status(500).json({
-					status: "Failed",
-					error: err,
-				});
-			} else {
-				return res.status(200).json({
-					status: "Success",
-					message: "Done add",
-				});
-			}
-		}
-	);
+	// connection.query(
+	// 	`INSERT INTO menu (type, item_name, price)
+	// 	VALUES (?, ?, ?)`,
+	// 	[type, item_name, price],
+	// 	(err, result, fields) => {
+	// 		if (err) {
+	// 			return res.status(500).json({
+	// 				status: "Failed",
+	// 				error: err,
+	// 			});
+	// 		} else {
+	// 			return res.status(200).json({
+	// 				status: "Success",
+	// 				message: "Done add",
+	// 			});
+	// 		}
+	// 	}
+	// );
+	try {
+		await queryDatabase(
+			`INSERT INTO menu (type, item_name, price) VALUES (?, ?, ?)`,
+			[type, item_name, price]
+		);
+		return res.status(200).json({
+			status: "Success",
+			message: "Done add",
+		});
+	} catch (err) {
+		return res.status(500).json({
+			status: "Failed",
+			error: err,
+		});
+	}
 };
 
 // {
 //     "item_id": 15
 // }
 //Xóa món ăn khỏi menu
+// http://localhost:8080/menu/deleteMenuItem
 exports.deleteMenuItem = async (req, res) => {
 	const { item_id } = req.body;
 	//Kiểm tra item_id có phải là số nguyên lớn hơn 0 hay không
@@ -139,43 +152,28 @@ exports.deleteMenuItem = async (req, res) => {
 			message: "Item ID must be an integer greater than 0",
 		});
 	}
-	//Kiểm tra item_id có tồn tại hay không
-	connection.query(
-		`SELECT * FROM menu WHERE item_id = ?`,
-		[item_id],
-		(err, result, fields) => {
-			if (err) {
-				return res.status(500).json({
-					status: "Failed",
-					error: err,
-				});
-			}
-			//Kiểm tra nếu không tìm thấy bản ghi phù hợp
-			if (result.length === 0) {
-				return res.status(404).json({
-					status: "Failed",
-					message: "No menu item found",
-					data: result,
-				});
-			}
-			//Tìm thấy bản ghi phù hợp
-			connection.query(
-				`DELETE FROM menu WHERE item_id = ?`,
-				[item_id],
-				(err_delete, result_delete, fields_delete) => {
-					if (err_delete) {
-						return res.status(500).json({
-							status: "Failed",
-							error: err_delete,
-						});
-					} else {
-						return res.status(200).json({
-							status: "Success",
-							message: "Done delete",
-						});
-					}
-				}
-			);
+	try {
+		//Kiểm tra item_id có tồn tại hay không
+		const result = await queryDatabase(
+			`SELECT * FROM menu WHERE item_id = ?`,
+			[item_id]
+		);
+		//Kiểm tra nếu không tìm thấy bản ghi phù hợp
+		if (result.length === 0) {
+			return res.status(404).json({
+				status: "Failed",
+				message: "No menu item found",
+			});
 		}
-	);
+		await queryDatabase(`DELETE FROM menu WHERE item_id = ?`, [item_id]);
+		return res.status(200).json({
+			status: "Success",
+			message: "Done delete",
+		});
+	} catch {
+		return res.status(500).json({
+			status: "Failed",
+			error: err_delete,
+		});
+	}
 };

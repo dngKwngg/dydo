@@ -2,7 +2,7 @@ const connection = require("../config/connection");
 
 //Tạo một order
 //done
-
+// http://localhost:8080/order/create
 // {
 //   "table_id": 1,
 //   "centre_id": 1,
@@ -38,7 +38,7 @@ async function getPrice(item_id) {
 	return result[0].price;
 }
 exports.createOrder = async (req, res) => {
-	const { centre_id } = req.body;
+	const { centre_id } = req.user;
 	const { table_id, items } = req.body;
 	//Kiem tra  table_id co phai dang so nguyen hay khong
 	if (!Number.isInteger(table_id) || table_id <= 0) {
