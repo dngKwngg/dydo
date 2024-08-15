@@ -91,9 +91,9 @@ exports.addNewRestaurant = async (req, res) => {
 	}
 };
 //http://localhost:8080/restaurant/closeRestaurant
-//update một cơ sở không còn hoạt động (chỉ admin của cửa hàng tại 1 cơ sở mới đóng cửa được cơ sở đấy)
+//update một cơ sở không còn hoạt động 
 exports.closeRestaurant = async (req, res) => {
-	const centre_id = req.user.centre_id; 
+	const centre_id = req.body.centre_id; 
 	// connection.query(
 	//
 	// 	(err, result, fields) => {

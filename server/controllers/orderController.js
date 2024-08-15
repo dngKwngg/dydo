@@ -5,7 +5,6 @@ const connection = require("../config/connection");
 // http://localhost:8080/order/create
 // {
 //   "table_id": 1,
-//   "centre_id": 1,
 //   "items": [
 //     {"item_id": 101, "quantity": 2},
 //     {"item_id": 102, "quantity": 1}

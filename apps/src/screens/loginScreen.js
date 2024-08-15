@@ -10,6 +10,7 @@ const LoginScreen = () => {
 	const onFinish = async (values) => {
 		console.log("Success:", values);
 		console.log(JSON.stringify(values))
+		
 		// Fetch data
 		try {
 			const response = await fetch(`http://localhost:8080/auth/login`,
@@ -24,6 +25,7 @@ const LoginScreen = () => {
 
 			const res = await response.json();
 			console.log(res.status);
+			// console.log(res.user.role);
 			if (res.status == "Success") {
 				navigate('/')
 			}
