@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import "./../styles/homeScreen.css";
-import { useNavigate } from 'react-router-dom';
-import { Tabs } from 'antd';
-import Header from './../components/header';
-import HomeScreen from './homeScreen';
+
+import Header from "./../components/header";
+
 const FoodScreen = () => {
-    return (
+	return (
 		<div>
-			<Header/>
+			<Header label="food" />
 		</div>
 	);
-}
+};
 
 export default FoodScreen;

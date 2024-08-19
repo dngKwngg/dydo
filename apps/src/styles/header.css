@@ -25,12 +25,12 @@
         border-left: 1px solid black;
         border-right: 1px solid black;
         &.active{
-            background-color: rgb(0, 255, 136); /* Example: red text for active item */
+            background-color: rgb(166, 245, 210); /* Example: red text for active item */
 	        font-weight: bold;
         }
         &:hover{
             cursor: pointer;
-            background-color: #f5f5f5;
+            opacity: 0.8;
         }
     }
     .log-out {

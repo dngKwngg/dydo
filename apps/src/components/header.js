@@ -4,10 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { Tabs } from 'antd';
 import MenuItem from './../components/menuItem';
 
-import { useActive } from './ActiveContext';
-const Header = () => {
+const Header = ({label}) => {
 	const navigate = useNavigate();
-    const { active, setActive } = useActive();
+    
 	const menu_labels = [ 
 		{
 			name: "Đồ ăn",
@@ -42,9 +41,9 @@ const Header = () => {
 								name={item.name} 
 								onClick={() => {
                                     navigate(item.navigate)
-									setActive(index + 1);
+									
 								}}
-								isActive={active === index + 1}
+								isActive={item.navigate.split("/")[1] === label}
 							></MenuItem>
 						);
 					})
