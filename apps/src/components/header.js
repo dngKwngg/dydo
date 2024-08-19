@@ -10,19 +10,19 @@ const Header = ({label}) => {
 	const menu_labels = [ 
 		{
 			name: "Đồ ăn",
-			navigate: "/food"
+			navigate: "food"
 		},
 		{
 			name: "Đồ uống",
-			navigate: "/drink"
+			navigate: "drink"
 		},
 		{
 			name: "Hóa đơn",
-			navigate: "/receipt"
+			navigate: "receipt"
 		},
 		{
 			name: "Lịch sử",
-			navigate: "/history"
+			navigate: "history"
 		}
 	];
     return (
@@ -40,10 +40,10 @@ const Header = ({label}) => {
 								number={index + 1} 
 								name={item.name} 
 								onClick={() => {
-                                    navigate(item.navigate)
+                                    navigate(`/${item.navigate}`)
 									
 								}}
-								isActive={item.navigate.split("/")[1] === label}
+								isActive={item.navigate === label}
 							></MenuItem>
 						);
 					})
