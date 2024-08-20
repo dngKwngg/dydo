@@ -1,0 +1,10 @@
+.drink-menu {
+    margin-top: 50px;
+
+    &.drink-category {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+

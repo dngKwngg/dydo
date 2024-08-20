@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import "./../styles/drinkScreen.css";
-
+import "./../styles/screens/drinkScreen.css";
+import MenuItem from '../components/menuItem';
 import Header from './../components/header';
 const DrinkScreen = () => {
     const [drinks, setDrinks] = useState([]);
@@ -26,18 +26,10 @@ const DrinkScreen = () => {
 	return (
 		<div>
 			<Header label="drink" />
-			<div className="drink-menu">
+			<div className="drink-menu drink-category">
 				{drinks.map((drink) => {
 					return (
-						<div key={drink.id} className="drink-item">
-							<div className="drink-image">
-								<img src={drink.src} alt="" />
-							</div>
-							<div className="drink-info">
-								<h3>{drink.item_name}</h3>
-								<p>Price: {drink.price}</p>
-							</div>
-						</div>
+						<MenuItem item= {drink} />
 					);
 				})}
 			</div>

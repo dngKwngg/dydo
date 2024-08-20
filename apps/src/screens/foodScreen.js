@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import "./../styles/foodScreen.css";
+import "./../styles/screens/foodScreen.css";
 
 import Header from "./../components/header";
+import MenuItem from "../components/menuItem";
 
 const FoodScreen = () => {
 	const [foods, setFoods] = useState([]);
@@ -36,15 +37,7 @@ const FoodScreen = () => {
 				<div className="food-category">
 					{nuongFoods.map((food) => {
 						return (
-							<div key={food.id} className="food-item ">
-								<div className="food-image">
-									<img src={food.src} alt="" />
-								</div>
-								<div className="food-info">
-									<h3>{food.item_name}</h3>
-									<p>Price: {food.price}</p>
-								</div>
-							</div>
+							<MenuItem item = {food} />
 						);
 					})}
 				</div>
@@ -52,15 +45,7 @@ const FoodScreen = () => {
 				<div className="food-category">
 					{lauFoods.map((food) => {
 						return (
-							<div key={food.id} className="food-item">
-								<div className="food-image">
-									<img src={food.src} alt="" />
-								</div>
-								<div className="food-info">
-									<h3>{food.item_name}</h3>
-									<p>Price: {food.price}</p>
-								</div>
-							</div>
+							<MenuItem item={food}/>
 						);
 					})}
 				</div>

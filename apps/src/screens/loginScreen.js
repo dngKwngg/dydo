@@ -1,7 +1,6 @@
 import React from "react";
-import "./../styles/loginScreen.css";
-import { Typography, Input, Button, Form, Checkbox } from "antd";
-import { UserOutlined, EyeTwoTone, EyeInvisibleOutlined, LockOutlined } from "@ant-design/icons";
+import "./../styles/screens/loginScreen.css";
+import { Typography, Input, Button, Form} from "antd";
 import {useNavigate} from "react-router-dom"
 const { Text } = Typography;
 

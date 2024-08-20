@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import "./../styles/header.css";
+import "./../styles/components/header.css";
 import { useNavigate } from 'react-router-dom';
 import { Tabs } from 'antd';
-import MenuItem from './../components/menuItem';
+import MenuHeader from './menuHeader';
 
 const Header = ({label}) => {
 	const navigate = useNavigate();
@@ -36,7 +36,7 @@ const Header = ({label}) => {
 				{
 					menu_labels.map((item, index) => {
 						return (
-							<MenuItem 
+							<MenuHeader 
 								number={index + 1} 
 								name={item.name} 
 								onClick={() => {
@@ -44,7 +44,7 @@ const Header = ({label}) => {
 									
 								}}
 								isActive={item.navigate === label}
-							></MenuItem>
+							></MenuHeader>
 						);
 					})
 				}
