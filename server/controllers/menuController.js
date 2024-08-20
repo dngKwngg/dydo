@@ -177,3 +177,39 @@ exports.deleteMenuItem = async (req, res) => {
 		});
 	}
 };
+
+// lấy danh sách món ăn
+//http://localhost:8080/menu/listFood
+exports.listFood = async (req, res) => {
+	try {
+		const result = await queryDatabase(`SELECT * FROM menu where type not in ('Đồ uống')`);
+		return res.status(200).json({
+			status: "Success",
+			data: result,
+		});
+	}
+	catch (err) {
+		return res.status(500).json({
+			status: "Failed",
+			error: err,
+		});
+	}
+}
+
+// lấy danh sách đồ uống
+//http://localhost:8080/menu/listDrink
+exports.listDrink = async (req, res) => {
+	try {
+		const result = await queryDatabase(`SELECT * FROM menu where type in ('Đồ uống')`);
+		return res.status(200).json({
+			status: "Success",
+			data: result,
+		});
+	}
+	catch (err) {
+		return res.status(500).json({
+			status: "Failed",
+			error: err,
+		});
+	}
+}

@@ -1,12 +1,12 @@
-.drink-menu {
+.food-menu {
     margin-top: 50px;
 }
-.drink-item {
+.food-item {
    display: flex;
-   .drink-info {
+   .food-info {
      margin-left: 30px;
    }
-  .drink-image {
+  .food-image {
     margin-left: 30px;
     margin-bottom: 50px;
     width: 20%;
