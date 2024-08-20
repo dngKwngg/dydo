@@ -3,6 +3,10 @@
     .type-food {
         margin-left: 30px;
     }
+    /* .food-category {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    } */
 }
 .food-item {
    display: flex;
