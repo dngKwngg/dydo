@@ -10,6 +10,8 @@
    .food-info {
      margin-left: 30px;
    }
+   
+   }
   .food-image {
     margin-left: 30px;
     margin-bottom: 50px;
@@ -20,4 +22,4 @@
       height: 100%;
     }
   }
-}
+
