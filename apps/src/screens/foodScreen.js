@@ -23,12 +23,29 @@ const FoodScreen = () => {
 
 		fetchData();
 	}, []);
-
+	//Tách món ăn
+	const lauFoods = foods.filter((food) => food.type === "Lẩu Thái Tomyum");
+	const nuongFoods = foods.filter((food) => food.type === "Đồ nướng than hoa");
 	return (
 		<div>
 			<Header label="food" />
 			<div className="food-menu">
-				{foods.map((food) => {
+				<h2 className="type-food">Đồ nướng than hoa</h2>
+				{nuongFoods.map((food) => {
+					return (
+						<div key={food.id} className="food-item">
+							<div className="food-image">
+								<img src={food.src} alt="" />
+							</div>
+							<div className="food-info">
+								<h3>{food.item_name}</h3>
+								<p>Price: {food.price}</p>
+							</div>
+						</div>
+					);
+				})}
+				<h2 className="type-food">Lẩu thái Tomyum</h2>
+				{lauFoods.map((food) => {
 					return (
 						<div key={food.id} className="food-item">
 							<div className="food-image">
