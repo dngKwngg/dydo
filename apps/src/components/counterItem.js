@@ -1,11 +1,18 @@
 // src/CounterItem.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "antd";
-import {SearchOutlined, PlusOutlined, MinusOutlined} from "@ant-design/icons"
+import { SearchOutlined, PlusOutlined, MinusOutlined } from "@ant-design/icons";
 
 const CounterItem = () => {
-	const [count, setCount] = useState(0);
-
+	const [count, setCount] = useState(() => {
+		//
+		const savedCount = localStorage.getItem("count");
+		return savedCount !== null ? parseInt(savedCount, 10) : 0;
+	});
+	useEffect(() => {
+		localStorage.setItem("count", count);
+	}, [count]);
+	//
 	const increment = () => setCount((prevCount) => prevCount + 1);
 	const decrement = () => setCount((prevCount) => prevCount - 1);
 	const reset = () => setCount(0);
