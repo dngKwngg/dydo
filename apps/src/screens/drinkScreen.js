@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./../styles/screens/drinkScreen.css";
 import MenuItem from "../components/menuItem";
 import Header from "./../components/header";
-
+import ResetButton from "../components/resetButton";
 import Loading from "./../components/loading";
 const DrinkScreen = () => {
 	const [drinks, setDrinks] = useState([]);
@@ -41,6 +41,7 @@ const DrinkScreen = () => {
 					})}
 				</div>
 			)}
+			<ResetButton />
 		</div>
 	);
 };

@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext} from "react";
 import "./../styles/screens/foodScreen.css";
 import Header from "./../components/header";
 import MenuItem from "../components/menuItem";
 import Loading from "./../components/loading";
-
+import { Button } from "antd";
+import ResetButton from "../components/resetButton";
+import { ListContext } from "../components/ListContext";
 const FoodScreen = () => {
 	const [foods, setFoods] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const delay = (ms) => new Promise((res) => setTimeout(res, ms));
-		
+	// const { list, setList } = useContext(ListContext);	
 	useEffect(() => {
 		// Gọi API để lấy dữ liệu
 		const fetchData = async () => {
@@ -29,6 +31,7 @@ const FoodScreen = () => {
 
 		fetchData();
 	}, []);
+	
 	//Tách món ăn
 	const lauFoods = foods.filter((food) => food.type === "Lẩu Thái Tomyum");
 	const nuongFoods = foods.filter(
@@ -55,9 +58,7 @@ const FoodScreen = () => {
 					</div>
 				</div>
 			)}
-			{/* <div className="footer">
-				<Button onClick={reset}>Reset</Button>
-			</div> */}
+			<ResetButton/>
 		</div>
 	);
 };
