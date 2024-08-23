@@ -18,7 +18,7 @@ const DrinkScreen = () => {
 				);
 				const data = await response.json();
 				setDrinks(data.data);
-				console.log(data.data);
+				// console.log(data.data);
 				setLoading(false);
 			} catch (error) {
 				console.error("Error fetching data:", error);

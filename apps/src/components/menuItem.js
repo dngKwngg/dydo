@@ -15,7 +15,7 @@ const MenuItem = ({item}) => {
 					</p>
 				</div>
 				<div className="count-quantity">
-					<CounterItem />
+					<CounterItem item = {item}/>
 				</div>
 			</div>
 			
