@@ -20,18 +20,18 @@ const CounterItem = ({ item }) => {
 	const increment = () => {
 		if (list.length === 0) {
 			let storeData = JSON.parse(localStorage.getItem("list")) || [];
-			storeData.push({ id: item.item_id, quantity: 1 });
+			storeData.push({ item_id: item.item_id, quantity: 1 });
 			setTimeout(() => {
 				localStorage.setItem("list", JSON.stringify(storeData));
 			}, 0);
 			setList([...storeData]);
 		} else {
 			const index = list.findIndex(
-				(element) => element.id === item.item_id
+				(element) => element.item_id === item.item_id
 			);
 			if (index === -1) {
 				let storeData = JSON.parse(localStorage.getItem("list")) || [];
-				storeData.push({ id: item.item_id, quantity: 1 });
+				storeData.push({ item_id: item.item_id, quantity: 1 });
 				setTimeout(() => {
 					localStorage.setItem("list", JSON.stringify(storeData));
 				}, 0);
@@ -53,7 +53,7 @@ const CounterItem = ({ item }) => {
 			return;
 		} else {
 			const index = list.findIndex(
-				(element) => element.id === item.item_id
+				(element) => element.item_id === item.item_id
 			);
 			if (index === -1) {
 				return;
@@ -71,7 +71,7 @@ const CounterItem = ({ item }) => {
 		}
 	};
 	const printQuantity = () => {
-		const index = list.findIndex((element) => element.id === item.item_id);
+		const index = list.findIndex((element) => element.item_id === item.item_id);
 		if (index === -1) {
 			return 0;
 		} else {
@@ -79,7 +79,7 @@ const CounterItem = ({ item }) => {
 		}
 	};
 	const resetItem = () => {
-		const index = list.findIndex((element) => element.id === item.item_id);
+		const index = list.findIndex((element) => element.item_id === item.item_id);
 		if (index === -1) {
 			return;
 		} else {

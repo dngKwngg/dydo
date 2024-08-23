@@ -217,9 +217,14 @@ exports.listDrink = async (req, res) => {
 // lấy danh sách món ăn theo item_id
 //http://localhost:8080/menu/listFoodById
 exports.listFoodById = async (req, res) => {
-	const { item_id } = req.body;
+	const { list_item } = req.body;
+	const list_id = await Promise.all(
+		list_item.map(async (item) => {
+			return item.item_id;
+		})
+	);
 	try{
-		const result = await queryDatabase(`SELECT * FROM menu where item_id = ?`, [item_id]);
+		const result = await queryDatabase(`SELECT * FROM menu where item_id in (?)`, [list_id]);
 		return res.status(200).json({
 			status: "Success",
 			data: result,

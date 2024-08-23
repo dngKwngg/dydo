@@ -7,53 +7,65 @@ import Loading from "../components/loading";
 const ReceiptScreen = () => {
 	const { list, setList } = useContext(ListContext);
 	const delay = (ms) => new Promise((res) => setTimeout(res, ms));
-	const [foods, setFoods] = useState([]);
+	const [listItem, setListItem] = useState([]);
 	const [loading, setLoading] = useState(true);
-	useEffect(() => {
-		// Gọi API để lấy dữ liệu
-		const fetchData = async () => {
-			await delay(1000);
-			try {
-				const response = await fetch(
-					"http://localhost:8080/menu/listFood"
-				);
-				const data = await response.json();
-				setFoods(data.data);
-				// console.log(data.data);
-				setLoading(false);
-			} catch (error) {
-				console.error("Error fetching data:", error);
-				setLoading(false);
-			}
-		};
+	const [total, setTotal] = useState(0);
+		
+			
+useEffect(() => {
+	// Gọi API để lấy dữ liệu
+	const fetchData = async () => {
+		await delay(1000);
+		try {
+			const response = await fetch(
+							"http://localhost:8080/menu/listFoodById",
+							{
+								method: "POST",
+								headers: {
+									"Content-Type": "application/json",
+								},
+								body: JSON.stringify({list_item: list}),
+							}
+						);
+			const data = await response.json();
+			setListItem(data.data);
+			// console.log(data.data);
+			setLoading(false);
+		} catch (error) {
+			console.error("Error fetching data:", error);
+			setLoading(false);
+		}
+	};
 
-		fetchData();
-	}, []);
-
+	fetchData();
+}, []);
+	
 	return (
 		<div>
 			<Header label="receipt" />
-			{loading ? (
+			{/* {loading ? (
 				<Loading loading={loading} />
-			) : (
+			) : ( */}
 				<div>
 					{list.length === 0 ? (
 						<div className="receipt">
 							<h2>Không có món ăn nào được chọn</h2>
 						</div>
 					) : (
-						list.map((item) => {
+						listItem.map((item) => {
 							return (
-								<div className="receipt">
-									<h2>Item ID: {item.id}</h2>
-									<h2>Quantity: {item.quantity}</h2>
-									
+								<div>
+									<div className="receipt">
+										<MenuItem item={item} />
+										{/* <h2>Total : {total}</h2> */}
+									</div>
 								</div>
 							);
 						})
+						
 					)}
 				</div>
-			)}
+			 {/* )} */}
 			
 		</div>
 	);
