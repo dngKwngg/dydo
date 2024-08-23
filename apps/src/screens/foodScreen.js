@@ -3,9 +3,7 @@ import "./../styles/screens/foodScreen.css";
 import Header from "./../components/header";
 import MenuItem from "../components/menuItem";
 import Loading from "./../components/loading";
-import { Button } from "antd";
 import ResetButton from "../components/resetButton";
-import { ListContext } from "../components/ListContext";
 const FoodScreen = () => {
 	const [foods, setFoods] = useState([]);
 	const [loading, setLoading] = useState(true);
@@ -44,6 +42,7 @@ const FoodScreen = () => {
 				<Loading loading={loading} />
 			) : (
 				<div className="food-menu">
+					<ResetButton />
 					<h2 className="type-food">Đồ nướng than hoa</h2>
 					<div className="food-category">
 						{nuongFoods.map((food) => {
@@ -58,7 +57,6 @@ const FoodScreen = () => {
 					</div>
 				</div>
 			)}
-			<ResetButton/>
 		</div>
 	);
 };

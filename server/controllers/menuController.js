@@ -213,3 +213,22 @@ exports.listDrink = async (req, res) => {
 		});
 	}
 }
+
+// lấy danh sách món ăn theo item_id
+//http://localhost:8080/menu/listFoodById
+exports.listFoodById = async (req, res) => {
+	const { item_id } = req.body;
+	try{
+		const result = await queryDatabase(`SELECT * FROM menu where item_id = ?`, [item_id]);
+		return res.status(200).json({
+			status: "Success",
+			data: result,
+		});
+	}
+	catch (err) {
+		return res.status(500).json({
+			status: "Failed",
+			error: err,
+		});
+	}
+}

@@ -35,13 +35,15 @@ const DrinkScreen = () => {
 			{loading ? (
 				<Loading loading={loading} />
 			) : (
-				<div className="drink-menu drink-category">
-					{drinks.map((drink) => {
-						return <MenuItem key={drink.id} item={drink} />;
-					})}
+				<div>
+					<ResetButton />
+					<div className="drink-menu drink-category">
+						{drinks.map((drink) => {
+							return <MenuItem key={drink.id} item={drink} />;
+						})}
+					</div>
 				</div>
 			)}
-			<ResetButton />
 		</div>
 	);
 };

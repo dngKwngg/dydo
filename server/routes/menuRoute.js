@@ -8,4 +8,5 @@ router.post("/addMenuItem", menuController.addMenuItem);
 router.post("/deleteMenuItem", menuController.deleteMenuItem);
 router.get("/listFood", menuController.listFood);
 router.get("/listDrink", menuController.listDrink);
+router.post("/listFoodById", menuController.listFoodById);
 module.exports = router;
