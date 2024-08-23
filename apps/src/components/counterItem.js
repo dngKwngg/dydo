@@ -28,12 +28,19 @@ const CounterItem = ({ item }) => {
 		else{
 			const index = list.findIndex((element) => element.id === item.item_id);
 			if(index === -1){
-				setList([...list, { id: item.item_id, quantity: 1 }]);
+				let storeData = JSON.parse(localStorage.getItem("list")) || [];
+				storeData.push({ id: item.item_id, quantity: 1 });
+				localStorage.setItem("list", JSON.stringify(storeData));
+				setList([...storeData]);
 			}
 			else{
 				let storeData = JSON.parse(localStorage.getItem("list")) || [];
 				storeData[index].quantity++;
-				localStorage.setItem("list", JSON.stringify(storeData));
+				setTimeout(() => {
+					localStorage.setItem("list", JSON.stringify(storeData));
+				}, 0);
+				
+				
 				setList([...storeData]);
 
 				
