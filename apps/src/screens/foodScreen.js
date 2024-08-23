@@ -8,6 +8,7 @@ const FoodScreen = () => {
 	const [foods, setFoods] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+		
 	useEffect(() => {
 		// Gọi API để lấy dữ liệu
 		const fetchData = async () => {
@@ -54,6 +55,9 @@ const FoodScreen = () => {
 					</div>
 				</div>
 			)}
+			{/* <div className="footer">
+				<Button onClick={reset}>Reset</Button>
+			</div> */}
 		</div>
 	);
 };

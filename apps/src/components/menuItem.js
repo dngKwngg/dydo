@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import CounterItem from "./counterItem";
 import "./../styles/components/menuItem.css"
 const MenuItem = ({item}) => {
+	
     return (
 		<div key={item.id} className="item ">
 			<div className="image">

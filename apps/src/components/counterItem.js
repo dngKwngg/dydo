@@ -22,7 +22,9 @@ const CounterItem = ({ item }) => {
 		if(list.length === 0){
 			let storeData = JSON.parse(localStorage.getItem("list")) || [];
 			storeData.push({ id: item.item_id, quantity: 1 });
-			localStorage.setItem("list", JSON.stringify(storeData));
+			setTimeout(() => {
+				localStorage.setItem("list", JSON.stringify(storeData));
+			}, 0);
 			setList([...storeData]);
 		}
 		else{
@@ -30,7 +32,9 @@ const CounterItem = ({ item }) => {
 			if(index === -1){
 				let storeData = JSON.parse(localStorage.getItem("list")) || [];
 				storeData.push({ id: item.item_id, quantity: 1 });
-				localStorage.setItem("list", JSON.stringify(storeData));
+				setTimeout(() => {
+					localStorage.setItem("list", JSON.stringify(storeData));
+				}, 0);
 				setList([...storeData]);
 			}
 			else{
@@ -65,7 +69,9 @@ const CounterItem = ({ item }) => {
 				if(storeData[index].quantity === 0){
 					storeData.splice(index, 1);
 				}
+				setTimeout(() => {	
 				localStorage.setItem("list", JSON.stringify(storeData));
+				},0);
 				setList([...storeData]);
 
 			}
@@ -88,7 +94,9 @@ const CounterItem = ({ item }) => {
 			else{
 				let storeData = JSON.parse(localStorage.getItem("list")) || [];
 				storeData.splice(index, 1);
-				localStorage.setItem("list", JSON.stringify(storeData));
+				setTimeout(() => {
+					localStorage.setItem("list", JSON.stringify(storeData));
+				}, 0);
 				setList([...storeData]);
 			}
 	}
