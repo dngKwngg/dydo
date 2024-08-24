@@ -1,12 +1,14 @@
-.receipt-container{
-    width: 60%;
-    margin: auto;
-    .total{
-        font-family: "IBM Plex Sans", sans-serif;
-        color: #046327;
-        font-weight: bold;
-        text-transform: uppercase;
-        margin-top: 30px;
-    }
-    
+.receipt-container {
+	width: 60%;
+	margin: auto;
+    font-family: "IBM Plex Sans", sans-serif;
+	.receipt {
+		margin-top: 30px;
+	}
+	.total {
+		color: #046327;
+		font-weight: bold;
+		text-transform: uppercase;
+		margin-top: 30px;
+	}
 }
