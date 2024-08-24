@@ -88,7 +88,9 @@ const CounterItem = ({ item }) => {
 			setTimeout(() => {
 				localStorage.setItem("list", JSON.stringify(storeData));
 			}, 0);
+			
 			setList([...storeData]);
+			
 		}
 	};
 	const reset = () => {

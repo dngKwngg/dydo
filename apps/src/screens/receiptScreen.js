@@ -43,9 +43,9 @@ useEffect(() => {
 	return (
 		<div>
 			<Header label="receipt" />
-			{/* {loading ? (
+			{loading ? (
 				<Loading loading={loading} />
-			) : ( */}
+			) : (
 				<div>
 					{list.length === 0 ? (
 						<div className="receipt">
@@ -53,11 +53,12 @@ useEffect(() => {
 						</div>
 					) : (
 						listItem.map((item) => {
+							
 							return (
 								<div>
 									<div className="receipt">
 										<MenuItem item={item} />
-										{/* <h2>Total : {total}</h2> */}
+										
 									</div>
 								</div>
 							);
@@ -65,7 +66,7 @@ useEffect(() => {
 						
 					)}
 				</div>
-			 {/* )} */}
+			  )} 
 			
 		</div>
 	);

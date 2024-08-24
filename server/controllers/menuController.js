@@ -218,22 +218,36 @@ exports.listDrink = async (req, res) => {
 //http://localhost:8080/menu/listFoodById
 exports.listFoodById = async (req, res) => {
 	const { list_item } = req.body;
-	const list_id = await Promise.all(
-		list_item.map(async (item) => {
-			return item.item_id;
-		})
-	);
-	try{
-		const result = await queryDatabase(`SELECT * FROM menu where item_id in (?)`, [list_id]);
+
+	// Tạo danh sách ID từ list_item
+	const list_id = list_item.map((item) => item.item_id);
+	//đảo ngược mảng list_item
+	const list_id_reverse = list_id.reverse();
+
+	// Chuyển danh sách ID thành chuỗi để sử dụng trong câu lệnh SQL
+	const listIdString = list_id_reverse.join(",");
+
+
+	try {
+		// Thực hiện truy vấn và sắp xếp theo thứ tự danh sách ID
+		const query = `
+            SELECT * 
+            FROM menu 
+            WHERE item_id IN (${listIdString})
+            ORDER BY FIELD(item_id, ${listIdString})
+        `;
+
+		// Thực thi câu lệnh SQL
+		const result = await queryDatabase(query);
+
 		return res.status(200).json({
 			status: "Success",
 			data: result,
 		});
-	}
-	catch (err) {
+	} catch (err) {
 		return res.status(500).json({
 			status: "Failed",
 			error: err,
 		});
 	}
-}
+};
