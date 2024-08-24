@@ -1,9 +1,15 @@
-.drink-menu {
+.drink-section {
     margin-top: 50px;
-
-    &.drink-category {
+    .reset-button{
+        position: absolute;
+        right: 0;
+        margin-right: 30px;
+    }
+    .drink-category {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
+        column-gap: 40px;
+		margin: 0 30px;
     }
 }
 

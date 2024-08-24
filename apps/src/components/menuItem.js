@@ -1,10 +1,9 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import CounterItem from "./counterItem";
-import "./../styles/components/menuItem.css"
-const MenuItem = ({item}) => {
-	
-    return (
-		<div key={item.id} className="item ">
+import "./../styles/components/menuItem.css";
+const MenuItem = ({ item }) => {
+	return (
+		<div key={item.id} className="menu-item">
 			<div className="image">
 				<img src={item.src} alt="" />
 			</div>
@@ -12,16 +11,14 @@ const MenuItem = ({item}) => {
 				<div className="info">
 					<h3>{item.item_name}</h3>
 					<p>
-						Giá: {new Intl.NumberFormat("vi-VN").format(item.price)} VND
+						{new Intl.NumberFormat("vi-VN").format(item.price)}
 					</p>
 				</div>
 				<div className="count-quantity">
-					<CounterItem item = {item}/>
+					<CounterItem item={item} />
 				</div>
 			</div>
-			
 		</div>
 	);
-
-}
+};
 export default MenuItem;

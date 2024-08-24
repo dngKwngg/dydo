@@ -35,9 +35,9 @@ const DrinkScreen = () => {
 			{loading ? (
 				<Loading loading={loading} />
 			) : (
-				<div>
-					<ResetButton />
-					<div className="drink-menu drink-category">
+				<div className="drink-section">
+					<div className="drink-category">
+						<ResetButton />
 						{drinks.map((drink) => {
 							return <MenuItem key={drink.id} item={drink} />;
 						})}

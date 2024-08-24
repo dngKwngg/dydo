@@ -126,7 +126,7 @@ const CounterItem = ({ item }) => {
 			<Button onClick={decrement} icon={<MinusOutlined />} />
 			<p>{getQuantity()}</p>
 			<Button onClick={increment} icon={<PlusOutlined />} />
-			<Button onClick={resetItem}>Reset</Button>
+			{/* <Button onClick={resetItem}>Reset</Button> */}
 		</>
 	);
 };

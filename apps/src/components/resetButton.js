@@ -9,7 +9,7 @@ const ResetButton = () => {
 	};
 	return (
 		<div className="reset-button">
-			<Button onClick={reset}>Reset ALL</Button>
+			<Button type="primary" onClick={reset}>Reset All</Button>
 		</div>
 	);
 };

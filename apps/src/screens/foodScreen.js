@@ -43,18 +43,23 @@ const FoodScreen = () => {
 			) : (
 				<div className="food-menu">
 					<ResetButton />
-					<h2 className="type-food">Đồ nướng than hoa</h2>
-					<div className="food-category">
-						{nuongFoods.map((food) => {
-							return <MenuItem item={food} />;
-						})}
+					<div className="food-section">
+						<h2 className="type-food">Đồ nướng than hoa</h2>
+						<div className="food-category">
+							{nuongFoods.map((food) => {
+								return <MenuItem item={food} />;
+							})}
+						</div>
 					</div>
-					<h2 className="type-food">Lẩu thái Tomyum</h2>
-					<div className="food-category">
-						{lauFoods.map((food) => {
-							return <MenuItem item={food} />;
-						})}
+					<div className="food-section">
+						<h2 className="type-food">Lẩu thái Tomyum</h2>
+						<div className="food-category">
+							{lauFoods.map((food) => {
+								return <MenuItem item={food} />;
+							})}
+						</div>
 					</div>
+					
 				</div>
 			)}
 		</div>

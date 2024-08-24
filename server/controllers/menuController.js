@@ -242,7 +242,8 @@ exports.listFoodById = async (req, res) => {
 
 		return res.status(200).json({
 			status: "Success",
-			data: result,
+			// add property quantity to data: result
+			data: result
 		});
 	} catch (err) {
 		return res.status(500).json({

@@ -1,12 +1,24 @@
 .food-menu {
 	margin-top: 50px;
-	.type-food {
-		margin-left: 30px;
+	.reset-button{
+		position: absolute;
+		right: 0;
+		margin-right: 30px;
 	}
-	.food-category {
-		display: grid;
-		grid-template-columns: repeat(2, 1fr);
-		column-gap: 20px;
-		margin: 0 20px;
+	.food-section{
+		margin-top: 30px;
+		.type-food {
+			margin-left: 30px;
+			font-family: "IBM Plex Sans", sans-serif;
+			color: #046327;
+			font-weight: bold;
+			text-transform: uppercase;
+		}
+		.food-category {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			column-gap: 40px;
+			margin: 0 30px;
+		}
 	}
 }
