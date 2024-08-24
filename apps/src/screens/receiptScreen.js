@@ -14,6 +14,7 @@ const ReceiptScreen = () => {
 			
 useEffect(() => {
 	// Gọi API để lấy dữ liệu
+	
 	const fetchData = async () => {
 		await delay(1000);
 		try {
@@ -38,7 +39,7 @@ useEffect(() => {
 	};
 
 	fetchData();
-}, []);
+}, [list]);
 	
 	return (
 		<div>
