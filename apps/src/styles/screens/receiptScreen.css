@@ -1,7 +1,12 @@
 .receipt-container{
-    .receipt{
-        width: 80%;
-        margin: auto;
+    width: 60%;
+    margin: auto;
+    .total{
+        font-family: "IBM Plex Sans", sans-serif;
+        color: #046327;
+        font-weight: bold;
+        text-transform: uppercase;
+        margin-top: 30px;
     }
     
 }
