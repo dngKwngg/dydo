@@ -56,6 +56,9 @@ useEffect(() => {
 	useEffect(() => {
 		const getPrice =  async () => {
 			let current_price = 0;
+			if (listItem == undefined) {
+				return;
+			}
 			if (listItem.length > 0) {
 				listItem.forEach( async (item) => {
 					list.forEach( async (element) => {
@@ -67,8 +70,9 @@ useEffect(() => {
 			}
 			setTotal(current_price);
 		}
+		console.log("listItem", listItem);
 		getPrice();
-	}, [list]);
+	}, [list, []]);
 	return (
 		<div>
 			<Header label="receipt" />
