@@ -76,6 +76,7 @@ const HistoryScreen = () => {
 									item.total_cost
 								)}
 							</h2>
+							<h2>Order_date: {item.date_order}</h2>
 						</div>
 
 						<Button
