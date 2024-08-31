@@ -60,7 +60,6 @@ const HistoryScreen = () => {
 			<Header label="history" />
 			<div>
 				{history.map((item) => (
-					
 					<div key={item.orders_id}>
 						<h2>Item orders_id: {item.orders_id}</h2>
 						<h2>Table_id: {item.table_id}</h2>
@@ -72,20 +71,19 @@ const HistoryScreen = () => {
 							Xem chi tiết
 						</Button>
 						<Modal
-							title={`Modal for Order ${item.orders_id}`}
+							title={`Table ${item.table_id}`}
 							open={modalsState[item.orders_id] || false} // Mở modal nếu trạng thái tương ứng là true
 							onOk={() => handleOk(item.orders_id)}
 							onCancel={() => handleCancel(item.orders_id)}
-						>
-							{
-							detail.map((item_detail) => (
-							<div key={item_detail.id}>
-								<h2>Orders_id: {item_detail.orders_id}</h2>
-								<h2>Table_id: {item_detail.table_id}</h2>
-								<h2>id: {item_detail.id}</h2>
-							</div>
-							))}
 							
+						>
+							{detail.map((item_detail) => (
+								<div key={item_detail.id}>
+									<h2>id: {item_detail.id}</h2>
+									<h2>Orders_id: {item_detail.orders_id}</h2>
+									<h2>Table_id: {item_detail.table_id}</h2>
+								</div>
+							))}
 						</Modal>
 					</div>
 				))}
