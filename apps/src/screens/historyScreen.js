@@ -123,8 +123,16 @@ const HistoryScreen = () => {
 					key={item.orders_id}
 					title={`Table ${item.table_id}`}
 					open={modalsState[item.orders_id] || false}
-					onOk={() => handleOk(item.orders_id)}
+					// onOk={() => handleOk(item.orders_id)}
 					onCancel={() => handleCancel(item.orders_id)}
+					footer={[
+						<Button
+							key="back"
+							onClick={() => handleCancel(item.orders_id)}
+						>
+							Close
+						</Button>,
+					]}
 				>
 					{detail.map((item_detail) => (
 						<div key={item_detail.id}>
