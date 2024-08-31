@@ -10,7 +10,7 @@ const connection = require("../config/connection");
 //     {"item_id": 102, "quantity": 1}
 //   ]
 // }
-// kiểm tra xem table_id tại centre_id có phải là một bàn đang trống hay không
+
 
 async function queryDatabase(query, params) {
 	return new Promise((resolve, reject) => {
@@ -20,6 +20,7 @@ async function queryDatabase(query, params) {
 		});
 	});
 }
+// kiểm tra xem table_id tại centre_id có phải là một bàn đang trống hay không
 function isAvailableTable(result) {
 	for (let i of result) {
 		if (i.active === 1) return false;
@@ -48,7 +49,7 @@ exports.createOrder = async (req, res) => {
 	}
 
 	try {
-		// kiem tra centre_if cos hop le khong
+		// kiem tra centre_if co hop le khong
 		const centres = await queryDatabase(
 			`SELECT * FROM restaurant_centre WHERE centre_id = ?`,
 			[centre_id]
@@ -113,3 +114,52 @@ exports.createOrder = async (req, res) => {
 		});
 	} 
 };
+
+// lấy ra lịch sử đơn hàng của 
+// http://localhost:8080/order/getOrderHistory
+exports.getOrderHistory = async (req, res) => {
+	// const {centre_id} = req.user;
+	try{
+		const result = await queryDatabase(`SELECT * FROM orders`);
+		if(result.length === 0){
+			return res.status(404).json({
+				status: "Failed",
+				message: "No order found",
+			});
+		}
+		return res.status(200).json({
+			status: "Success",
+			data: result,
+		});
+	}catch(err){
+		return res.status(500).json({
+			status: "Failed",
+			error: err.message,
+		});
+	}
+
+}
+
+// lấy ra chi tiết đơn hàng của 1 bàn
+// http://localhost:8080/order/getOrderDetail
+exports.getOrderDetail = async (req, res) => {
+	const {orders_id} = req.body;
+	try{
+		const result = await queryDatabase(`SELECT * FROM order_item WHERE orders_id = ?`, [orders_id]);
+		if(result.length === 0){
+			return res.status(404).json({
+				status: "Failed",
+				message: "No order found",
+			});
+		}
+		return res.status(200).json({
+			status: "Success",
+			data: result,
+		});
+	}catch(err){
+		return res.status(500).json({
+			status: "Failed",
+			error: err.message,
+		});
+	}
+}
