@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import "./../styles/screens/historyScreen.css";
-import { Modal, Button } from "antd";
+import { Table, Button, Modal } from "antd";
 import Header from "./../components/header";
+import "./../styles/screens/historyScreen.css";
 const HistoryScreen = () => {
-	const [modalsState, setModalsState] = useState({}); // Trạng thái để quản lý các modal
+	const [modalsState, setModalsState] = useState({});
 	const [history, setHistory] = useState([]);
 	const [detail, setDetail] = useState([]);
-	
+
 	const fetchDataDetail = async (orders_id) => {
 		try {
 			const response = await fetch(
@@ -25,6 +25,7 @@ const HistoryScreen = () => {
 			console.error("Error fetching data:", error);
 		}
 	};
+
 	const showModal = async (id) => {
 		await fetchDataDetail(id);
 		setModalsState((prevState) => ({ ...prevState, [id]: true }));
@@ -50,76 +51,107 @@ const HistoryScreen = () => {
 				console.error("Error fetching data:", error);
 			}
 		};
-		
+
 		fetchDataHistory();
-		
 	}, []);
-	
+
+	const columns = [
+		{
+			title: "Order ID",
+			dataIndex: "orders_id",
+			key: "orders_id",
+		},
+		{
+			title: "Table ID",
+			dataIndex: "table_id",
+			key: "table_id",
+		},
+		{
+			title: "Total Cost",
+			dataIndex: "total_cost",
+			key: "total_cost",
+			render: (total_cost) =>
+				new Intl.NumberFormat("vi-VN").format(total_cost),
+		},
+		{
+			title: "Order Date",
+			dataIndex: "date_order",
+			key: "date_order",
+			render: (date_order) =>
+				new Date(date_order).toLocaleDateString("vi-VN", {
+					day: "2-digit",
+					month: "2-digit",
+					year: "numeric",
+				}),
+		},
+		{
+			title: "Order Time",
+			dataIndex: "date_order",
+			key: "order_time",
+			render: (date_order) =>
+				new Date(date_order).toLocaleTimeString("vi-VN", {
+					hour: "2-digit",
+					minute: "2-digit",
+					second: "2-digit",
+				}),
+		},
+		{
+			title: "Action",
+			key: "action",
+			render: (_, record) => (
+				<Button
+					type="primary"
+					onClick={() => showModal(record.orders_id)}
+				>
+					Xem chi tiết tại đây
+				</Button>
+			),
+		},
+	];
+
 	return (
 		<div>
 			<Header label="history" />
-			<div>
-				{history.map((item) => (
-					<div key={item.orders_id} className="order_history">
-						<div className="image">
-							<img
-								src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvIlY-6UaLf1GL1WWyRGkfMfIcISuWlpnMyw&s"
-								alt=""
-							/>
-						</div>
-						<div className="order_info">
-							<h2>Item orders_id: {item.orders_id}</h2>
-							<h2>Table_id: {item.table_id}</h2>
-							<h2>
-								Total_cost:{" "}
-								{new Intl.NumberFormat("vi-VN").format(
-									item.total_cost
-								)}
-							</h2>
-							<h2>Order_date: {item.date_order}</h2>
-						</div>
-
-						<Button
-							type="primary"
-							onClick={() => showModal(item.orders_id)}
-						>
-							Xem chi tiết tại đây
-						</Button>
-						<Modal
-							title={`Table ${item.table_id}`}
-							open={modalsState[item.orders_id] || false} // Mở modal nếu trạng thái tương ứng là true
-							onOk={() => handleOk(item.orders_id)}
-							onCancel={() => handleCancel(item.orders_id)}
-						>
-							{detail.map((item_detail) => (
-								<div key={item_detail.id}>
-									<div className="menu-item">
-										<div className="image">
-											<img src={item_detail.src} alt="" />
-										</div>
-										<div className="item-info">
-											<div className="info">
-												<h3>{item_detail.item_name}</h3>
-												<p>
-													{new Intl.NumberFormat(
-														"vi-VN"
-													).format(item_detail.price)}
-												</p>
-											</div>
-											<div className="count-quantity">
-												<h3>
-													Quantity:{" "}
-													{item_detail.quantity}
-												</h3>
-											</div>
-										</div>
+			<Table
+				dataSource={history}
+				columns={columns}
+				rowKey="orders_id"
+				pagination={{ pageSize: 5 }}
+			/>
+			{history.map((item) => (
+				<Modal
+					key={item.orders_id}
+					title={`Table ${item.table_id}`}
+					open={modalsState[item.orders_id] || false}
+					onOk={() => handleOk(item.orders_id)}
+					onCancel={() => handleCancel(item.orders_id)}
+				>
+					{detail.map((item_detail) => (
+						<div key={item_detail.id}>
+							<div className="menu-item">
+								<div className="image">
+									<img src={item_detail.src} alt="" />
+								</div>
+								<div className="item-info">
+									<div className="info">
+										<h3>{item_detail.item_name}</h3>
+										<p>
+											{new Intl.NumberFormat(
+												"vi-VN"
+											).format(item_detail.price)}
+										</p>
+									</div>
+									<div className="count-quantity">
+										<h3>
+											Quantity: {item_detail.quantity}
+										</h3>
 									</div>
 								</div>
-							))}
-						</Modal>
-					</div>
-				))}
-			</div>
+							</div>
+						</div>
+					))}
+				</Modal>
+			))}
 		</div>
 	);
 };
