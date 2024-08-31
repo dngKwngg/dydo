@@ -7,6 +7,7 @@ const HistoryScreen = () => {
 	const [modalsState, setModalsState] = useState({}); // Trạng thái để quản lý các modal
 	const [history, setHistory] = useState([]);
 	const [detail, setDetail] = useState([]);
+	const [menu, setMenu] = useState([]);
 	const fetchDataDetail = async (orders_id) => {
 		try {
 			const response = await fetch(
@@ -60,7 +61,7 @@ const HistoryScreen = () => {
 			<Header label="history" />
 			<div>
 				{history.map((item) => (
-					<div key={item.orders_id}>
+					<div key={item.orders_id} className="order_history">
 						<h2>Item orders_id: {item.orders_id}</h2>
 						<h2>Table_id: {item.table_id}</h2>
 						<h2>Total_cost: {item.total_cost}</h2>
