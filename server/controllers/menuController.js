@@ -253,20 +253,3 @@ exports.listFoodById = async (req, res) => {
 	}
 };
 
-// lấy danh sách menu
-//http://localhost:8080/menu/listMenu
-exports.listMenu = async (req, res) => {
-	try {
-		const result = await queryDatabase(`SELECT * FROM menu`);
-		return res.status(200).json({
-			status: "Success",
-			data: result,
-		});
-	}
-	catch (err) {
-		return res.status(500).json({
-			status: "Failed",
-			error: err,
-		});
-	}
-}

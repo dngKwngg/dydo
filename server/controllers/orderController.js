@@ -11,7 +11,6 @@ const connection = require("../config/connection");
 //   ]
 // }
 
-
 async function queryDatabase(query, params) {
 	return new Promise((resolve, reject) => {
 		connection.query(query, params, (err, result, fields) => {
@@ -82,7 +81,6 @@ exports.createOrder = async (req, res) => {
 				[table_id, centre_id]
 			);
 		}
-	    
 
 		// Tạo mảng chứa các trường tương đương 1 hàng trong orders_items
 		const itemPrices = await Promise.all(
@@ -112,16 +110,16 @@ exports.createOrder = async (req, res) => {
 			status: "Failed",
 			error: err.message,
 		});
-	} 
+	}
 };
 
-// lấy ra lịch sử đơn hàng của 
+// lấy ra lịch sử đơn hàng của
 // http://localhost:8080/order/getOrderHistory
 exports.getOrderHistory = async (req, res) => {
 	// const {centre_id} = req.user;
-	try{
+	try {
 		const result = await queryDatabase(`SELECT * FROM orders`);
-		if(result.length === 0){
+		if (result.length === 0) {
 			return res.status(404).json({
 				status: "Failed",
 				message: "No order found",
@@ -131,22 +129,27 @@ exports.getOrderHistory = async (req, res) => {
 			status: "Success",
 			data: result,
 		});
-	}catch(err){
+	} catch (err) {
 		return res.status(500).json({
 			status: "Failed",
 			error: err.message,
 		});
 	}
-
-}
+};
 
 // lấy ra chi tiết đơn hàng của 1 bàn
 // http://localhost:8080/order/getOrderDetail
 exports.getOrderDetail = async (req, res) => {
-	const {orders_id} = req.body;
-	try{
-		const result = await queryDatabase(`SELECT * FROM order_item WHERE orders_id = ?`, [orders_id]);
-		if(result.length === 0){
+	const { orders_id } = req.body;
+	try {
+		const result = await queryDatabase(
+			`SELECT *
+				FROM order_item oi
+				inner join menu m on oi.item_id = m.item_id
+ 				WHERE orders_id = ?`,
+			[orders_id]
+		);
+		if (result.length === 0) {
 			return res.status(404).json({
 				status: "Failed",
 				message: "No order found",
@@ -156,10 +159,10 @@ exports.getOrderDetail = async (req, res) => {
 			status: "Success",
 			data: result,
 		});
-	}catch(err){
+	} catch (err) {
 		return res.status(500).json({
 			status: "Failed",
 			error: err.message,
 		});
 	}
-}
+};
