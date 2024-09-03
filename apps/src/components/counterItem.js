@@ -120,6 +120,7 @@ const CounterItem = ({ item }) => {
 	const reset = () => {
 		localStorage.removeItem("list");
 		setList([]);
+		
 	};
 	return (
 		<>

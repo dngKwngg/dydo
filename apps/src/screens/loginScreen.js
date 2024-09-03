@@ -26,7 +26,13 @@ const LoginScreen = () => {
 			console.log(res.status);
 			// console.log(res.user.role);
 			if (res.status == "Success") {
-				navigate('/')
+				localStorage.setItem("user", JSON.stringify(res.user));
+				if (res.user.role === "admin") {
+					navigate("/admin");
+				} else {
+					navigate("/");
+				}
+				
 			}
 
 		} catch (e) {

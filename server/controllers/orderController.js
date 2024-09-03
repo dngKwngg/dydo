@@ -118,7 +118,7 @@ exports.createOrder = async (req, res) => {
 exports.getOrderHistory = async (req, res) => {
 	// const {centre_id} = req.user;
 	try {
-		const result = await queryDatabase(`SELECT * FROM orders`);
+		const result = await queryDatabase(`SELECT * FROM orders `);
 		if (result.length === 0) {
 			return res.status(404).json({
 				status: "Failed",
@@ -146,7 +146,7 @@ exports.getOrderDetail = async (req, res) => {
 			`SELECT *
 				FROM order_item oi
 				inner join menu m on oi.item_id = m.item_id
- 				WHERE orders_id = ?`,
+ 				WHERE orders_id = ? `,
 			[orders_id]
 		);
 		if (result.length === 0) {

@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import "./../styles/components/header.css";
 import { useNavigate } from 'react-router-dom';
 import { Tabs } from 'antd';
 import MenuHeader from './menuHeader';
-
+import { ListContext } from "./ListContext";
 const Header = ({label}) => {
 	const navigate = useNavigate();
-    
+    const { list, setList } = useContext(ListContext);
 	const menu_labels = [ 
 		{
 			name: "Đồ ăn",
@@ -25,6 +25,11 @@ const Header = ({label}) => {
 			navigate: "history"
 		}
 	];
+	const reset = () => {
+		// localStorage.removeItem("list");
+		setList([]);
+		localStorage.removeItem("user");
+	};
     return (
 		<div className="home-container">
 			<div className="home-header">
@@ -48,7 +53,10 @@ const Header = ({label}) => {
 						);
 					})
 				}
-					<div className='log-out'>Đăng xuất</div>
+					<div className='log-out' onClick={() => {
+						reset();
+						navigate(`/login`)
+					}}>Đăng xuất</div>
 				
 			</div>
 		</div>
