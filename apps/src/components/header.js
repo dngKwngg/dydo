@@ -29,6 +29,7 @@ const Header = ({label}) => {
 		// localStorage.removeItem("list");
 		setList([]);
 		localStorage.removeItem("user");
+		localStorage.removeItem("accessToken");
 	};
     return (
 		<div className="home-container">

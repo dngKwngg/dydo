@@ -15,6 +15,7 @@ const HistoryScreen = () => {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
+						Authorization: "Bearer " + localStorage.getItem("accessToken"),
 					},
 					body: JSON.stringify({ orders_id: orders_id }),
 				}
@@ -43,10 +44,17 @@ const HistoryScreen = () => {
 		const fetchDataHistory = async () => {
 			try {
 				const response = await fetch(
-					"http://localhost:8080/order/getOrderHistory"
+					"http://localhost:8080/order/getOrderHistory",
+					{
+						headers: {
+							"Content-Type": "application/json",
+							Authorization: "Bearer " + localStorage.getItem("accessToken"),
+						},
+					}
 				);
 				const data = await response.json();
 				setHistory(data.data);
+				console.log(data.data);
 			} catch (error) {
 				console.error("Error fetching data:", error);
 			}

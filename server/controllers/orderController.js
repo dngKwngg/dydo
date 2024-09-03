@@ -113,12 +113,14 @@ exports.createOrder = async (req, res) => {
 	}
 };
 
-// lấy ra lịch sử đơn hàng của
+// lấy ra lịch sử đơn hàng theo centre_id
 // http://localhost:8080/order/getOrderHistory
 exports.getOrderHistory = async (req, res) => {
-	// const {centre_id} = req.user;
+	console.log('req', req);
+	console.log('req.user', req.user);
+	const {centre_id} = req.user;
 	try {
-		const result = await queryDatabase(`SELECT * FROM orders `);
+		const result = await queryDatabase(`SELECT * FROM orders WHERE centre_id = ?`, [centre_id]);
 		if (result.length === 0) {
 			return res.status(404).json({
 				status: "Failed",

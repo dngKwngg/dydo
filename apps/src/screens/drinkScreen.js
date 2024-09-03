@@ -14,7 +14,14 @@ const DrinkScreen = () => {
 			await delay(500);
 			try {
 				const response = await fetch(
-					"http://localhost:8080/menu/listDrink"
+					"http://localhost:8080/menu/listDrink",
+					{
+						headers: {
+							"Content-Type": "application/json",
+							Authorization: "Bearer " + localStorage.getItem("accessToken"),
+						},
+					}
+					
 				);
 				const data = await response.json();
 				setDrinks(data.data);

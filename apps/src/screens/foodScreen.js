@@ -15,7 +15,13 @@ const FoodScreen = () => {
 			await delay(1000);
 			try {
 				const response = await fetch(
-					"http://localhost:8080/menu/listFood"
+					"http://localhost:8080/menu/listFood",
+					{
+						headers: {
+							"Content-Type": "application/json",
+							Authorization: "Bearer " + localStorage.getItem("accessToken"),
+						},
+					}
 				);
 				const data = await response.json();
 				setFoods(data.data);
