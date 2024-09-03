@@ -50,7 +50,7 @@ const FoodScreen = () => {
 				<div className="food-menu">
 					<ResetButton />
 					<div className="food-section">
-						<h2 className="type-food">Đồ nướng than hoa</h2>
+						<h2 className="type-food nuong">Đồ nướng than hoa</h2>
 						<div className="food-category">
 							{nuongFoods.map((food) => {
 								return <MenuItem item={food} />;
@@ -58,7 +58,7 @@ const FoodScreen = () => {
 						</div>
 					</div>
 					<div className="food-section">
-						<h2 className="type-food">Lẩu thái Tomyum</h2>
+						<h2 className="type-food lau">Lẩu thái Tomyum</h2>
 						<div className="food-category">
 							{lauFoods.map((food) => {
 								return <MenuItem item={food} />;

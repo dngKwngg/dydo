@@ -31,6 +31,7 @@ const Header = ({label}) => {
 		localStorage.removeItem("user");
 		localStorage.removeItem("accessToken");
 	};
+	
     return (
 		<div className="home-container">
 			<div className="home-header">
