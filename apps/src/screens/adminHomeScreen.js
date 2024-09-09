@@ -3,7 +3,7 @@ import AdminHeader from "../components/adminHeader";
 const AdminHomeScreen = () => {
     return (
         <div>
-            <AdminHeader />
+            <AdminHeader label="income"/>
         </div>
     );
 };

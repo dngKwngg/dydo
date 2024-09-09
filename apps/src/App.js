@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 import LoginScreen from "./screens/loginScreen";
 import HomeScreen from "./screens/homeScreen";
@@ -14,7 +14,8 @@ const App = () => {
 		<BrowserRouter>
 			<ListProvider>
 				<Routes>
-					<Route path="" element={<HomeScreen />} />
+					<Route path="/" element={<Navigate to="/login" />} />
+					<Route path="/home" element={<HomeScreen />} />
 					<Route path="/login" element={<LoginScreen />} />
 					<Route path="/food" element={<FoodScreen />} />
 					<Route path="/drink" element={<DrinkScreen />} />

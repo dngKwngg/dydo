@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react';
 import "./../styles/components/header.css";
 import { useNavigate } from 'react-router-dom';
-import { Tabs } from 'antd';
 import MenuHeader from './menuHeader';
 import { ListContext } from "./ListContext";
 const Header = ({label}) => {
@@ -36,7 +35,7 @@ const Header = ({label}) => {
 		<div className="home-container">
 			<div className="home-header">
 				<div className='logo'>
-					<a href="/" className="main-logo">
+					<a href="/home" className="main-logo">
 						DYDO
 					</a>
 				</div>

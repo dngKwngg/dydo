@@ -31,7 +31,7 @@ const LoginScreen = () => {
 				if (res.user.role === "admin") {
 					navigate("/admin");
 				} else {
-					navigate("/");
+					navigate("/home");
 				}
 				
 			}
