@@ -168,3 +168,26 @@ exports.getOrderDetail = async (req, res) => {
 		});
 	}
 };
+// lấy ra tất cả lịch sử đơn hàng
+// http://localhost:8080/order/getAllOrderHistory
+exports.getAllOrderHistory = async (req, res) => {
+	
+	try {
+		const result = await queryDatabase(`SELECT * FROM orders `);
+		if (result.length === 0) {
+			return res.status(404).json({
+				status: "Failed",
+				message: "No order found",
+			});
+		}
+		return res.status(200).json({
+			status: "Success",
+			data: result,
+		});
+	} catch (err) {
+		return res.status(500).json({
+			status: "Failed",
+			error: err.message,
+		});
+	}
+};

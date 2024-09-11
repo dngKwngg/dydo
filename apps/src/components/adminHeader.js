@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import MenuHeader from "./menuHeader";
 const AdminHeader = ({ label }) => {
 	const navigate = useNavigate();
-	const menu_labels = [
+	const menu_labels_admin = [
 		{
 			name: "Doanh thu",
 			navigate: "income",
@@ -14,7 +14,7 @@ const AdminHeader = ({ label }) => {
 		},
 		{
 			name: "Quản lý menu",
-			navigate: "receipt",
+			navigate: "menuManager",
 		},
 		{
 			name: "Quản lý nhà hàng",
@@ -22,8 +22,36 @@ const AdminHeader = ({ label }) => {
 		},
 	];
 	return (
-		<div>
-			<h1>Admin</h1>
+		<div className="home-container">
+			<div className="home-header">
+				<div className="logo">
+					<a href="/admin" className="main-logo">
+						DYDO
+					</a>
+				</div>
+				{menu_labels_admin.map((item, index) => {
+					return (
+						<MenuHeader
+							number={index + 1}
+							name={item.name}
+							onClick={() => {
+								navigate(`/${item.navigate}`);
+							}}
+							isActive={item.navigate === label}
+						></MenuHeader>
+					);
+				})}
+				<div
+					className="log-out"
+					onClick={() => {
+						localStorage.removeItem("accessToken");
+						navigate(`/login`);
+					}}
+				>
+					Đăng xuất
+				</div>
+			</div>
+			
 		</div>
 	);
 };

@@ -8,6 +8,7 @@ import DrinkScreen from "./screens/drinkScreen";
 import HistoryScreen from "./screens/historyScreen";
 import ReceiptScreen from "./screens/receiptScreen";
 import AdminHomeScreen from "./screens/adminHomeScreen";
+import AdminIncomeScreen from "./screens/adminIncomeScreen";
 import {  ListProvider } from "./components/ListContext";
 const App = () => {
 	return (
@@ -22,6 +23,7 @@ const App = () => {
 					<Route path="/history" element={<HistoryScreen />} />
 					<Route path="/receipt" element={<ReceiptScreen />} />
 					<Route path="/admin" element={<AdminHomeScreen />} />
+					<Route path="/income" element={<AdminIncomeScreen />} />
 				</Routes>
 			</ListProvider>
 		</BrowserRouter>

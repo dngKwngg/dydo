@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
 import AdminHeader from "../components/adminHeader";
-import { Table, Button, Modal, Select } from "antd";
-const AdminHomeScreen = () => {
+import { Table, Button, Modal } from "antd";
+const AdminIncomeScreen = ({label}) => {
 	const [allHistory, setAllHistory] = useState([]);
 	const [modalsState, setModalsState] = useState({});
 	const [detail, setDetail] = useState([]);
-	const [centres, setCentres] = useState([]);
-	const [selectedCentre, setSelectedCentre] = useState("all");
-	const [filteredHistory, setFilteredHistory] = useState([]);
 	const fetchDataDetail = async (orders_id) => {
 		try {
 			const response = await fetch(
@@ -28,7 +25,6 @@ const AdminHomeScreen = () => {
 			console.error("Error fetching data:", error);
 		}
 	};
-
 	const showModal = async (id) => {
 		await fetchDataDetail(id);
 		setModalsState((prevState) => ({ ...prevState, [id]: true }));
@@ -41,7 +37,6 @@ const AdminHomeScreen = () => {
 	const handleCancel = (id) => {
 		setModalsState((prevState) => ({ ...prevState, [id]: false }));
 	};
-	// lấy data lịch sử đơn hàng
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
@@ -57,14 +52,7 @@ const AdminHomeScreen = () => {
 				);
 				const data = await response.json();
 				setAllHistory(data.data);
-				// Lấy các `centre_id` duy nhất từ lịch sử đơn hàng
-				const centreIds = [
-					...new Set(data.data.map((item) => item.centre_id)),
-				];
-				setCentres(centreIds);
-
-				// Hiển thị toàn bộ lịch sử theo mặc định
-				setFilteredHistory(data.data);
+				console.log(data.data);
 			} catch (error) {
 				console.error("Error fetching data:", error);
 			}
@@ -72,20 +60,6 @@ const AdminHomeScreen = () => {
 
 		fetchData();
 	}, []);
-	// Xử lý lọc theo `centre_id`
-	const handleFilterChange = (value) => {
-		setSelectedCentre(value);
-		if (value === "all") {
-			// Hiển thị toàn bộ lịch sử nếu chọn "all"
-			setFilteredHistory(allHistory);
-		} else {
-			// Lọc theo `centre_id` được chọn
-			const filtered = allHistory.filter(
-				(item) => item.centre_id === value
-			);
-			setFilteredHistory(filtered);
-		}
-	};
 	const columns = [
 		{
 			title: "Order ID",
@@ -146,26 +120,9 @@ const AdminHomeScreen = () => {
 	];
 	return (
 		<div>
-			<AdminHeader label="admin" />
-			{/* thêm tùy chọn select */}
-			<div style={{ marginBottom: "20px" }}>
-				<Select
-					value={selectedCentre}
-					onChange={handleFilterChange}
-					style={{ width: 200 }}
-				>
-					<Select.Option value="all">
-						Tất cả các trung tâm
-					</Select.Option>
-					{centres.map((centre) => (
-						<Select.Option key={centre} value={centre}>
-							Trung tâm {centre}
-						</Select.Option>
-					))}
-				</Select>
-			</div>
+			<AdminHeader label="income" />
 			<Table
-				dataSource={filteredHistory}
+				dataSource={allHistory}
 				columns={columns}
 				rowKey="orders_id"
 				pagination={{ pageSize: 5 }}
@@ -216,4 +173,4 @@ const AdminHomeScreen = () => {
 		</div>
 	);
 };
-export default AdminHomeScreen;
+export default AdminIncomeScreen;
