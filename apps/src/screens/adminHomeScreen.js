@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import AdminHeader from "../components/adminHeader";
-import { Table, Button, Modal, Select } from "antd";
+import { Table, Button, Modal, Select, DatePicker, Space } from "antd";
 const AdminHomeScreen = () => {
 	const [allHistory, setAllHistory] = useState([]);
 	const [modalsState, setModalsState] = useState({});
@@ -8,6 +8,62 @@ const AdminHomeScreen = () => {
 	const [centres, setCentres] = useState([]);
 	const [selectedCentre, setSelectedCentre] = useState("all");
 	const [filteredHistory, setFilteredHistory] = useState([]);
+	const [selectedDate, setSelectedDate] = useState(null);
+const columns = [
+	{
+		title: "Order ID",
+		dataIndex: "orders_id",
+		key: "orders_id",
+	},
+	{
+		title: "Centre ID",
+		dataIndex: "centre_id",
+		key: "centre_id",
+	},
+	{
+		title: "Table ID",
+		dataIndex: "table_id",
+		key: "table_id",
+	},
+	{
+		title: "Total Cost",
+		dataIndex: "total_cost",
+		key: "total_cost",
+		render: (total_cost) =>
+			new Intl.NumberFormat("vi-VN").format(total_cost),
+	},
+	{
+		title: "Order Date",
+		dataIndex: "date_order",
+		key: "date_order",
+		render: (date_order) =>
+			new Date(date_order).toLocaleDateString("vi-VN", {
+				day: "2-digit",
+				month: "2-digit",
+				year: "numeric",
+			}),
+	},
+	{
+		title: "Order Time",
+		dataIndex: "date_order",
+		key: "order_time",
+		render: (date_order) =>
+			new Date(date_order).toLocaleTimeString("vi-VN", {
+				hour: "2-digit",
+				minute: "2-digit",
+				second: "2-digit",
+			}),
+	},
+	{
+		title: "Action",
+		key: "action",
+		render: (_, record) => (
+			<Button type="primary" onClick={() => showModal(record.orders_id)}>
+				Xem chi tiết tại đây
+			</Button>
+		),
+	},
+];
 	const fetchDataDetail = async (orders_id) => {
 		try {
 			const response = await fetch(
@@ -72,81 +128,49 @@ const AdminHomeScreen = () => {
 
 		fetchData();
 	}, []);
-	// Xử lý lọc theo `centre_id`
+	  const filterHistory = (centre, date) => {
+			let filtered = allHistory;
+
+			// lọc theo trung tâm
+			if (centre !== "all") {
+				filtered = filtered.filter((item) => item.centre_id === centre);
+			}
+
+			// lọc theo ngày
+			if (date) {
+				filtered = filtered.filter(
+					(item) =>
+						new Date(item.date_order).toLocaleDateString(
+							"vi-VN"
+						) === new Date(date).toLocaleDateString("vi-VN")
+				);
+			}
+
+			return filtered;
+		};
+	// Xử lý lọc
 	const handleFilterChange = (value) => {
 		setSelectedCentre(value);
-		if (value === "all") {
-			// Hiển thị toàn bộ lịch sử nếu chọn "all"
-			setFilteredHistory(allHistory);
-		} else {
-			// Lọc theo `centre_id` được chọn
-			const filtered = allHistory.filter(
-				(item) => item.centre_id === value
-			);
-			setFilteredHistory(filtered);
-		}
+		setFilteredHistory(filterHistory(value, selectedDate));
 	};
-	const columns = [
-		{
-			title: "Order ID",
-			dataIndex: "orders_id",
-			key: "orders_id",
-		},
-		{
-			title: "Centre ID",
-			dataIndex: "centre_id",
-			key: "centre_id",
-		},
-		{
-			title: "Table ID",
-			dataIndex: "table_id",
-			key: "table_id",
-		},
-		{
-			title: "Total Cost",
-			dataIndex: "total_cost",
-			key: "total_cost",
-			render: (total_cost) =>
-				new Intl.NumberFormat("vi-VN").format(total_cost),
-		},
-		{
-			title: "Order Date",
-			dataIndex: "date_order",
-			key: "date_order",
-			render: (date_order) =>
-				new Date(date_order).toLocaleDateString("vi-VN", {
-					day: "2-digit",
-					month: "2-digit",
-					year: "numeric",
-				}),
-		},
-		{
-			title: "Order Time",
-			dataIndex: "date_order",
-			key: "order_time",
-			render: (date_order) =>
-				new Date(date_order).toLocaleTimeString("vi-VN", {
-					hour: "2-digit",
-					minute: "2-digit",
-					second: "2-digit",
-				}),
-		},
-		{
-			title: "Action",
-			key: "action",
-			render: (_, record) => (
-				<Button
-					type="primary"
-					onClick={() => showModal(record.orders_id)}
-				>
-					Xem chi tiết tại đây
-				</Button>
-			),
-		},
-	];
+
+	
+	 const onChange = (date, dateString) => {
+			setSelectedDate(dateString);
+			setFilteredHistory(filterHistory(selectedCentre, dateString));
+		};
+
+		useEffect(() => {
+			setFilteredHistory(filterHistory(selectedCentre, selectedDate));
+		}, [selectedCentre, selectedDate, allHistory]);
 	return (
 		<div>
 			<AdminHeader label="admin" />
+			<div>
+				<Space direction="vertical">
+					<DatePicker onChange={onChange} />
+				</Space>
+			</div>
 			{/* thêm tùy chọn select */}
 			<div style={{ marginBottom: "20px" }}>
 				<Select
