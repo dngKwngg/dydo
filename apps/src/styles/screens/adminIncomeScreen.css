@@ -1,0 +1,8 @@
+.admin-income-screen{
+    .filter{
+        display: flex;
+        justify-content: flex-end;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+}

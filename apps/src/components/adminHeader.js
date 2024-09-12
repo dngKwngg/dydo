@@ -1,11 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import MenuHeader from "./menuHeader";
+import "./../styles/components/adminHeader.css";
 const AdminHeader = ({ label }) => {
 	const navigate = useNavigate();
 	const menu_labels_admin = [
 		{
-			name: "Doanh thu",
+			name: "Quản lý hóa đơn",
 			navigate: "income",
 		},
 		{
@@ -22,7 +23,7 @@ const AdminHeader = ({ label }) => {
 		},
 	];
 	return (
-		<div className="home-container">
+		<div className="admin-header">
 			<div className="home-header">
 				<div className="logo">
 					<a href="/admin" className="main-logo">

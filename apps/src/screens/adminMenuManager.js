@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
 import AdminHeader from "../components/adminHeader";
-import { Table, Button, Modal, Select, DatePicker, Space } from "antd";
+import { Table, Button, Modal, Select } from "antd";
 import "./../styles/screens/adminHomeScreen.css";
-const AdminHomeScreen = () => {
-	
+const AdminMenuManagerScreen = () => {
 	return (
 		<div className="admin-home-screen">
-			<AdminHeader label="admin" />
-			
+			<AdminHeader label="menuManager" />
 		</div>
 	);
 };
-export default AdminHomeScreen;
+export default AdminMenuManagerScreen;
