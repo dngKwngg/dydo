@@ -7,61 +7,74 @@ async function queryDatabase(query, params) {
 		});
 	});
 }
+async function updateParam(key, value, item_id) {
+	const result = await queryDatabase(`SELECT * FROM menu WHERE item_id = ?`, [
+		item_id,
+	]);
+	if (result.length === 0) {
+		return res.status(404).json({
+			status: "Failed",
+			message: "No menu item found",
+		});
+	}
+	await queryDatabase(`UPDATE menu SET ${key} = ? WHERE item_id = ?`, [
+		value,
+		item_id,
+	]);
+}
 // {
 // "item_id" : 1,
 // "price" : 15000
 // }
 // sửa giá menu
 //http://localhost:8080/menu/updatePrice
-exports.updatePrice = async (req, res) => {
-	const { item_id, price } = req.body;
-	//Kiểm tra item_id có phải là số nguyên lớn hơn 0 hay không
-	if (!Number.isInteger(item_id) || item_id <= 0) {
-		return res.status(400).json({
-			status: "Failed",
-			message: "Item ID must be an integer greater than 0",
-		});
-	}
-	//Kiểm tra price có phải là số thực hay không
-	if (isNaN(price)) {
-		return res.status(400).json({
-			status: "Failed",
-			message: "Price must be a float",
-		});
-	}
-	//Kiểm tra price có lớn hơn 0 hay không
-	if (!(price > 0)) {
-		return res.status(400).json({
-			status: "Failed",
-			message: "Price must be greater than 0",
-		});
-	}
-
-	try {
-		const result = await queryDatabase(
-			`SELECT * FROM menu WHERE item_id = ?`,
-			[item_id]
-		);
-		if (result.length === 0) {
-			return res.status(404).json({
+exports.updateInfoMenu = async (req, res) => {
+	const { item_id, price, item_name, type } = req.body;
+	if (price !== undefined) {
+		//Kiểm tra item_id có phải là số nguyên lớn hơn 0 hay không
+		if (!Number.isInteger(item_id) || item_id <= 0) {
+			return res.status(400).json({
 				status: "Failed",
-				message: "No menu item found",
+				message: "Item ID must be an integer greater than 0",
 			});
 		}
-		await queryDatabase(`UPDATE menu SET price = ? WHERE item_id = ?`, [
-			price,
-			item_id,
-		]);
-		return res.status(200).json({
-			status: "Success",
-			message: "Done update",
-		});
-	} catch (err) {
-		return res.status(500).json({
-			status: "Failed",
-			error: err,
-		});
+		//Kiểm tra price có phải là số thực hay không
+		if (isNaN(price)) {
+			return res.status(400).json({
+				status: "Failed",
+				message: "Price must be a float",
+			});
+		}
+		//Kiểm tra price có lớn hơn 0 hay không
+		if (!(price > 0)) {
+			return res.status(400).json({
+				status: "Failed",
+				message: "Price must be greater than 0",
+			});
+		}
+
+		try {
+			await updateParam("price", price, item_id);
+			if (item_name !== undefined) {
+				await updateParam("item_name", item_name, item_id);
+			}
+			if (type !== undefined) {
+				await updateParam("type", type, item_id);
+			}
+			return res.status(200).json({
+				status: "Success",
+				message: "Done update",
+			});
+		} catch (err) {
+			return res.status(500).json({
+				status: "Failed",
+				error: err,
+				location: "updatePrice",
+			});
+		}
 	}
+	
+	
 };
 
 // {
@@ -182,37 +195,39 @@ exports.deleteMenuItem = async (req, res) => {
 //http://localhost:8080/menu/listFood
 exports.listFood = async (req, res) => {
 	try {
-		const result = await queryDatabase(`SELECT * FROM menu where type not in ('Đồ uống')`);
+		const result = await queryDatabase(
+			`SELECT * FROM menu where type not in ('Đồ uống')`
+		);
 		return res.status(200).json({
 			status: "Success",
 			data: result,
 		});
-	}
-	catch (err) {
+	} catch (err) {
 		return res.status(500).json({
 			status: "Failed",
 			error: err,
 		});
 	}
-}
+};
 
 // lấy danh sách đồ uống
 //http://localhost:8080/menu/listDrink
 exports.listDrink = async (req, res) => {
 	try {
-		const result = await queryDatabase(`SELECT * FROM menu where type in ('Đồ uống')`);
+		const result = await queryDatabase(
+			`SELECT * FROM menu where type in ('Đồ uống')`
+		);
 		return res.status(200).json({
 			status: "Success",
 			data: result,
 		});
-	}
-	catch (err) {
+	} catch (err) {
 		return res.status(500).json({
 			status: "Failed",
 			error: err,
 		});
 	}
-}
+};
 
 // lấy danh sách món ăn theo item_id
 //http://localhost:8080/menu/listFoodById
@@ -226,7 +241,6 @@ exports.listFoodById = async (req, res) => {
 
 	// Chuyển danh sách ID thành chuỗi để sử dụng trong câu lệnh SQL
 	const listIdString = list_id_reverse.join(",");
-
 
 	try {
 		// Thực hiện truy vấn và sắp xếp theo thứ tự danh sách ID
@@ -243,7 +257,7 @@ exports.listFoodById = async (req, res) => {
 		return res.status(200).json({
 			status: "Success",
 			// add property quantity to data: result
-			data: result
+			data: result,
 		});
 	} catch (err) {
 		return res.status(500).json({
@@ -262,11 +276,10 @@ exports.listMenu = async (req, res) => {
 			status: "Success",
 			data: result,
 		});
-	}
-	catch (err) {
+	} catch (err) {
 		return res.status(500).json({
 			status: "Failed",
 			error: err,
 		});
 	}
-}
+};

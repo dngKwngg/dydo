@@ -3,7 +3,7 @@ const router = express.Router();
 const menuController = require("../controllers/menuController");
 const authController = require("../controllers/authController");
 router.use(authController.authenticateToken);
-router.post("/updatePrice", menuController.updatePrice);
+router.post("/updateInfoMenu", menuController.updateInfoMenu);
 router.post("/addMenuItem", menuController.addMenuItem);
 router.post("/deleteMenuItem", menuController.deleteMenuItem);
 router.get("/listFood", menuController.listFood);
