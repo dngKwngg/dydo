@@ -3,12 +3,19 @@ import AdminHeader from "../components/adminHeader";
 import { Table, Button, Modal, Select, DatePicker, Space } from "antd";
 import "./../styles/screens/adminIncomeScreen.css";
 const AdminIncomeScreen = () => {
+	// lưu tất cả lịch sử đơn hàng
 	const [allHistory, setAllHistory] = useState([]);
+	// lưu trạng thái của các modal
 	const [modalsState, setModalsState] = useState({});
+	// lưu chi tiết đơn hàng
 	const [detail, setDetail] = useState([]);
+	// lấy ra tất cả các trung tâm
 	const [centres, setCentres] = useState([]);
+	// lưu giá trị trung tâm được chọn
 	const [selectedCentre, setSelectedCentre] = useState("all");
+	// lưu lịch sử đơn hàng đã lọc
 	const [filteredHistory, setFilteredHistory] = useState([]);
+	// lưu ngày được chọn
 	const [selectedDate, setSelectedDate] = useState(null);
 	const columns = [
 		{

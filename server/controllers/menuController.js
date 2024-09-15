@@ -25,8 +25,10 @@ async function updateParam(key, value, item_id) {
 // {
 // "item_id" : 1,
 // "price" : 15000
+//	"item_name": "Revive"
+//	"type": "Đồ uống"
 // }
-// sửa giá menu
+// chỉnh sửa món ăn
 //http://localhost:8080/menu/updatePrice
 exports.updateInfoMenu = async (req, res) => {
 	const { item_id, price, item_name, type } = req.body;
@@ -69,7 +71,6 @@ exports.updateInfoMenu = async (req, res) => {
 			return res.status(500).json({
 				status: "Failed",
 				error: err,
-				location: "updatePrice",
 			});
 		}
 	}

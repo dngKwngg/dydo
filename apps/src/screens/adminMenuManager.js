@@ -1,9 +1,25 @@
 import React, { useState, useEffect } from "react";
 import AdminHeader from "../components/adminHeader";
-import { Table, Button, Modal, Select, Input } from "antd";
-import "./../styles/screens/adminHomeScreen.css";
+import { Table, Button, Modal, Select, Input, message } from "antd";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import "./../styles/screens/adminMenuManager.css";
 const { Option } = Select;
 const AdminMenuManagerScreen = () => {
+	const [messageApi, contextHolder] = message.useMessage();
+	const changeSuccess = () => {
+		messageApi.open({
+			type: "success",
+			content: "Edit successful",
+		});
+	};
+
+	const deleteSuccess = () => {
+		messageApi.open({
+			type: "success",
+			content: "Delete successful",
+		});
+	};
+
 	const [allMenu, setAllMenu] = useState([]);
 	// trạng thái modal edit
 	const [isModalVisible, setIsModalVisible] = useState(false);
@@ -21,16 +37,46 @@ const AdminMenuManagerScreen = () => {
 			title: "Item ID",
 			dataIndex: "item_id",
 			key: "item_id",
+			width: 150,
+		},
+		{
+			title: "Image",
+			dataIndex: "src",
+			key: "src",
+			render: (image) => (
+				<img
+					src={image}
+					style={{ width: 100, height: 100, borderRadius: "4px" }}
+				/>
+			),
+			width: 150,
 		},
 		{
 			title: "Item Name",
 			dataIndex: "item_name",
 			key: "item_name",
+			width: 400,
 		},
 		{
 			title: "Type",
 			dataIndex: "type",
 			key: "type",
+			width: 300,
+			filters: [
+				{
+					text: "Đồ uống",
+					value: "Đồ uống",
+				},
+				{
+					text: "Đồ nướng than hoa",
+					value: "Đồ nướng than hoa",
+				},
+				{
+					text: "Lẩu Thái Tomyum",
+					value: "Lẩu Thái Tomyum",
+				},
+			],
+			onFilter: (value, record) => record.type.indexOf(value) === 0,
 		},
 
 		{
@@ -38,22 +84,36 @@ const AdminMenuManagerScreen = () => {
 			dataIndex: "price",
 			key: "price",
 			render: (price) => new Intl.NumberFormat("vi-VN").format(price),
+			width: 250,
 		},
 		{
 			title: "Action",
 			key: "action",
 			render: (_, record) => (
-				<Button
-					type="primary"
-					onClick={() => {
-						showEditModal(record);
-					}}
-				>
-					Edit
-				</Button>
+				// console.log(`record`, record),
+				<div className="menu-table-action">
+					<Button
+						type="primary"
+						icon={<EditOutlined />}
+						onClick={() => {
+							showEditModal(record);
+						}}
+					/>
+
+					<Button
+						type="primary"
+						danger
+						icon={<DeleteOutlined />}
+						onClick={() => {
+							deleteMenuItem(record.item_id);
+						}}
+					/>
+				</div>
 			),
 		},
 	];
+
+	// Fetch menu data on table
 	const fetchMenu = async () => {
 		const response = await fetch("http://localhost:8080/menu/listMenu", {
 			headers: {
@@ -77,6 +137,7 @@ const AdminMenuManagerScreen = () => {
 		});
 		setIsModalVisible(true);
 	};
+
 	const handleCancel = () => {
 		setIsModalVisible(false);
 	};
@@ -102,7 +163,31 @@ const AdminMenuManagerScreen = () => {
 		if (response.ok) {
 			await fetchMenu();
 			setIsModalVisible(false);
+			changeSuccess();
 			console.log(`editedValues`, editedValues);
+		}
+	};
+
+	// Delete Menu Item
+	const deleteMenuItem = async (item_id) => {
+		const response = await fetch(
+			`http://localhost:8080/menu/deleteMenuItem`,
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${localStorage.getItem(
+						"accessToken"
+					)}`,
+				},
+				body: JSON.stringify({
+					item_id: item_id,
+				}),
+			}
+		);
+		if (response.ok) {
+			await fetchMenu();
+			deleteSuccess();
 		}
 	};
 	const handleInputChange = (e) => {
@@ -119,8 +204,9 @@ const AdminMenuManagerScreen = () => {
 				dataSource={allMenu}
 				columns={columns}
 				rowKey="item_id"
-				pagination={{ pageSize: 8 }}
+				pagination={{ pageSize: 7 }}
 			/>
+			{contextHolder}
 			<Modal
 				title="Edit Menu Item"
 				open={isModalVisible}
@@ -143,8 +229,10 @@ const AdminMenuManagerScreen = () => {
 						style={{ width: "100%" }}
 					>
 						<Option value="Đồ uống">Đồ uống</Option>
-						<Option value="Đồ nướng than hoa">Đồ nướng than hoa</Option>
-						<Option value="Lẩu thái TomYum">Lẩu thái Tomyum</Option>
+						<Option value="Đồ nướng than hoa">
+							Đồ nướng than hoa
+						</Option>
+						<Option value="Lẩu Thái Tomyum">Lẩu Thái Tomyum</Option>
 					</Select>
 				</div>
 				<div style={{ marginTop: 10 }}>
