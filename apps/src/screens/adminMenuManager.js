@@ -6,6 +6,14 @@ import "./../styles/screens/adminMenuManager.css";
 const { Option } = Select;
 const AdminMenuManagerScreen = () => {
 	const [messageApi, contextHolder] = message.useMessage();
+
+	const addSuccess = () => {
+		messageApi.open({
+			type: "success",
+			content: "Add item successful",
+		});
+	};
+
 	const changeSuccess = () => {
 		messageApi.open({
 			type: "success",
@@ -22,15 +30,18 @@ const AdminMenuManagerScreen = () => {
 
 	const [allMenu, setAllMenu] = useState([]);
 	// trạng thái modal edit
-	const [isModalVisible, setIsModalVisible] = useState(false);
-	// item hiện tại đang được chọn để edit
-	const [editingItem, setEditingItem] = useState(null);
+	const [isModalEditVisible, setIsModalEditVisible] = useState(false);
+	// state modal add item
+	const [isModalAddVisible, setIsModalAddVisible] = useState(false);
+	// modal xác nhận xóa item
+	const [isModalDeleteVisible, setIsModalDeleteVisible] = useState(false);
 	// các giá trị của form edit
 	const [editedValues, setEditedValues] = useState({
 		item_id: "",
 		item_name: "",
 		type: "",
 		price: "",
+		src:"",
 	});
 	const columns = [
 		{
@@ -106,6 +117,7 @@ const AdminMenuManagerScreen = () => {
 						icon={<DeleteOutlined />}
 						onClick={() => {
 							deleteMenuItem(record.item_id);
+							// console.log(record)
 						}}
 					/>
 				</div>
@@ -128,20 +140,24 @@ const AdminMenuManagerScreen = () => {
 		fetchMenu();
 	}, []);
 	const showEditModal = (item) => {
-		setEditingItem(item);
 		setEditedValues({
 			item_id: item.item_id,
 			item_name: item.item_name,
 			type: item.type,
 			price: item.price,
 		});
-		setIsModalVisible(true);
+		setIsModalEditVisible(true);
 	};
-
-	const handleCancel = () => {
-		setIsModalVisible(false);
+	const showAddModal = () => {
+		setIsModalAddVisible(true);
 	};
-	const handleOk = async () => {
+	const handleCancelEdit = () => {
+		setIsModalEditVisible(false);
+	};
+	const handleCancelAdd = () => {
+		setIsModalAddVisible(false);
+	};
+	const handleOkEdit = async () => {
 		const response = await fetch(
 			`http://localhost:8080/menu/updateInfoMenu`,
 			{
@@ -162,12 +178,32 @@ const AdminMenuManagerScreen = () => {
 		);
 		if (response.ok) {
 			await fetchMenu();
-			setIsModalVisible(false);
+			setIsModalEditVisible(false);
 			changeSuccess();
 			console.log(`editedValues`, editedValues);
 		}
 	};
-
+	const handleOkAdd = async () => {
+		const response = await fetch(`http://localhost:8080/menu/addMenuItem`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+			},
+			body: JSON.stringify({
+				item_name: editedValues.item_name,
+				type: editedValues.type,
+				price: editedValues.price,
+				src: editedValues.src,
+			}),
+		});
+		if (response.ok) {
+			await fetchMenu();
+			setIsModalAddVisible(false);
+			addSuccess();
+			console.log(`editedValues`, editedValues);
+		}
+	};
 	// Delete Menu Item
 	const deleteMenuItem = async (item_id) => {
 		const response = await fetch(
@@ -190,42 +226,55 @@ const AdminMenuManagerScreen = () => {
 			deleteSuccess();
 		}
 	};
-	const handleInputChange = (e) => {
+	// xử lý cho nhập input trong modal edit
+	const handleEditInputChange = (e) => {
 		console.log(`target`, e.target.name);
 		setEditedValues({ ...editedValues, [e.target.name]: e.target.value });
 	};
-	const handleSelectChange = (value) => {
+	//xử lý cho select trong modal edit
+	const handleEditSelectChange = (value) => {
 		setEditedValues({ ...editedValues, type: value });
 	};
+	// xử lý cho nhập input trong modal add
+	const handleAddInputChange = (e) => {
+		console.log(`target`, e.target.name);
+		setEditedValues({ ...editedValues, [e.target.name]: e.target.value });
+	};
+	//xử lý cho select trong modal add
+	const handleAddSelectChange = (value) => {
+		setEditedValues({ ...editedValues, type: value });
+	};
+	
 	return (
 		<div className="admin-menu-screen">
 			<AdminHeader label="menuManager" />
-			<Table
-				dataSource={allMenu}
-				columns={columns}
-				rowKey="item_id"
-				pagination={{ pageSize: 7 }}
-			/>
-			{contextHolder}
+			<Button
+				
+				onClick={() => {
+					showAddModal();
+				}}
+			>
+				Add Item
+			</Button>
 			<Modal
-				title="Edit Menu Item"
-				open={isModalVisible}
-				onCancel={handleCancel}
-				onOk={handleOk}
+				title="Add Menu Item"
+				open={isModalAddVisible}
+				onCancel={handleCancelAdd}
+				onOk={handleOkAdd}
 			>
 				<div>
 					<label>Item Name:</label>
 					<Input
 						name="item_name"
 						value={editedValues.item_name}
-						onChange={handleInputChange}
+						onChange={handleAddInputChange}
 					/>
 				</div>
 				<div style={{ marginTop: 10 }}>
 					<label>Type:</label>
 					<Select
 						value={editedValues.type}
-						onChange={handleSelectChange}
+						onChange={handleAddSelectChange}
 						style={{ width: "100%" }}
 					>
 						<Option value="Đồ uống">Đồ uống</Option>
@@ -241,7 +290,61 @@ const AdminMenuManagerScreen = () => {
 						name="price"
 						type="number"
 						value={editedValues.price}
-						onChange={handleInputChange}
+						onChange={handleAddInputChange}
+					/>
+				</div>
+				<div>
+					<label>Image Link: </label>
+					<Input
+						name="src"
+						value={editedValues.src}
+						onChange={handleAddInputChange}
+					/>
+				</div>
+			</Modal>
+
+			<Table
+				dataSource={allMenu}
+				columns={columns}
+				rowKey="item_id"
+				pagination={{ pageSize: 7 }}
+			/>
+			{contextHolder}
+			<Modal
+				title="Edit Menu Item"
+				open={isModalEditVisible}
+				onCancel={handleCancelEdit}
+				onOk={handleOkEdit}
+			>
+				<div>
+					<label>Item Name:</label>
+					<Input
+						name="item_name"
+						value={editedValues.item_name}
+						onChange={handleEditInputChange}
+					/>
+				</div>
+				<div style={{ marginTop: 10 }}>
+					<label>Type:</label>
+					<Select
+						value={editedValues.type}
+						onChange={handleEditSelectChange}
+						style={{ width: "100%" }}
+					>
+						<Option value="Đồ uống">Đồ uống</Option>
+						<Option value="Đồ nướng than hoa">
+							Đồ nướng than hoa
+						</Option>
+						<Option value="Lẩu Thái Tomyum">Lẩu Thái Tomyum</Option>
+					</Select>
+				</div>
+				<div style={{ marginTop: 10 }}>
+					<label>Price:</label>
+					<Input
+						name="price"
+						type="number"
+						value={editedValues.price}
+						onChange={handleEditInputChange}
 					/>
 				</div>
 			</Modal>

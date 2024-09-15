@@ -87,7 +87,7 @@ exports.updateInfoMenu = async (req, res) => {
 //http://localhost:8080/menu/addMenuItem
 
 exports.addMenuItem = async (req, res) => {
-	const { type, item_name, price } = req.body;
+	const { type, item_name, price, src } = req.body;
 	//Kiểm tra type có phải là chuỗi hay không
 	if (typeof type !== "string") {
 		return res.status(400).json({
@@ -137,8 +137,8 @@ exports.addMenuItem = async (req, res) => {
 	// );
 	try {
 		await queryDatabase(
-			`INSERT INTO menu (type, item_name, price) VALUES (?, ?, ?)`,
-			[type, item_name, price]
+			`INSERT INTO menu (type, item_name, price, src) VALUES (?, ?, ?, ?)`,
+			[type, item_name, price, src]
 		);
 		return res.status(200).json({
 			status: "Success",
