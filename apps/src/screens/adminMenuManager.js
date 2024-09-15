@@ -116,7 +116,7 @@ const AdminMenuManagerScreen = () => {
 						danger
 						icon={<DeleteOutlined />}
 						onClick={() => {
-							deleteMenuItem(record.item_id);
+							showDeleteModal(record);
 							// console.log(record)
 						}}
 					/>
@@ -151,12 +151,23 @@ const AdminMenuManagerScreen = () => {
 	const showAddModal = () => {
 		setIsModalAddVisible(true);
 	};
+
+	const showDeleteModal = (item) => {
+		setEditedValues({
+			item_id: item.item_id
+		})
+		setIsModalDeleteVisible(true);
+		// deleteMenuItem(item.item_id);
+	}
 	const handleCancelEdit = () => {
 		setIsModalEditVisible(false);
 	};
 	const handleCancelAdd = () => {
 		setIsModalAddVisible(false);
 	};
+	const handleCancelDelete = () => {
+		setIsModalDeleteVisible(false);
+	}
 	const handleOkEdit = async () => {
 		const response = await fetch(
 			`http://localhost:8080/menu/updateInfoMenu`,
@@ -204,8 +215,8 @@ const AdminMenuManagerScreen = () => {
 			console.log(`editedValues`, editedValues);
 		}
 	};
-	// Delete Menu Item
-	const deleteMenuItem = async (item_id) => {
+
+	const handleOkDelete = async () => {
 		const response = await fetch(
 			`http://localhost:8080/menu/deleteMenuItem`,
 			{
@@ -217,15 +228,17 @@ const AdminMenuManagerScreen = () => {
 					)}`,
 				},
 				body: JSON.stringify({
-					item_id: item_id,
+					item_id: editedValues.item_id,
 				}),
 			}
 		);
 		if (response.ok) {
 			await fetchMenu();
+			setIsModalDeleteVisible(false)
 			deleteSuccess();
 		}
-	};
+	}
+
 	// xử lý cho nhập input trong modal edit
 	const handleEditInputChange = (e) => {
 		console.log(`target`, e.target.name);
@@ -249,7 +262,6 @@ const AdminMenuManagerScreen = () => {
 		<div className="admin-menu-screen">
 			<AdminHeader label="menuManager" />
 			<Button
-				
 				onClick={() => {
 					showAddModal();
 				}}
@@ -302,7 +314,6 @@ const AdminMenuManagerScreen = () => {
 					/>
 				</div>
 			</Modal>
-
 			<Table
 				dataSource={allMenu}
 				columns={columns}
@@ -348,6 +359,12 @@ const AdminMenuManagerScreen = () => {
 					/>
 				</div>
 			</Modal>
+			<Modal
+				title="Confirm Delete ?"
+				open={isModalDeleteVisible}
+				onCancel={handleCancelDelete}
+				onOk={handleOkDelete}
+			></Modal>
 		</div>
 	);
 };
