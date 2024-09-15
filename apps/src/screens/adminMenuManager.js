@@ -261,13 +261,15 @@ const AdminMenuManagerScreen = () => {
 	return (
 		<div className="admin-menu-screen">
 			<AdminHeader label="menuManager" />
-			<Button
-				onClick={() => {
-					showAddModal();
-				}}
-			>
-				Add Item
-			</Button>
+			<div className="add-item-btn">
+				<Button
+					onClick={() => {
+						showAddModal();
+					}}
+				>
+					Add Item
+				</Button>
+			</div>
 			<Modal
 				title="Add Menu Item"
 				open={isModalAddVisible}

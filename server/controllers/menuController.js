@@ -179,7 +179,7 @@ exports.deleteMenuItem = async (req, res) => {
 				message: "No menu item found",
 			});
 		}
-		await queryDatabase(`DELETE FROM menu WHERE item_id = ?`, [item_id]);
+		await queryDatabase(`UPDATE menu SET active = 0 WHERE item_id = ?`, [item_id]);
 		return res.status(200).json({
 			status: "Success",
 			message: "Done delete",
@@ -197,7 +197,7 @@ exports.deleteMenuItem = async (req, res) => {
 exports.listFood = async (req, res) => {
 	try {
 		const result = await queryDatabase(
-			`SELECT * FROM menu where type not in ('Đồ uống')`
+			`SELECT * FROM menu where type not in ('Đồ uống') and active = 1`
 		);
 		return res.status(200).json({
 			status: "Success",
@@ -216,7 +216,7 @@ exports.listFood = async (req, res) => {
 exports.listDrink = async (req, res) => {
 	try {
 		const result = await queryDatabase(
-			`SELECT * FROM menu where type in ('Đồ uống')`
+			`SELECT * FROM menu where type in ('Đồ uống') and active = 1`
 		);
 		return res.status(200).json({
 			status: "Success",
@@ -248,7 +248,7 @@ exports.listFoodById = async (req, res) => {
 		const query = `
             SELECT * 
             FROM menu 
-            WHERE item_id IN (${listIdString})
+            WHERE item_id IN (${listIdString}) and active = 1
             ORDER BY FIELD(item_id, ${listIdString})
         `;
 
@@ -272,7 +272,7 @@ exports.listFoodById = async (req, res) => {
 //http://localhost:8080/menu/listMenu
 exports.listMenu = async (req, res) => {
 	try {
-		const result = await queryDatabase(`SELECT * FROM menu `);
+		const result = await queryDatabase(`SELECT * FROM menu where active = 1 `);
 		return res.status(200).json({
 			status: "Success",
 			data: result,
