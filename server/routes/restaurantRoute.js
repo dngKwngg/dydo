@@ -6,5 +6,6 @@ const authController = require("../controllers/authController");
 
 router.use(authController.authenticateToken);
 router.post("/addNewRestaurant", restaurantController.addNewRestaurant);
-router.post("/closeRestaurant", restaurantController.closeRestaurant);
+router.post("/editRestaurant", restaurantController.editRestaurant);
+router.get("/getAllRestaurant", restaurantController.getAllRestaurant);
 module.exports = router;

@@ -41,7 +41,7 @@ const AdminMenuManagerScreen = () => {
 		item_name: "",
 		type: "",
 		price: "",
-		src:"",
+		src: "",
 	});
 	const columns = [
 		{
@@ -154,11 +154,11 @@ const AdminMenuManagerScreen = () => {
 
 	const showDeleteModal = (item) => {
 		setEditedValues({
-			item_id: item.item_id
-		})
+			item_id: item.item_id,
+		});
 		setIsModalDeleteVisible(true);
 		// deleteMenuItem(item.item_id);
-	}
+	};
 	const handleCancelEdit = () => {
 		setIsModalEditVisible(false);
 	};
@@ -167,7 +167,7 @@ const AdminMenuManagerScreen = () => {
 	};
 	const handleCancelDelete = () => {
 		setIsModalDeleteVisible(false);
-	}
+	};
 	const handleOkEdit = async () => {
 		const response = await fetch(
 			`http://localhost:8080/menu/updateInfoMenu`,
@@ -234,10 +234,10 @@ const AdminMenuManagerScreen = () => {
 		);
 		if (response.ok) {
 			await fetchMenu();
-			setIsModalDeleteVisible(false)
+			setIsModalDeleteVisible(false);
 			deleteSuccess();
 		}
-	}
+	};
 
 	// xử lý cho nhập input trong modal edit
 	const handleEditInputChange = (e) => {
@@ -257,7 +257,7 @@ const AdminMenuManagerScreen = () => {
 	const handleAddSelectChange = (value) => {
 		setEditedValues({ ...editedValues, type: value });
 	};
-	
+
 	return (
 		<div className="admin-menu-screen">
 			<AdminHeader label="menuManager" />
