@@ -32,40 +32,6 @@ exports.addNewRestaurant = async (req, res) => {
 		opening_year,
 		quantity_table,
 	} = req.body;
-	function isValidHotline(hotline) {
-		for (let i of hotline) {
-			if (i < "0" || i > "9") return false;
-		}
-		return true;
-	}
-	if (!isValidHotline(hotline) || !(hotline.length === 10)) {
-		return res.status(400).json({
-			status: "Failed",
-			message: "Re-enter hotline",
-		});
-	}
-	if (
-		!Number.isInteger(opening_month) ||
-		!(opening_month > 0 && opening_month < 13)
-	) {
-		return res.status(400).json({
-			status: "Failed",
-			message: "Re-enter opening_month",
-		});
-	}
-	if (!Number.isInteger(opening_year) || !(opening_year > 0)) {
-		return res.status(400).json({
-			status: "Failed",
-			message: "Re-enter opening_year",
-		});
-	}
-	if (!Number.isInteger(quantity_table) || !(quantity_table > 0)) {
-		return res.status(400).json({
-			status: "Failed",
-			message: "Re-enter quantity_table",
-		});
-	}
-
 	try {
 		await queryDatabase(
 			`INSERT INTO restaurant_centre (name, address, area, hotline, opening_month, opening_year, quantity_table) VALUES (?, ?, ?, ?, ?, ?, ?)`,

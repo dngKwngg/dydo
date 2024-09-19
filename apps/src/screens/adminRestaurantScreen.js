@@ -2,12 +2,14 @@ import React, { useState, useEffect, act } from "react";
 import AdminHeader from "../components/adminHeader";
 import { Table, Button, Modal, Select, Badge, Input, message } from "antd";
 import { EditOutlined } from "@ant-design/icons";
+import "./../styles/screens/adminRestaurantScreen.css";
 const { Option } = Select;
 const AdminRestaurantScreen = () => {
 	const [allRestaurant, setAllRestaurant] = useState([]);
 	const [isModalEditVisible, setIsModalEditVisible] = useState(false);
-	// các giá trị của form edit
-	const [editedValues, setEditedValues] = useState({
+	const [isModalAddVisible, setIsModalAddVisible] = useState(false);
+	// các giá trị của form
+	const [formValues, setFormValues] = useState({
 		centre_id: "",
 		name: "",
 		address: "",
@@ -87,7 +89,7 @@ const AdminRestaurantScreen = () => {
 		},
 	];
 	const showEditModal = (record) => {
-		setEditedValues({
+		setFormValues({
 			centre_id: record.centre_id,
 			name: record.name,
 			address: record.address,
@@ -100,47 +102,93 @@ const AdminRestaurantScreen = () => {
 		});
 		setIsModalEditVisible(true);
 	};
-	const handleEditOk = async() => {
-		const response = await fetch(`http://localhost:8080/restaurant/editRestaurant`,
+	const showAddModal = () => {
+		setFormValues({
+			centre_id: "",
+			name: "",
+			address: "",
+			area: "",
+			hotline: "",
+			opening_month: "",
+			opening_year: "",
+			active: "",
+			quantity_table: "",
+		});
+		setIsModalAddVisible(true);
+	};
+	const handleEditOk = async () => {
+		const response = await fetch(
+			`http://localhost:8080/restaurant/editRestaurant`,
 			{
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+					Authorization: `Bearer ${localStorage.getItem(
+						"accessToken"
+					)}`,
 				},
 				body: JSON.stringify({
-					centre_id: editedValues.centre_id,
-					name: editedValues.name,
-					address: editedValues.address,
-					area: editedValues.area,
-					hotline: editedValues.hotline,
-					opening_month: editedValues.opening_month,
-					opening_year: editedValues.opening_year,
-					active: editedValues.active,
-					quantity_table: editedValues.quantity_table,
+					centre_id: formValues.centre_id,
+					name: formValues.name,
+					address: formValues.address,
+					area: formValues.area,
+					hotline: formValues.hotline,
+					opening_month: formValues.opening_month,
+					opening_year: formValues.opening_year,
+					active: formValues.active,
+					quantity_table: formValues.quantity_table,
 				}),
 			}
 		);
-		if(response.ok){
+		if (response.ok) {
 			await fetchRestaurant();
 			setIsModalEditVisible(false);
 		}
-		
+	};
+	const handleAddOk = async () => {
+		const response = await fetch(
+			`http://localhost:8080/restaurant/addNewRestaurant`,
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${localStorage.getItem(
+						"accessToken"
+					)}`,
+				},
+				body: JSON.stringify({
+					name: formValues.name,
+					address: formValues.address,
+					area: formValues.area,
+					hotline: formValues.hotline,
+					opening_month: formValues.opening_month,
+					opening_year: formValues.opening_year,
+					active: formValues.active,
+					quantity_table: formValues.quantity_table,
+				}),
+			})
+		if (response.ok) {
+		await fetchRestaurant();
+		setIsModalAddVisible(false);
+		}
 	};
 	const handleEditCancel = () => {
 		setIsModalEditVisible(false);
 	};
+	const handleAddCancel = () => {
+		setIsModalAddVisible(false);
+	};
 	// xử lý cho nhập input trong modal edit
 	const handleEditInputChange = (e) => {
-		setEditedValues({ ...editedValues, [e.target.name]: e.target.value });
+		setFormValues({ ...formValues, [e.target.name]: e.target.value });
 	};
 	//xử lý cho select opening_month trong modal edit
 	const handleEditMonthSelectChange = (value) => {
-		setEditedValues({ ...editedValues, opening_month: value });
+		setFormValues({ ...formValues, opening_month: value });
 	};
 	//xử lý cho select active trong modal edit
 	const handleEditActiveSelectChange = (value) => {
-		setEditedValues({ ...editedValues, active: value });
+		setFormValues({ ...formValues, active: value });
 	};
 	const fetchRestaurant = async () => {
 		const response = await fetch(
@@ -163,6 +211,98 @@ const AdminRestaurantScreen = () => {
 	return (
 		<div className="admin-restaurant-screen">
 			<AdminHeader label="restaurant" />
+			<div className="add-restaurant-btn">
+				<Button
+					onClick={() => {
+						showAddModal();
+					}}
+				>
+					Add Restaurant
+				</Button>
+				<Modal
+					title="Add Restaurant"
+					open={isModalAddVisible}
+					onCancel={handleAddCancel}
+					onOk={handleAddOk}
+				>
+					<div>
+						<label>Name:</label>
+						<Input
+							name="name"
+							value={formValues.name}
+							onChange={handleEditInputChange}
+						/>
+					</div>
+					<div>
+						<label>Address:</label>
+						<Input
+							name="address"
+							value={formValues.address}
+							onChange={handleEditInputChange}
+						/>
+					</div>
+					<div>
+						<label>Area:</label>
+						<Input
+							name="area"
+							value={formValues.area}
+							onChange={handleEditInputChange}
+						/>
+					</div>
+					<div>
+						<label>Hotline:</label>
+						<Input
+							name="hotline"
+							type="number"
+							value={formValues.hotline}
+							onChange={handleEditInputChange}
+						/>
+					</div>
+					<div>
+						<label>Opening_month: </label>
+						<Select
+							value={formValues.opening_month}
+							style={{ width: 120 }}
+							onChange={handleEditMonthSelectChange}
+						>
+							{[...Array(12).keys()].map((month) => (
+								<Option key={month} value={month + 1}>
+									{month + 1}
+								</Option>
+							))}
+						</Select>
+					</div>
+					<div>
+						<label>Opening_year:</label>
+						<Input
+							name="opening_year"
+							type="number"
+							value={formValues.opening_year}
+							onChange={handleEditInputChange}
+						/>
+					</div>
+					<div>
+						<label>Active: </label>
+						<Select
+							value={"Đang hoạt động"}
+							onChange={handleEditActiveSelectChange}
+						>
+							<Option value={true}>Đang hoạt động</Option>
+							<Option value={false}>Đã đóng cửa</Option>
+						</Select>
+					</div>
+					
+					<div>
+						<label>Quantity Table:</label>
+						<Input
+							name="quantity_table"
+							type="number"
+							value={formValues.quantity_table}
+							onChange={handleEditInputChange}
+						/>
+					</div>
+				</Modal>
+			</div>
 			<Table
 				columns={columns}
 				dataSource={allRestaurant}
@@ -176,13 +316,13 @@ const AdminRestaurantScreen = () => {
 				onCancel={handleEditCancel}
 			>
 				<div>
-					<label>Centre ID: {editedValues.centre_id}</label>
+					<label>Centre ID: {formValues.centre_id}</label>
 				</div>
 				<div>
 					<label>Name:</label>
 					<Input
 						name="name"
-						value={editedValues.name}
+						value={formValues.name}
 						onChange={handleEditInputChange}
 					/>
 				</div>
@@ -190,7 +330,7 @@ const AdminRestaurantScreen = () => {
 					<label>Address:</label>
 					<Input
 						name="address"
-						value={editedValues.address}
+						value={formValues.address}
 						onChange={handleEditInputChange}
 					/>
 				</div>
@@ -198,7 +338,7 @@ const AdminRestaurantScreen = () => {
 					<label>Area:</label>
 					<Input
 						name="area"
-						value={editedValues.area}
+						value={formValues.area}
 						onChange={handleEditInputChange}
 					/>
 				</div>
@@ -207,14 +347,14 @@ const AdminRestaurantScreen = () => {
 					<Input
 						name="hotline"
 						type="number"
-						value={editedValues.hotline}
+						value={formValues.hotline}
 						onChange={handleEditInputChange}
 					/>
 				</div>
 				<div>
 					<label>Opening_month: </label>
 					<Select
-						value={editedValues.opening_month}
+						value={formValues.opening_month}
 						style={{ width: 120 }}
 						onChange={handleEditMonthSelectChange}
 					>
@@ -230,7 +370,7 @@ const AdminRestaurantScreen = () => {
 					<Input
 						name="opening_year"
 						type="number"
-						value={editedValues.opening_year}
+						value={formValues.opening_year}
 						onChange={handleEditInputChange}
 					/>
 				</div>
@@ -238,9 +378,7 @@ const AdminRestaurantScreen = () => {
 					<label>Active: </label>
 					<Select
 						value={
-							editedValues.active
-								? "Đang hoạt động"
-								: "Đã đóng cửa"
+							formValues.active ? "Đang hoạt động" : "Đã đóng cửa"
 						}
 						onChange={handleEditActiveSelectChange}
 					>
@@ -248,20 +386,13 @@ const AdminRestaurantScreen = () => {
 						<Option value={false}>Đã đóng cửa</Option>
 					</Select>
 				</div>
-				<div>
-					<label>Area:</label>
-					<Input
-						name="area"
-						value={editedValues.area}
-						onChange={handleEditInputChange}
-					/>
-				</div>
+				
 				<div>
 					<label>Quantity Table:</label>
 					<Input
 						name="quantity_table"
 						type="number"
-						value={editedValues.quantity_table}
+						value={formValues.quantity_table}
 						onChange={handleEditInputChange}
 					/>
 				</div>
