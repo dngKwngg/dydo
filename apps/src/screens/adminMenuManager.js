@@ -87,7 +87,7 @@ const AdminMenuManagerScreen = () => {
 					value: "Lẩu Thái Tomyum",
 				},
 			],
-			onFilter: (value, record) => record.type.indexOf(value) === 0,
+			onFilter: (value, record) => record.type===value,
 		},
 
 		{

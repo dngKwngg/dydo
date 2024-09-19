@@ -85,12 +85,25 @@ const AdminRestaurantScreen = () => {
 			dataIndex: "active",
 			key: "active",
 			render: (active) => (
+				console.log(`active`, active),
 				<Badge
 					status={active ? "success" : "error"}
 					text={active ? "Đang hoạt động" : "Đã đóng cửa"}
 				/>
 			),
 			width: 150,
+			filters: [
+				{
+					text: "Đang hoạt động",
+					value: 1,
+				},
+				{
+					text: "Đã đóng cửa",
+					value: 0,
+				},
+				
+			],
+			onFilter: (value, record) => record.active === value,
 		},
 		{
 			title: "Quantity Table",

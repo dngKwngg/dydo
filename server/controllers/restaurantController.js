@@ -71,12 +71,7 @@ exports.editRestaurant = async (req, res) => {
 		active,
 		quantity_table,
 	} = req.body;
-	function isValidHotline(hotline) {
-		for (let i of hotline) {
-			if (i < "0" || i > "9") return false;
-		}
-		return true;
-	}
+	
 	try {
 		if(name !== undefined){
 			await queryDatabase(
