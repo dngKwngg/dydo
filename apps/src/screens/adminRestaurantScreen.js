@@ -5,6 +5,25 @@ import { EditOutlined } from "@ant-design/icons";
 import "./../styles/screens/adminRestaurantScreen.css";
 const { Option } = Select;
 const AdminRestaurantScreen = () => {
+	const [messageApi, contextHolder] = message.useMessage();
+	const addSuccess = () => {
+		messageApi.open({
+			type: "success",
+			content: "Add restaurant successful",
+		});
+	};
+	const changeSuccess = () => {
+		messageApi.open({
+			type: "success",
+			content: "Edit successful",
+		});
+	};
+	const addFailed = () => {
+		messageApi.open({
+			type: "error",
+			content: "You need to fill out the form",
+		});
+	};
 	const [allRestaurant, setAllRestaurant] = useState([]);
 	const [isModalEditVisible, setIsModalEditVisible] = useState(false);
 	const [isModalAddVisible, setIsModalAddVisible] = useState(false);
@@ -104,14 +123,13 @@ const AdminRestaurantScreen = () => {
 	};
 	const showAddModal = () => {
 		setFormValues({
-			centre_id: "",
 			name: "",
 			address: "",
 			area: "",
 			hotline: "",
 			opening_month: "",
 			opening_year: "",
-			active: "",
+			active: "1",
 			quantity_table: "",
 		});
 		setIsModalAddVisible(true);
@@ -146,6 +164,13 @@ const AdminRestaurantScreen = () => {
 		}
 	};
 	const handleAddOk = async () => {
+		// kiểm tra xem có thuộc tính nào của formValues trống không
+		const hasEmptyField = Object.values(formValues).some(
+			(value) => value === ""
+		);
+		if (hasEmptyField) {
+			addFailed();
+		} else {
 		const response = await fetch(
 			`http://localhost:8080/restaurant/addNewRestaurant`,
 			{
@@ -166,11 +191,14 @@ const AdminRestaurantScreen = () => {
 					active: formValues.active,
 					quantity_table: formValues.quantity_table,
 				}),
-			})
+			}
+		);
 		if (response.ok) {
-		await fetchRestaurant();
-		setIsModalAddVisible(false);
+			await fetchRestaurant();
+			setIsModalAddVisible(false);
+			addSuccess();
 		}
+	}
 	};
 	const handleEditCancel = () => {
 		setIsModalEditVisible(false);
@@ -210,6 +238,7 @@ const AdminRestaurantScreen = () => {
 	}, []);
 	return (
 		<div className="admin-restaurant-screen">
+			{contextHolder}
 			<AdminHeader label="restaurant" />
 			<div className="add-restaurant-btn">
 				<Button
@@ -284,14 +313,18 @@ const AdminRestaurantScreen = () => {
 					<div>
 						<label>Active: </label>
 						<Select
-							value={"Đang hoạt động"}
+							value={
+								formValues.active
+									? "Đang hoạt động"
+									: "Đã đóng cửa"
+							}
 							onChange={handleEditActiveSelectChange}
 						>
 							<Option value={true}>Đang hoạt động</Option>
 							<Option value={false}>Đã đóng cửa</Option>
 						</Select>
 					</div>
-					
+
 					<div>
 						<label>Quantity Table:</label>
 						<Input
@@ -386,7 +419,7 @@ const AdminRestaurantScreen = () => {
 						<Option value={false}>Đã đóng cửa</Option>
 					</Select>
 				</div>
-				
+
 				<div>
 					<label>Quantity Table:</label>
 					<Input
