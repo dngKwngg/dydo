@@ -44,21 +44,25 @@ const AdminRestaurantScreen = () => {
 			title: "Centre ID",
 			dataIndex: "centre_id",
 			key: "centre_id",
+			width: 100,
 		},
 		{
 			title: "Name",
 			dataIndex: "name",
 			key: "name",
+			width: 200,
 		},
 		{
 			title: "Address",
 			dataIndex: "address",
 			key: "address",
+			width: 300,
 		},
 		{
 			title: "Area",
 			dataIndex: "area",
 			key: "area",
+			width: 200,
 		},
 		{
 			title: "Hotline",
@@ -66,12 +70,14 @@ const AdminRestaurantScreen = () => {
 			key: "hotline",
 			render: (hotline) =>
 				hotline.replace(/(\d{3})(\d{3})(\d{4})/, "$1.$2.$3"),
+			width: 150,
 		},
 		{
 			title: "Opening ",
 			key: "opening",
 			render: (_, record) =>
 				`${record.opening_month} / ${record.opening_year}`,
+			width: 100,
 		},
 
 		{
@@ -84,11 +90,13 @@ const AdminRestaurantScreen = () => {
 					text={active ? "Đang hoạt động" : "Đã đóng cửa"}
 				/>
 			),
+			width: 150,
 		},
 		{
 			title: "Quantity Table",
 			dataIndex: "quantity_table",
 			key: "quantity_table",
+			width: 150,
 		},
 		{
 			title: "Action",
