@@ -169,6 +169,7 @@ const AdminRestaurantScreen = () => {
 		if (response.ok) {
 			await fetchRestaurant();
 			setIsModalEditVisible(false);
+			changeSuccess();
 		}
 	};
 	const handleAddOk = async () => {
