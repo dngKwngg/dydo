@@ -158,3 +158,22 @@ exports.authenticateToken = async (req, res, next) => {
 	}
 };
 
+//lấy ra danh sách user	
+// http://localhost:8080/auth/getAllUsers
+exports.getAllUsers = async (req, res) => {
+	connection.query(
+		"SELECT * FROM users",
+		(err, result, fields) => {
+			if (err) {
+				return res.status(500).json({
+					status: "Failed",
+					error: err,
+				});
+			}
+			return res.status(200).json({
+				status: "Success",
+				data: result,
+			});
+		}
+	);
+}

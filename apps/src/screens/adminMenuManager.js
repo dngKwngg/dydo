@@ -35,7 +35,7 @@ const AdminMenuManagerScreen = () => {
 	const [isModalAddVisible, setIsModalAddVisible] = useState(false);
 	// modal xác nhận xóa item
 	const [isModalDeleteVisible, setIsModalDeleteVisible] = useState(false);
-	// các giá trị của form 
+	// các giá trị của form
 	const [editedValues, setEditedValues] = useState({
 		item_id: "",
 		item_name: "",
@@ -87,7 +87,7 @@ const AdminMenuManagerScreen = () => {
 					value: "Lẩu Thái Tomyum",
 				},
 			],
-			onFilter: (value, record) => record.type===value,
+			onFilter: (value, record) => record.type === value,
 		},
 
 		{
