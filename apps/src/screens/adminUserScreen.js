@@ -3,7 +3,10 @@ import AdminHeader from "../components/adminHeader";
 import { Table, Button, Modal, Select, Input, message } from "antd";
 import "./../styles/screens/adminUserScreen.css";
 import {  DeleteOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 const AdminUserScreen = () => {
+	const navigate = useNavigate();
+	const [loadingLogin, setLoadingLogin] = useState(true); // True if user is logged in
 	const [users, setUsers] = useState([]);
 	const [centres, setCentres] = useState([]);
 	const [filterCentre, setFilterCentre] = useState([]);
@@ -97,8 +100,6 @@ const AdminUserScreen = () => {
 						showDeleteModal(record);
 					}}
 				/>
-					
-				
 			),
 		},
 	];
@@ -111,7 +112,7 @@ const AdminUserScreen = () => {
 			confirm_password: "",
 		});
 		setIsModalAddVisible(true);
-		console.log("form",formValues);
+		console.log("form", formValues);
 	};
 	const handleAddOk = async () => {
 		//kiểm tra xem có thuộc tính nào của formValues trống không
@@ -167,9 +168,9 @@ const AdminUserScreen = () => {
 			}),
 		});
 		if (response.ok) {
-		await fetchAllUsers();
-		setIsModalDeleteVisible(false);
-		deleteSuccess();
+			await fetchAllUsers();
+			setIsModalDeleteVisible(false);
+			deleteSuccess();
 		}
 	};
 	const handleDeleteCancel = () => {
@@ -185,22 +186,34 @@ const AdminUserScreen = () => {
 		const data = await response.json();
 		setUsers(data.data);
 		const responseCentre = await fetch(
-			`http://localhost:8080/restaurant/getAllRestaurant`, {
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-			},
+			`http://localhost:8080/restaurant/getAllRestaurant`,
+			{
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${localStorage.getItem(
+						"accessToken"
+					)}`,
+				},
 			}
 		);
 		const dataCentre = await responseCentre.json();
 		// lấy ra các centre_id khác nhau
-		const centreIds = [...new Set(dataCentre.data.map((user) => user.centre_id))];
+		const centreIds = [
+			...new Set(dataCentre.data.map((user) => user.centre_id)),
+		];
 		setCentres(centreIds);
 		// tạo ra các filter cho centre_id
 		const filters = centreIds.map((id) => ({ text: id, value: id }));
 		setFilterCentre(filters);
 	};
 	useEffect(() => {
+		const token = localStorage.getItem("accessToken");
+		if (token === null) {
+			console.log("token is null");
+			navigate("/login");
+		} else {
+			setLoadingLogin(false);
+		}
 		fetchAllUsers();
 	}, []);
 	// xử lý cho nhập input trong modal edit
@@ -215,6 +228,9 @@ const AdminUserScreen = () => {
 	const handleAddSelectRoleChange = (value) => {
 		setFormValues({ ...formValues, role: value });
 	};
+	if (loadingLogin) {
+		return <div></div>;
+	}
 	return (
 		<div className="admin-user-screen">
 			{contextHolder}

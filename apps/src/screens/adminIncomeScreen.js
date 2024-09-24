@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 import AdminHeader from "../components/adminHeader";
 import { Table, Button, Modal, Select, DatePicker, Space } from "antd";
 import "./../styles/screens/adminIncomeScreen.css";
+import { useNavigate } from "react-router-dom";
 const AdminIncomeScreen = () => {
+	const navigate = useNavigate();
+	const [loadingLogin, setLoadingLogin] = useState(true); // True if user is logged in
 	// lưu tất cả lịch sử đơn hàng
 	const [allHistory, setAllHistory] = useState([]);
 	// lưu trạng thái của các modal
@@ -110,6 +113,13 @@ const AdminIncomeScreen = () => {
 	};
 	// lấy data lịch sử đơn hàng
 	useEffect(() => {
+		const token = localStorage.getItem("accessToken");
+		if (token === null) {
+			console.log("token is null");
+			navigate("/login");
+		} else {
+			setLoadingLogin(false);
+		}
 		const fetchData = async () => {
 			try {
 				const response = await fetch(
@@ -172,6 +182,9 @@ const AdminIncomeScreen = () => {
 	useEffect(() => {
 		setFilteredHistory(filterHistory(selectedCentre, selectedDate));
 	}, [selectedCentre, selectedDate, allHistory]);
+	if (loadingLogin) {
+		return <div></div>;
+	}
 	return (
 		<div className="admin-income-screen">
 			<AdminHeader label="income" />

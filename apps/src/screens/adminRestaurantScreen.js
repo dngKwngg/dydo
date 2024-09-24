@@ -3,8 +3,11 @@ import AdminHeader from "../components/adminHeader";
 import { Table, Button, Modal, Select, Badge, Input, message } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import "./../styles/screens/adminRestaurantScreen.css";
+import { useNavigate } from "react-router-dom";
 const { Option } = Select;
 const AdminRestaurantScreen = () => {
+	const navigate = useNavigate();
+	const [loadingLogin, setLoadingLogin] = useState(true); // True if user is logged in
 	const [messageApi, contextHolder] = message.useMessage();
 	const addSuccess = () => {
 		messageApi.open({
@@ -86,10 +89,12 @@ const AdminRestaurantScreen = () => {
 			key: "active",
 			render: (active) => (
 				console.log(`active`, active),
-				<Badge
-					status={active ? "success" : "error"}
-					text={active ? "Đang hoạt động" : "Đã đóng cửa"}
-				/>
+				(
+					<Badge
+						status={active ? "success" : "error"}
+						text={active ? "Đang hoạt động" : "Đã đóng cửa"}
+					/>
+				)
 			),
 			width: 150,
 			filters: [
@@ -101,7 +106,6 @@ const AdminRestaurantScreen = () => {
 					text: "Đã đóng cửa",
 					value: 0,
 				},
-				
 			],
 			onFilter: (value, record) => record.active === value,
 		},
@@ -193,34 +197,34 @@ const AdminRestaurantScreen = () => {
 		if (hasEmptyField) {
 			addFailed();
 		} else {
-		const response = await fetch(
-			`http://localhost:8080/restaurant/addNewRestaurant`,
-			{
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${localStorage.getItem(
-						"accessToken"
-					)}`,
-				},
-				body: JSON.stringify({
-					name: formValues.name,
-					address: formValues.address,
-					area: formValues.area,
-					hotline: formValues.hotline,
-					opening_month: formValues.opening_month,
-					opening_year: formValues.opening_year,
-					active: formValues.active,
-					quantity_table: formValues.quantity_table,
-				}),
+			const response = await fetch(
+				`http://localhost:8080/restaurant/addNewRestaurant`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${localStorage.getItem(
+							"accessToken"
+						)}`,
+					},
+					body: JSON.stringify({
+						name: formValues.name,
+						address: formValues.address,
+						area: formValues.area,
+						hotline: formValues.hotline,
+						opening_month: formValues.opening_month,
+						opening_year: formValues.opening_year,
+						active: formValues.active,
+						quantity_table: formValues.quantity_table,
+					}),
+				}
+			);
+			if (response.ok) {
+				await fetchRestaurant();
+				setIsModalAddVisible(false);
+				addSuccess();
 			}
-		);
-		if (response.ok) {
-			await fetchRestaurant();
-			setIsModalAddVisible(false);
-			addSuccess();
 		}
-	}
 	};
 	const handleEditCancel = () => {
 		setIsModalEditVisible(false);
@@ -256,8 +260,18 @@ const AdminRestaurantScreen = () => {
 		setAllRestaurant(data.data);
 	};
 	useEffect(() => {
+		const token = localStorage.getItem("accessToken");
+		if (token === null) {
+			console.log("token is null");
+			navigate("/login");
+		} else {
+			setLoadingLogin(false);
+		}
 		fetchRestaurant();
 	}, []);
+	if (loadingLogin) {
+		return <div></div>;
+	}
 	return (
 		<div className="admin-restaurant-screen">
 			{contextHolder}

@@ -4,11 +4,21 @@ import MenuItem from "../components/menuItem";
 import Header from "./../components/header";
 import ResetButton from "../components/resetButton";
 import Loading from "./../components/loading";
+import { useNavigate } from "react-router-dom";
 const DrinkScreen = () => {
+	const navigate = useNavigate();
 	const [drinks, setDrinks] = useState([]);
 	const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 	const [loading, setLoading] = useState(true);
+	const [loadingLogin, setLoadingLogin] = useState(true); // True if user is logged in
 	useEffect(() => {
+		const token = localStorage.getItem("accessToken");
+		if (token === null) {
+			console.log("token is null");
+			navigate("/login");
+		} else {
+			setLoadingLogin(false);
+		}
 		// Gọi API để lấy dữ liệu
 		const fetchData = async () => {
 			await delay(500);
@@ -18,10 +28,10 @@ const DrinkScreen = () => {
 					{
 						headers: {
 							"Content-Type": "application/json",
-							Authorization: "Bearer " + localStorage.getItem("accessToken"),
+							Authorization:
+								"Bearer " + localStorage.getItem("accessToken"),
 						},
 					}
-					
 				);
 				const data = await response.json();
 				setDrinks(data.data);
@@ -35,7 +45,9 @@ const DrinkScreen = () => {
 
 		fetchData();
 	}, []);
-
+	if (loadingLogin) {
+		return <div></div>;
+	}
 	return (
 		<div>
 			<Header label="drink" />

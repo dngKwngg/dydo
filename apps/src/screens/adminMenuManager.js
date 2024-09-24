@@ -3,8 +3,11 @@ import AdminHeader from "../components/adminHeader";
 import { Table, Button, Modal, Select, Input, message } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import "./../styles/screens/adminMenuManager.css";
+import { useNavigate } from "react-router-dom";
 const { Option } = Select;
 const AdminMenuManagerScreen = () => {
+	const navigate = useNavigate();
+	const [loadingLogin, setLoadingLogin] = useState(true); // True if user is logged in
 	const [messageApi, contextHolder] = message.useMessage();
 
 	const addSuccess = () => {
@@ -142,6 +145,13 @@ const AdminMenuManagerScreen = () => {
 		setAllMenu(data.data);
 	};
 	useEffect(() => {
+		const token = localStorage.getItem("accessToken");
+		if (token === null) {
+			console.log("token is null");
+			navigate("/login");
+		} else {
+			setLoadingLogin(false);
+		}
 		fetchMenu();
 	}, []);
 	const showEditModal = (item) => {
@@ -276,7 +286,9 @@ const AdminMenuManagerScreen = () => {
 	const handleSelectChange = (value) => {
 		setFormValues({ ...formValues, type: value });
 	};
-
+	if (loadingLogin) {
+		return <div></div>;
+	}
 	return (
 		<div className="admin-menu-screen">
 			<AdminHeader label="menuManager" />

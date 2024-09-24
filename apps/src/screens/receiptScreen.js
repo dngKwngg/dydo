@@ -4,15 +4,18 @@ import Header from "../components/header";
 import { ListContext } from "../components/ListContext";
 import MenuItem from "../components/menuItem";
 import Loading from "../components/loading";
+import { useNavigate } from "react-router-dom";
 const ReceiptScreen = () => {
+	const navigate = useNavigate();
 	const { list, setList } = useContext(ListContext);
 	const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 	const [listItem, setListItem] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [total, setTotal] = useState(0);
-	const [check, setCheck] = useState(false);
-
+	
+	const [loadingLogin, setLoadingLogin] = useState(true); // True if user is logged in
 	useEffect(() => {
+		
 		// Gọi API để lấy dữ liệu
 
 		const fetchData = async () => {
@@ -25,18 +28,14 @@ const ReceiptScreen = () => {
 						method: "POST",
 						headers: {
 							"Content-Type": "application/json",
-							Authorization: "Bearer " + localStorage.getItem("accessToken"),
+							Authorization:
+								"Bearer " + localStorage.getItem("accessToken"),
 						},
 						body: JSON.stringify({ list_item: list }),
 					}
 				);
 				const data = await response.json();
-				// if (arraysAreEqual(listItem, data.data)) {
-				// 	setCheck(true);
-				// } else {
-				// 	setListItem(data.data);
-				// 	setCheck(false);
-				// }
+				
 				setListItem(data.data);
 
 				// console.log(data.data);
@@ -70,6 +69,18 @@ const ReceiptScreen = () => {
 		console.log("listItem", listItem);
 		getPrice();
 	}, [list, []]);
+	useEffect(() => {
+		const token = localStorage.getItem("accessToken");
+		if (token === null) {
+			console.log("token is null");
+			navigate("/login");
+		} else {
+			setLoadingLogin(false);
+		}
+	},[]);
+	if (loadingLogin) {
+		return <div></div>;
+	}
 	return (
 		<div>
 			<Header label="receipt" />

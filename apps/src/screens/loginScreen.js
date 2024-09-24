@@ -1,10 +1,19 @@
 import React from "react";
 import "./../styles/screens/loginScreen.css";
-import { Typography, Input, Button, Form} from "antd";
+import { Typography, Input, Button, Form, message} from "antd";
 import {useNavigate} from "react-router-dom"
 const { Text } = Typography;
 
 const LoginScreen = () => {
+	const [messageApi, contextHolder] = message.useMessage();
+	const loginFailed = () => {
+		messageApi.open({
+			type: "error",
+			content: "Wrong Username or Password ",
+		});
+
+	};
+	
 	const navigate = useNavigate()
 	const onFinish = async (values) => {
 		console.log("Success:", values);
@@ -34,7 +43,7 @@ const LoginScreen = () => {
 					navigate("/home");
 				}
 				
-			}
+			} else {loginFailed();}
 
 		} catch (e) {
 			console.error(e);
@@ -45,6 +54,7 @@ const LoginScreen = () => {
 	};
 	return (
 		<div className="container">
+		{contextHolder}
 			<div className="form">
 				<div className="login-header">
 					<h1>Welcome to DYDO!</h1>

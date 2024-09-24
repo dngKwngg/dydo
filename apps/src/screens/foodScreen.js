@@ -4,12 +4,22 @@ import Header from "./../components/header";
 import MenuItem from "../components/menuItem";
 import Loading from "./../components/loading";
 import ResetButton from "../components/resetButton";
+import { useNavigate } from "react-router-dom";
 const FoodScreen = () => {
+	const navigate = useNavigate();
 	const [foods, setFoods] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const delay = (ms) => new Promise((res) => setTimeout(res, ms));
-	// const { list, setList } = useContext(ListContext);	
+
+	const [loadingLogin, setLoadingLogin] = useState(true); // True if user is logged in
 	useEffect(() => {
+		const token = localStorage.getItem("accessToken");
+		if (token === null) {
+			console.log("token is null");
+			navigate("/login");
+		} else {
+			setLoadingLogin(false);
+		}
 		// Gọi API để lấy dữ liệu
 		const fetchData = async () => {
 			await delay(1000);
@@ -19,7 +29,8 @@ const FoodScreen = () => {
 					{
 						headers: {
 							"Content-Type": "application/json",
-							Authorization: "Bearer " + localStorage.getItem("accessToken"),
+							Authorization:
+								"Bearer " + localStorage.getItem("accessToken"),
 						},
 					}
 				);
@@ -35,12 +46,15 @@ const FoodScreen = () => {
 
 		fetchData();
 	}, []);
-	
+
 	//Tách món ăn
 	const lauFoods = foods.filter((food) => food.type === "Lẩu Thái Tomyum");
 	const nuongFoods = foods.filter(
 		(food) => food.type === "Đồ nướng than hoa"
 	);
+		if (loadingLogin) {
+			return <div></div>;
+		}
 	return (
 		<div>
 			<Header label="food" />
@@ -65,7 +79,6 @@ const FoodScreen = () => {
 							})}
 						</div>
 					</div>
-					
 				</div>
 			)}
 		</div>

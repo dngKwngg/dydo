@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Table, Button, Modal } from "antd";
 import Header from "./../components/header";
 import "./../styles/screens/historyScreen.css";
+import { useNavigate } from "react-router-dom";
 const HistoryScreen = () => {
+	const navigate = useNavigate();
 	const [modalsState, setModalsState] = useState({});
 	const [history, setHistory] = useState([]);
 	const [detail, setDetail] = useState([]);
-
+	const [loadingLogin, setLoadingLogin] = useState(true); // True if user is logged in
 	const fetchDataDetail = async (orders_id) => {
 		try {
 			const response = await fetch(
@@ -15,7 +17,8 @@ const HistoryScreen = () => {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
-						Authorization: "Bearer " + localStorage.getItem("accessToken"),
+						Authorization:
+							"Bearer " + localStorage.getItem("accessToken"),
 					},
 					body: JSON.stringify({ orders_id: orders_id }),
 				}
@@ -41,6 +44,13 @@ const HistoryScreen = () => {
 	};
 
 	useEffect(() => {
+		const token = localStorage.getItem("accessToken");
+		if (token === null) {
+			console.log("token is null");
+			navigate("/login");
+		} else {
+			setLoadingLogin(false);
+		}
 		const fetchDataHistory = async () => {
 			try {
 				const response = await fetch(
@@ -48,7 +58,8 @@ const HistoryScreen = () => {
 					{
 						headers: {
 							"Content-Type": "application/json",
-							Authorization: "Bearer " + localStorage.getItem("accessToken"),
+							Authorization:
+								"Bearer " + localStorage.getItem("accessToken"),
 						},
 					}
 				);
@@ -116,7 +127,9 @@ const HistoryScreen = () => {
 			),
 		},
 	];
-
+	if (loadingLogin) {
+		return <div></div>;
+	}
 	return (
 		<div>
 			<Header label="history" />
