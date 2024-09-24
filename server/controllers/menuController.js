@@ -31,7 +31,7 @@ async function updateParam(key, value, item_id) {
 // chỉnh sửa món ăn
 //http://localhost:8080/menu/updatePrice
 exports.updateInfoMenu = async (req, res) => {
-	const { item_id, price, item_name, type } = req.body;
+	const { item_id, price, item_name, type, src } = req.body;
 	if (price !== undefined) {
 		//Kiểm tra item_id có phải là số nguyên lớn hơn 0 hay không
 		if (!Number.isInteger(item_id) || item_id <= 0) {
@@ -62,6 +62,9 @@ exports.updateInfoMenu = async (req, res) => {
 			}
 			if (type !== undefined) {
 				await updateParam("type", type, item_id);
+			}
+			if(src !== undefined){
+				await updateParam("src", src, item_id);
 			}
 			return res.status(200).json({
 				status: "Success",

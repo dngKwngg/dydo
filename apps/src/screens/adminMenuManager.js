@@ -27,7 +27,12 @@ const AdminMenuManagerScreen = () => {
 			content: "Delete successful",
 		});
 	};
-
+	const addFailed = () => {
+		messageApi.open({
+			type: "error",
+			content: "You need to fill out the form",
+		});
+	};
 	const [allMenu, setAllMenu] = useState([]);
 	// trạng thái modal edit
 	const [isModalEditVisible, setIsModalEditVisible] = useState(false);
@@ -36,7 +41,7 @@ const AdminMenuManagerScreen = () => {
 	// modal xác nhận xóa item
 	const [isModalDeleteVisible, setIsModalDeleteVisible] = useState(false);
 	// các giá trị của form
-	const [editedValues, setEditedValues] = useState({
+	const [formValues, setFormValues] = useState({
 		item_id: "",
 		item_name: "",
 		type: "",
@@ -140,26 +145,29 @@ const AdminMenuManagerScreen = () => {
 		fetchMenu();
 	}, []);
 	const showEditModal = (item) => {
-		setEditedValues({
+		setFormValues({
 			item_id: item.item_id,
 			item_name: item.item_name,
 			type: item.type,
 			price: item.price,
+			src: item.src,
 		});
 		setIsModalEditVisible(true);
 	};
 	const showAddModal = () => {
-		setEditedValues({
+		setFormValues({
 			item_id: "",
 			item_name: "",
 			type: "",
 			price: "",
+			src: "",
 		});
 		setIsModalAddVisible(true);
+		console.log("form", formValues);
 	};
 
 	const showDeleteModal = (item) => {
-		setEditedValues({
+		setFormValues({
 			item_id: item.item_id,
 		});
 		setIsModalDeleteVisible(true);
@@ -186,10 +194,11 @@ const AdminMenuManagerScreen = () => {
 					)}`,
 				},
 				body: JSON.stringify({
-					item_id: editedValues.item_id,
-					item_name: editedValues.item_name,
-					type: editedValues.type,
-					price: editedValues.price,
+					item_id: formValues.item_id,
+					item_name: formValues.item_name,
+					type: formValues.type,
+					price: formValues.price,
+					src: formValues.src,
 				}),
 			}
 		);
@@ -197,28 +206,41 @@ const AdminMenuManagerScreen = () => {
 			await fetchMenu();
 			setIsModalEditVisible(false);
 			changeSuccess();
-			console.log(`editedValues`, editedValues);
+			console.log(`formValues`, formValues);
 		}
 	};
 	const handleOkAdd = async () => {
-		const response = await fetch(`http://localhost:8080/menu/addMenuItem`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-			},
-			body: JSON.stringify({
-				item_name: editedValues.item_name,
-				type: editedValues.type,
-				price: editedValues.price,
-				src: editedValues.src,
-			}),
-		});
-		if (response.ok) {
-			await fetchMenu();
-			setIsModalAddVisible(false);
-			addSuccess();
-			console.log(`editedValues`, editedValues);
+		const hasEmptyField = Object.entries(formValues).some(
+			([key, value]) => key !== "item_id" && value === ""
+		);
+
+		if (hasEmptyField) {
+			addFailed();
+		} else {
+			const response = await fetch(
+				`http://localhost:8080/menu/addMenuItem`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${localStorage.getItem(
+							"accessToken"
+						)}`,
+					},
+					body: JSON.stringify({
+						item_name: formValues.item_name,
+						type: formValues.type,
+						price: formValues.price,
+						src: formValues.src,
+					}),
+				}
+			);
+			if (response.ok) {
+				await fetchMenu();
+				setIsModalAddVisible(false);
+				addSuccess();
+				console.log(`formValues`, formValues);
+			}
 		}
 	};
 
@@ -234,7 +256,7 @@ const AdminMenuManagerScreen = () => {
 					)}`,
 				},
 				body: JSON.stringify({
-					item_id: editedValues.item_id,
+					item_id: formValues.item_id,
 				}),
 			}
 		);
@@ -245,23 +267,14 @@ const AdminMenuManagerScreen = () => {
 		}
 	};
 
-	// xử lý cho nhập input trong modal edit
-	const handleEditInputChange = (e) => {
+	// xử lý cho nhập input trong modal
+	const handleInputChange = (e) => {
 		console.log(`target`, e.target.name);
-		setEditedValues({ ...editedValues, [e.target.name]: e.target.value });
+		setFormValues({ ...formValues, [e.target.name]: e.target.value });
 	};
-	//xử lý cho select trong modal edit
-	const handleEditSelectChange = (value) => {
-		setEditedValues({ ...editedValues, type: value });
-	};
-	// xử lý cho nhập input trong modal add
-	const handleAddInputChange = (e) => {
-		console.log(`target`, e.target.name);
-		setEditedValues({ ...editedValues, [e.target.name]: e.target.value });
-	};
-	//xử lý cho select trong modal add
-	const handleAddSelectChange = (value) => {
-		setEditedValues({ ...editedValues, type: value });
+	//xử lý cho select trong modal
+	const handleSelectChange = (value) => {
+		setFormValues({ ...formValues, type: value });
 	};
 
 	return (
@@ -286,15 +299,15 @@ const AdminMenuManagerScreen = () => {
 					<label>Item Name:</label>
 					<Input
 						name="item_name"
-						value={editedValues.item_name}
-						onChange={handleAddInputChange}
+						value={formValues.item_name}
+						onChange={handleInputChange}
 					/>
 				</div>
 				<div style={{ marginTop: 10 }}>
 					<label>Type:</label>
 					<Select
-						value={editedValues.type}
-						onChange={handleAddSelectChange}
+						value={formValues.type}
+						onChange={handleSelectChange}
 						style={{ width: "100%" }}
 					>
 						<Option value="Đồ uống">Đồ uống</Option>
@@ -309,16 +322,16 @@ const AdminMenuManagerScreen = () => {
 					<Input
 						name="price"
 						type="number"
-						value={editedValues.price}
-						onChange={handleAddInputChange}
+						value={formValues.price}
+						onChange={handleInputChange}
 					/>
 				</div>
 				<div>
 					<label>Image Link: </label>
 					<Input
 						name="src"
-						value={editedValues.src}
-						onChange={handleAddInputChange}
+						value={formValues.src}
+						onChange={handleInputChange}
 					/>
 				</div>
 			</Modal>
@@ -339,15 +352,15 @@ const AdminMenuManagerScreen = () => {
 					<label>Item Name:</label>
 					<Input
 						name="item_name"
-						value={editedValues.item_name}
-						onChange={handleEditInputChange}
+						value={formValues.item_name}
+						onChange={handleInputChange}
 					/>
 				</div>
 				<div style={{ marginTop: 10 }}>
 					<label>Type:</label>
 					<Select
-						value={editedValues.type}
-						onChange={handleEditSelectChange}
+						value={formValues.type}
+						onChange={handleSelectChange}
 						style={{ width: "100%" }}
 					>
 						<Option value="Đồ uống">Đồ uống</Option>
@@ -362,8 +375,16 @@ const AdminMenuManagerScreen = () => {
 					<Input
 						name="price"
 						type="number"
-						value={editedValues.price}
-						onChange={handleEditInputChange}
+						value={formValues.price}
+						onChange={handleInputChange}
+					/>
+				</div>
+				<div>
+					<label>Image Link: </label>
+					<Input
+						name="src"
+						value={formValues.src}
+						onChange={handleInputChange}
 					/>
 				</div>
 			</Modal>

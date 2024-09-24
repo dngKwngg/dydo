@@ -5,6 +5,7 @@ const authRoute = require("./routes/authRoute");
 const orderRoute = require("./routes/orderRoute");
 const menuRoute = require("./routes/menuRoute");
 const restaurantRoute = require("./routes/restaurantRoute");
+const userRoute = require("./routes/userRoute");
 const cors = require("cors")
 
 app.use(
@@ -19,4 +20,5 @@ app.use("/auth", authRoute);
 app.use("/order", orderRoute);
 app.use("/menu",menuRoute);
 app.use("/restaurant",restaurantRoute);
+app.use("/user",userRoute);
 module.exports = app;
