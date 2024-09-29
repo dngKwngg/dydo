@@ -11,8 +11,9 @@ import AdminHomeScreen from "./screens/adminHomeScreen";
 import AdminIncomeScreen from "./screens/adminIncomeScreen";
 import AdminMenuManagerScreen from "./screens/adminMenuManager";
 import AdminRestaurantScreen from "./screens/adminRestaurantScreen";
-import AdminUserScreen from "./screens/adminUserScreen";
-import {  ListProvider } from "./components/ListContext";
+import SuccessPaymentScreen from "./screens/successPaymentScreen.js";
+import CancelPaymentScreen from "./screens/cancelPaymentScreen.js";
+import { ListProvider } from "./components/ListContext";
 const App = () => {
 	return (
 		<BrowserRouter>
@@ -27,9 +28,16 @@ const App = () => {
 					<Route path="/receipt" element={<ReceiptScreen />} />
 					<Route path="/admin" element={<AdminHomeScreen />} />
 					<Route path="/income" element={<AdminIncomeScreen />} />
-					<Route path="/menuManager" element={<AdminMenuManagerScreen />} />
-					<Route path="/restaurant" element={<AdminRestaurantScreen />} />
-					<Route path="/user" element={<AdminUserScreen />} />
+					<Route
+						path="/menuManager"
+						element={<AdminMenuManagerScreen />}
+					/>
+					<Route
+						path="/restaurant"
+						element={<AdminRestaurantScreen />}
+					/>
+					<Route path="/success" element={<SuccessPaymentScreen />} />
+					<Route path="/cancel" element={<CancelPaymentScreen />} />
 				</Routes>
 			</ListProvider>
 		</BrowserRouter>

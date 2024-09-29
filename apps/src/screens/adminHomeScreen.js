@@ -20,6 +20,9 @@ const AdminHomeScreen = () => {
 	return (
 		<div className="admin-home-screen">
 			<AdminHeader label="admin" />
+			<div>
+				
+			</div>
 		</div>
 	);
 };
