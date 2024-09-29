@@ -52,8 +52,8 @@ const ReceiptScreen = () => {
 						"Content-Type": "application/json",
 						Authorization:
 							"Bearer " + localStorage.getItem("accessToken"),
-						x_api_key: "5eb6c214-a000-4a68-822f-196ae5944255",
-						x_client_id: "d36013e9-561f-477a-bad3-e09eef407cca",
+						x_api_key: "51bb8fc5-f2eb-45b7-a989-109e8fcb9f73",
+						x_client_id: "0a26f586-a386-4a6e-9f84-b2eb6571a1a0",
 					},
 					body: JSON.stringify({
 						amount: total,

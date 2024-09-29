@@ -26,3 +26,7 @@ npm i antd (ant design)
 
 cd apps -> npm start
 cd server -> npm run dev
+
+webhook:
+
+ngrok http 8080 --url ox-peaceful-rightly.ngrok-free.app
