@@ -50,10 +50,49 @@ router.post("/receiveHook", orderController.receiveWebhook);
 router.post("/updateFailedStatus", orderController.updateFailedOrderStatus);
 
 
-router.post("/getRevenueByMonth", authController.authenticateToken, orderController.getRevenueByMonth);
-router.get("/getAllRevenueByMonth", authController.authenticateToken, orderController.getAllRevenueByMonth);
-router.post("/getRevenueByDate", authController.authenticateToken, orderController.getRevenueByDate);
-router.get("/getAllRevenueByDate", authController.authenticateToken, orderController.getAllRevenueByDate);
-router.post("/getRevenueByYear", authController.authenticateToken, orderController.getRevenueByYear);
-router.get("/getAllRevenueByYear", authController.authenticateToken, orderController.getAllRevenueByYear);
+router.post(
+	"/getRevenueByMonthForAdmin",
+	authController.authenticateToken,
+	orderController.getRevenueByMonthForAdmin
+);
+router.get(
+	"/getAllRevenueByMonthForAdmin",
+	authController.authenticateToken,
+	orderController.getAllRevenueByMonthForAdmin
+);
+router.post(
+	"/getRevenueByDateForAdmin",
+	authController.authenticateToken,
+	orderController.getRevenueByDateForAdmin
+);
+router.get(
+	"/getAllRevenueByDateForAdmin",
+	authController.authenticateToken,
+	orderController.getAllRevenueByDateForAdmin
+);
+router.post(
+	"/getRevenueByYearForAdmin",
+	authController.authenticateToken,
+	orderController.getRevenueByYearForAdmin
+);
+router.get(
+	"/getAllRevenueByYearForAdmin",
+	authController.authenticateToken,
+	orderController.getAllRevenueByYearForAdmin
+);
+router.get(
+	"/getRevenueByMonthForStaff",
+	authController.authenticateToken,
+	orderController.getRevenueByMonthForStaff
+);
+router.get(
+	"/getRevenueByYearForStaff",
+	authController.authenticateToken,
+	orderController.getRevenueByYearForStaff
+);
+router.get(
+	"/getRevenueByDateForStaff",
+	authController.authenticateToken,
+	orderController.getRevenueByDateForStaff
+);
 module.exports = router;

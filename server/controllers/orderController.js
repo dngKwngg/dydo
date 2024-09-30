@@ -357,10 +357,10 @@ exports.updateFailedOrderStatus = async (req, res) => {
 };
 
 
-
+//done - admin
 // lấy ra doanh thu của 1 centre_id theo tháng và năm
-// http://localhost:8080/order/getRevenueByMonth
-exports.getRevenueByMonth = async (req, res) => {
+// http://localhost:8080/order/getRevenueByMonthForAdmin
+exports.getRevenueByMonthForAdmin = async (req, res) => {
 	const { centre_id } = req.body;
 	try {
 		const result = await queryDatabase(
@@ -391,18 +391,19 @@ exports.getRevenueByMonth = async (req, res) => {
 		});
 	}
 };
-//lấy ra doanh thu của tất cả các centre theo tháng và năm
-// http://localhost:8080/order/getAllRevenueByMonth
-exports.getAllRevenueByMonth = async (req, res) => {
+//done - admin
+//lấy ra tổng doanh thu theo tháng và năm (all centre)
+// http://localhost:8080/order/getAllRevenueByMonthForAdmin
+exports.getAllRevenueByMonthForAdmin = async (req, res) => {
 	try {
 		const result = await queryDatabase(
-			`SELECT centre_id, 
+			`SELECT 
 					YEAR(date_order) as year, 
 					MONTH(date_order) as month, 
 					SUM(total_cost) as revenue
 			 FROM orders 
 			 WHERE status = 'PAID'
-			 GROUP BY centre_id, year, month
+			 GROUP BY year, month
 			 ORDER BY year DESC, month DESC`
 		);
 		if (result.length === 0) {
@@ -422,14 +423,15 @@ exports.getAllRevenueByMonth = async (req, res) => {
 		});
 	}
 };
+//done - admin
 // lấy ra doanh thu của 1 centre_id theo ngày tháng năm
-// http://localhost:8080/order/getRevenueByDate
-exports.getRevenueByDate = async (req, res) => {
+// http://localhost:8080/order/getRevenueByDateForAdmin
+exports.getRevenueByDateForAdmin = async (req, res) => {
 	const { centre_id } = req.body;
 	try {
 		const result = await queryDatabase(
 			`SELECT centre_id, 
-                    DATE(date_order) as order_day, 
+                     DATE_FORMAT(date_order, '%Y-%m-%d') as order_day, 
                     SUM(total_cost) as revenue
              FROM orders 
              WHERE centre_id = ? and status = 'PAID'
@@ -454,13 +456,15 @@ exports.getRevenueByDate = async (req, res) => {
 		});
 	}
 };
-// lấy ra doanh thu của tất cả các centre theo ngày tháng năm
-// http://localhost:8080/order/getAllRevenueByDate
-exports.getAllRevenueByDate = async (req, res) => {
+//done - admin
+// lấy ra tổng doanh thu theo ngày tháng năm (all centre)
+// http://localhost:8080/order/getAllRevenueByDateForAdmin
+exports.getAllRevenueByDateForAdmin = async (req, res) => {
 	try {
 		const result = await queryDatabase(
+			//sử dụng date format để lấy ngày tháng năm mà không bị ảnh hưởng bới múi giờ
 			`SELECT 
-                    DATE(date_order) as order_day, 
+                    DATE_FORMAT(date_order, '%Y-%m-%d') as order_day, 
                     SUM(total_cost) as revenue
              FROM orders 
              WHERE status = 'PAID'
@@ -484,9 +488,10 @@ exports.getAllRevenueByDate = async (req, res) => {
 		});
 	}
 };
-// lấy ra doanh thu của 1 centre_id theo  năm
-// http://localhost:8080/order/getRevenueByYear
-exports.getRevenueByYear = async (req, res) => {
+//done - admin
+// lấy ra doanh thu của 1 centre_id theo năm
+// http://localhost:8080/order/getRevenueByYearForAdmin
+exports.getRevenueByYearForAdmin = async (req, res) => {
 	const { centre_id } = req.body;
 	try {
 		const result = await queryDatabase(
@@ -516,9 +521,10 @@ exports.getRevenueByYear = async (req, res) => {
 		});
 	}
 };
-//lấy ra doanh thu của tất cả các centre theo năm
-// http://localhost:8080/order/getAllRevenueByYear
-exports.getAllRevenueByYear = async (req, res) => {
+//done - admin
+//lấy ra tổng doanh thu theo năm (all centre)
+// http://localhost:8080/order/getAllRevenueByYearForAdmin
+exports.getAllRevenueByYearForAdmin = async (req, res) => {
 	try {
 		const result = await queryDatabase(
 			`SELECT 
@@ -528,6 +534,106 @@ exports.getAllRevenueByYear = async (req, res) => {
 			 WHERE status = 'PAID'
 			 GROUP BY year
 			 ORDER BY year DESC`
+		);
+		if (result.length === 0) {
+			return res.status(404).json({
+				status: "Failed",
+				message: "No revenue found",
+			});
+		}
+		return res.status(200).json({
+			status: "Success",
+			data: result,
+		});
+	} catch (err) {
+		return res.status(500).json({
+			status: "Failed",
+			error: err.message,
+		});
+	}
+};
+//done - staff
+// lấy ra doanh thu của centre staff đang làm việc theo tháng và năm
+// http://localhost:8080/order/getRevenueByMonthForStaff
+exports.getRevenueByMonthForStaff = async (req, res) => {
+	const { centre_id } = req.user;
+	try {
+		const result = await queryDatabase(
+			`SELECT centre_id, 
+                    YEAR(date_order) as year, 
+                    MONTH(date_order) as month, 
+                    SUM(total_cost) as revenue
+             FROM orders 
+             WHERE centre_id = ? and status = 'PAID'
+             GROUP BY centre_id, year, month
+             ORDER BY year DESC, month DESC`,
+			[centre_id]
+		);
+		if (result.length === 0) {
+			return res.status(404).json({
+				status: "Failed",
+				message: "No revenue found",
+			});
+		}
+		return res.status(200).json({
+			status: "Success",
+			data: result,
+		});
+	} catch (err) {
+		return res.status(500).json({
+			status: "Failed",
+			error: err.message,
+		});
+	}
+};
+//done - staff
+// lấy ra doanh thu của centre mà staff đang làm việc theo năm
+// http://localhost:8080/order/getRevenueByYearForStaff
+exports.getRevenueByYearForStaff = async (req, res) => {
+	const { centre_id } = req.user;
+	try {
+		const result = await queryDatabase(
+			`SELECT centre_id, 
+                    YEAR(date_order) as year, 
+                    SUM(total_cost) as revenue
+             FROM orders 
+             WHERE centre_id = ? and status = 'PAID'
+             GROUP BY centre_id, year
+             ORDER BY year DESC`,
+			[centre_id]
+		);
+		if (result.length === 0) {
+			return res.status(404).json({
+				status: "Failed",
+				message: "No revenue found",
+			});
+		}
+		return res.status(200).json({
+			status: "Success",
+			data: result,
+		});
+	} catch (err) {
+		return res.status(500).json({
+			status: "Failed",
+			error: err.message,
+		});
+	}
+};
+//done - staff
+// lấy ra doanh thu của centre mà staff đang làm việc theo ngày tháng năm
+// http://localhost:8080/order/getRevenueByDateForStaff
+exports.getRevenueByDateForStaff = async (req, res) => {
+	const { centre_id } = req.user;
+	try {
+		const result = await queryDatabase(
+			`SELECT centre_id, 
+                     DATE_FORMAT(date_order, '%Y-%m-%d') as order_day, 
+                    SUM(total_cost) as revenue
+             FROM orders 
+             WHERE centre_id = ? and status = 'PAID'
+             GROUP BY centre_id, order_day
+             ORDER BY order_day DESC`,
+			[centre_id]
 		);
 		if (result.length === 0) {
 			return res.status(404).json({
