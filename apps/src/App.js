@@ -13,6 +13,7 @@ import AdminMenuManagerScreen from "./screens/adminMenuManager";
 import AdminRestaurantScreen from "./screens/adminRestaurantScreen";
 import SuccessPaymentScreen from "./screens/successPaymentScreen.js";
 import CancelPaymentScreen from "./screens/cancelPaymentScreen.js";
+import AdminUserScreen from "./screens/adminUserScreen.js";
 import { ListProvider } from "./components/ListContext";
 const App = () => {
 	return (
@@ -28,6 +29,7 @@ const App = () => {
 					<Route path="/receipt" element={<ReceiptScreen />} />
 					<Route path="/admin" element={<AdminHomeScreen />} />
 					<Route path="/income" element={<AdminIncomeScreen />} />
+					<Route path="/user" element={<AdminUserScreen />} />
 					<Route
 						path="/menuManager"
 						element={<AdminMenuManagerScreen />}
