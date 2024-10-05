@@ -398,13 +398,15 @@ exports.getAllRevenueByMonthForAdmin = async (req, res) => {
 	try {
 		const result = await queryDatabase(
 			`SELECT 
+					CONCAT(MONTH(date_order), '-', YEAR(date_order)) as month_year,
 					YEAR(date_order) as year, 
 					MONTH(date_order) as month, 
 					SUM(total_cost) as revenue
 			 FROM orders 
 			 WHERE status = 'PAID'
 			 GROUP BY year, month
-			 ORDER BY year DESC, month DESC`
+			 ORDER BY year DESC, month DESC
+			 LIMIT 10`
 		);
 		if (result.length === 0) {
 			return res.status(404).json({
@@ -412,9 +414,10 @@ exports.getAllRevenueByMonthForAdmin = async (req, res) => {
 				message: "No revenue found",
 			});
 		}
+		const reversedResult = result.reverse();
 		return res.status(200).json({
 			status: "Success",
-			data: result,
+			data: reversedResult,
 		});
 	} catch (err) {
 		return res.status(500).json({
@@ -464,12 +467,14 @@ exports.getAllRevenueByDateForAdmin = async (req, res) => {
 		const result = await queryDatabase(
 			//sử dụng date format để lấy ngày tháng năm mà không bị ảnh hưởng bới múi giờ
 			`SELECT 
-                    DATE_FORMAT(date_order, '%Y-%m-%d') as order_day, 
-                    SUM(total_cost) as revenue
-             FROM orders 
-             WHERE status = 'PAID'
-             GROUP BY order_day
-             ORDER BY order_day DESC`
+				DATE_FORMAT(date_order, '%d-%m-%Y') as order_day,
+				SUM(total_cost) as revenue
+			FROM orders 
+			WHERE status = 'PAID'
+			GROUP BY order_day
+			ORDER BY MAX(date_order) DESC
+			LIMIT 10;
+			`
 		);
 		if (result.length === 0) {
 			return res.status(404).json({
@@ -479,7 +484,7 @@ exports.getAllRevenueByDateForAdmin = async (req, res) => {
 		}
 		return res.status(200).json({
 			status: "Success",
-			data: result,
+			data: result.reverse(),
 		});
 	} catch (err) {
 		return res.status(500).json({
@@ -501,7 +506,8 @@ exports.getRevenueByYearForAdmin = async (req, res) => {
              FROM orders 
              WHERE centre_id = ? and status = 'PAID'
              GROUP BY centre_id, year
-             ORDER BY year DESC`,
+             ORDER BY year DESC
+			 LIMIT 10`,
 			[centre_id]
 		);
 		if (result.length === 0) {
@@ -533,7 +539,8 @@ exports.getAllRevenueByYearForAdmin = async (req, res) => {
 			 FROM orders 
 			 WHERE status = 'PAID'
 			 GROUP BY year
-			 ORDER BY year DESC`
+			 ORDER BY year ASC
+			 LIMIT 10`
 		);
 		if (result.length === 0) {
 			return res.status(404).json({
