@@ -50,7 +50,7 @@ router.post("/receiveHook", orderController.receiveWebhook);
 router.post("/updateFailedStatus", orderController.updateFailedOrderStatus);
 
 
-router.post(
+router.get(
 	"/getRevenueByMonthForAdmin",
 	authController.authenticateToken,
 	orderController.getRevenueByMonthForAdmin
@@ -60,7 +60,7 @@ router.get(
 	authController.authenticateToken,
 	orderController.getAllRevenueByMonthForAdmin
 );
-router.post(
+router.get(
 	"/getRevenueByDateForAdmin",
 	authController.authenticateToken,
 	orderController.getRevenueByDateForAdmin
@@ -70,7 +70,7 @@ router.get(
 	authController.authenticateToken,
 	orderController.getAllRevenueByDateForAdmin
 );
-router.post(
+router.get(
 	"/getRevenueByYearForAdmin",
 	authController.authenticateToken,
 	orderController.getRevenueByYearForAdmin

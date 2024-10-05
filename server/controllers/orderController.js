@@ -356,12 +356,10 @@ exports.updateFailedOrderStatus = async (req, res) => {
 	}
 };
 
-
 //done - admin
-// lấy ra doanh thu của 1 centre_id theo tháng và năm
+// lấy ra doanh thu của các centre_id tháng này
 // http://localhost:8080/order/getRevenueByMonthForAdmin
 exports.getRevenueByMonthForAdmin = async (req, res) => {
-	const { centre_id } = req.body;
 	try {
 		const result = await queryDatabase(
 			`SELECT centre_id, 
@@ -369,10 +367,11 @@ exports.getRevenueByMonthForAdmin = async (req, res) => {
                     MONTH(date_order) as month, 
                     SUM(total_cost) as revenue
              FROM orders 
-             WHERE centre_id = ? and status = 'PAID'
+             WHERE status = 'PAID' 
+			 	AND MONTH(date_order) = MONTH(CURRENT_DATE()) 
+			 	AND YEAR(date_order) = YEAR(CURRENT_DATE())
              GROUP BY centre_id, year, month
-             ORDER BY year DESC, month DESC`,
-			[centre_id]
+             ORDER BY centre_id ASC`
 		);
 		if (result.length === 0) {
 			return res.status(404).json({
@@ -427,20 +426,19 @@ exports.getAllRevenueByMonthForAdmin = async (req, res) => {
 	}
 };
 //done - admin
-// lấy ra doanh thu của 1 centre_id theo ngày tháng năm
+// lấy ra doanh thu của các centre_id theo hôm nay
 // http://localhost:8080/order/getRevenueByDateForAdmin
 exports.getRevenueByDateForAdmin = async (req, res) => {
-	const { centre_id } = req.body;
+
 	try {
 		const result = await queryDatabase(
 			`SELECT centre_id, 
                      DATE_FORMAT(date_order, '%Y-%m-%d') as order_day, 
                     SUM(total_cost) as revenue
              FROM orders 
-             WHERE centre_id = ? and status = 'PAID'
+             WHERE status = 'PAID' AND DATE(date_order) = DATE(CURRENT_DATE())
              GROUP BY centre_id, order_day
-             ORDER BY order_day DESC`,
-			[centre_id]
+             ORDER BY centre_id ASC`
 		);
 		if (result.length === 0) {
 			return res.status(404).json({
@@ -494,21 +492,18 @@ exports.getAllRevenueByDateForAdmin = async (req, res) => {
 	}
 };
 //done - admin
-// lấy ra doanh thu của 1 centre_id theo năm
+// lấy ra doanh thu theo centre_id năm nay
 // http://localhost:8080/order/getRevenueByYearForAdmin
 exports.getRevenueByYearForAdmin = async (req, res) => {
-	const { centre_id } = req.body;
 	try {
 		const result = await queryDatabase(
 			`SELECT centre_id, 
                     YEAR(date_order) as year, 
                     SUM(total_cost) as revenue
              FROM orders 
-             WHERE centre_id = ? and status = 'PAID'
+             WHERE status = 'PAID' AND YEAR(date_order) = YEAR(CURRENT_DATE())
              GROUP BY centre_id, year
-             ORDER BY year DESC
-			 LIMIT 10`,
-			[centre_id]
+             ORDER BY centre_id ASC`
 		);
 		if (result.length === 0) {
 			return res.status(404).json({
