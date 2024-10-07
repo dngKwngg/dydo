@@ -1,0 +1,44 @@
+.home-category{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	.home-category-title{
+		text-align: center;
+		font-size: 30px;
+		font-weight: 900;
+		color: #d5952f;
+	}
+	.home-category-content{
+		display: grid;
+		gap: 20px;
+		grid-template-columns: 1fr 1fr 1fr;
+		width: 70%;
+		margin-top: 50px;
+		margin-bottom: 50px;
+		.home-category-card{
+			box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+			border-radius: 8px;
+			width: 80%;
+			height: 100%;
+			margin: auto;
+			height: 250px;
+			.card-image{
+				margin: auto;
+				margin-top: 16px;
+				border-radius: 50%;
+				width: 60%;
+				height: 60%;
+				background-color: #C1F1C6;
+				img{
+					height: 100%;
+					width: 100%;
+				}
+			}
+			p{
+				margin-top: 12px;
+				text-align: center;
+				font-weight: 500;
+			}
+		}
+	}
+}

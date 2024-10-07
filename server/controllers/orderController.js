@@ -397,7 +397,8 @@ exports.getRevenueByMonthForAdmin = async (req, res) => {
 exports.getAllRevenueByMonthForAdmin = async (req, res) => {
 	try {
 		const result = await queryDatabase(
-			`SELECT 
+			`SELECT
+					CONCAT(MONTH(date_order), '-', YEAR(date_order)) as month_year,
 					YEAR(date_order) as year, 
 					MONTH(date_order) as month, 
 					SUM(total_cost) as revenue
@@ -412,9 +413,10 @@ exports.getAllRevenueByMonthForAdmin = async (req, res) => {
 				message: "No revenue found",
 			});
 		}
+		const reverseResult = result.reverse();
 		return res.status(200).json({
 			status: "Success",
-			data: result,
+			data: reverseResult,
 		});
 	} catch (err) {
 		return res.status(500).json({

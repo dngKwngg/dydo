@@ -2,6 +2,11 @@ import React, {useState, useEffect} from 'react';
 import "./../styles/screens/homeScreen.css";
 import Header from './../components/header';
 import { useNavigate } from "react-router-dom";
+import HomeBanner from '../components/homeBanner';
+import Category from '../components/category';
+import SpecialDishes from '../components/specialDishes';
+import Service from '../components/service';
+import Footer from '../components/footer';
 
 const HomeScreen = () => {
 	const navigate = useNavigate();
@@ -23,6 +28,11 @@ const HomeScreen = () => {
 		<div className="home-screen">
 			<Header />
 			{/* Nội dung khác của HomeScreen */}
+			<HomeBanner />
+			<Category />
+			<SpecialDishes />
+			<Service />
+			<Footer />
 		</div>
 	);
 }

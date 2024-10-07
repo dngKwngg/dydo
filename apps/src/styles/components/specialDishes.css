@@ -1,0 +1,17 @@
+.special-dishes{
+	margin-bottom: 60px;
+	.special-dishes-title{
+		text-align: center;
+		font-size: 30px;
+		font-weight: 900;
+		color: #d5952f;
+		margin-bottom: 50px;
+	}
+	.special-dishes-carousel{
+		margin: auto;
+		width: 70%;
+		.slick-list{
+			height: 260px !important
+		}
+	}
+}

@@ -32,6 +32,10 @@ const AdminHomeScreen = () => {
 					}
 				);
 				const data = await response.json();
+				// Remove attribute "year" and "month" from data
+				data.data.forEach(el => {
+					el.revenue = parseInt(el.revenue);
+				})
 				setRevenueByMonth(data.data);
 				// console.log("revenue", data.data);
 			} catch (error) {
@@ -47,29 +51,8 @@ const AdminHomeScreen = () => {
 
 	const config = {
 		data: revenueByMonth, // Changed `data` to `revenue`
-		xField: "month",
+		xField: "month_year",
 		yField: "revenue",
-		onReady: ({ chart }) => {
-			try {
-				const { height } = chart._container.getBoundingClientRect();
-				const tooltipItem =
-					revenueByMonth[Math.floor(Math.random() * revenueByMonth.length)]; // Use `revenue` here
-				chart.on(
-					"afterrender",
-					() => {
-						chart.emit("tooltip:show", {
-							data: {
-								data: tooltipItem,
-							},
-							offsetY: height / 2 - 60,
-						});
-					},
-					true
-				);
-			} catch (e) {
-				console.error(e);
-			}
-		},
 	};
 
 	return (
