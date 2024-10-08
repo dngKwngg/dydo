@@ -1,5 +1,6 @@
 .receipt-container {
 	width: 60%;
+	min-height: calc(100vh - 270px);
 	margin: auto;
     font-family: "IBM Plex Sans", sans-serif;
 	.receipt {

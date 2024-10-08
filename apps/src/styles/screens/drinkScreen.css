@@ -1,5 +1,6 @@
 .drink-section {
     margin-top: 50px;
+	margin-bottom: 50px;
     .reset-button{
         position: absolute;
         right: 0;
@@ -12,6 +13,5 @@
 		margin: 0 30px;
     }
 }
-
 
 

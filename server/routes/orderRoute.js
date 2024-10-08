@@ -49,7 +49,6 @@ router.post(
 router.post("/receiveHook", orderController.receiveWebhook);
 router.post("/updateFailedStatus", orderController.updateFailedOrderStatus);
 
-
 router.get(
 	"/getRevenueByMonthForAdmin",
 	authController.authenticateToken,

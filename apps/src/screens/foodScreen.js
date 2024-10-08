@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useContext} from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./../styles/screens/foodScreen.css";
 import Header from "./../components/header";
 import MenuItem from "../components/menuItem";
 import Loading from "./../components/loading";
 import ResetButton from "../components/resetButton";
 import { useNavigate } from "react-router-dom";
+import Footer from "../components/footer";
 const FoodScreen = () => {
 	const navigate = useNavigate();
 	const [foods, setFoods] = useState([]);
@@ -52,11 +53,11 @@ const FoodScreen = () => {
 	const nuongFoods = foods.filter(
 		(food) => food.type === "Đồ nướng than hoa"
 	);
-		if (loadingLogin) {
-			return <div></div>;
-		}
+	if (loadingLogin) {
+		return <div></div>;
+	}
 	return (
-		<div>
+		<div className="food-screen">
 			<Header label="food" />
 			{loading ? (
 				<Loading loading={loading} />
@@ -81,6 +82,7 @@ const FoodScreen = () => {
 					</div>
 				</div>
 			)}
+			<Footer />
 		</div>
 	);
 };

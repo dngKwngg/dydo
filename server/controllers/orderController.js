@@ -429,7 +429,6 @@ exports.getAllRevenueByMonthForAdmin = async (req, res) => {
 // lấy ra doanh thu của các centre_id theo hôm nay
 // http://localhost:8080/order/getRevenueByDateForAdmin
 exports.getRevenueByDateForAdmin = async (req, res) => {
-
 	try {
 		const result = await queryDatabase(
 			`SELECT centre_id, 

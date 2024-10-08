@@ -1,5 +1,13 @@
-.ant-modal-body {
-  max-height: 60vh; /* Adjust height as needed */
-  overflow-y: auto;
+.history-screen{
+	.ant-table-wrapper{
+		margin-top: 30px;
+		padding-left: 16px;
+		padding-right: 16px;
+		min-height: calc(100vh - 270px);
+	}
+	.ant-modal-body {
+		max-height: 60vh; /* Adjust height as needed */
+		overflow-y: auto;
+	}
 }
 

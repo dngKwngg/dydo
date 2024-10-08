@@ -27,32 +27,35 @@ const AdminHeader = ({ label }) => {
 			<div className="home-header">
 				<div className="logo">
 					<a href="/admin" className="main-logo">
-						DYDO
+						<img
+							src={`${process.env.PUBLIC_URL}/images/dydo.png`}
+						></img>
 					</a>
 				</div>
-				{menu_labels_admin.map((item, index) => {
-					return (
-						<MenuHeader
-							number={index + 1}
-							name={item.name}
-							onClick={() => {
-								navigate(`/${item.navigate}`);
-							}}
-							isActive={item.navigate === label}
-						></MenuHeader>
-					);
-				})}
-				<div
-					className="log-out"
-					onClick={() => {
-						localStorage.removeItem("accessToken");
-						navigate(`/login`);
-					}}
-				>
-					Đăng xuất
+				<div className="menu-header-btns">
+					{menu_labels_admin.map((item, index) => {
+						return (
+							<MenuHeader
+								number={index + 1}
+								name={item.name}
+								onClick={() => {
+									navigate(`/${item.navigate}`);
+								}}
+								isActive={item.navigate === label}
+							></MenuHeader>
+						);
+					})}
+					<div
+						className="log-out"
+						onClick={() => {
+							localStorage.removeItem("accessToken");
+							navigate(`/login`);
+						}}
+					>
+						Đăng xuất
+					</div>
 				</div>
 			</div>
-			
 		</div>
 	);
 };

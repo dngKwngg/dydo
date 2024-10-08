@@ -3,6 +3,8 @@ import AdminHeader from "../components/adminHeader";
 import "./../styles/screens/adminHomeScreen.css";
 import { useNavigate } from "react-router-dom";
 import { Column, Pie } from "@ant-design/plots";
+import { Card, Statistic } from "antd";
+import Footer from "../components/footer";
 
 const AdminHomeScreen = () => {
 	const navigate = useNavigate();
@@ -12,6 +14,7 @@ const AdminHomeScreen = () => {
 	const [revenueCentreByYear, setRevenueCentreByYear] = useState([]);
 	const [revenueCentreByMonth, setRevenueCentreByMonth] = useState([]);
 	const [revenueCentreByDate, setRevenueCentreByDate] = useState([]);
+	const [centre, setCentre] = useState([]);
 	const [loadingLogin, setLoadingLogin] = useState(true); // True if user is logged in
 
 	useEffect(() => {
@@ -27,20 +30,18 @@ const AdminHomeScreen = () => {
 				const response = await fetch(
 					"http://localhost:8080/order/getAllRevenueByMonthForAdmin",
 					{
-						
 						headers: {
 							"Content-Type": "application/json",
 							Authorization:
 								"Bearer " + localStorage.getItem("accessToken"),
 						},
-						
 					}
 				);
 				const data = await response.json();
 				console.log("data", data.data);
-				data.data.forEach(el => {
+				data.data.forEach((el) => {
 					el.revenue = parseInt(el.revenue);
-				})
+				});
 				setRevenueAllCentreByMonth(data.data);
 				// console.log("revenue", data.data);
 			} catch (error) {
@@ -156,7 +157,7 @@ const AdminHomeScreen = () => {
 				data.data.forEach((el) => {
 					el.revenue = parseInt(el.revenue);
 				});
-				
+
 				const centreIds = [1, 2, 3, 4, 5];
 
 				// Create the new data array
@@ -177,6 +178,25 @@ const AdminHomeScreen = () => {
 				console.error("Error fetching data:", error);
 			}
 		};
+		const getCentre = async () => {
+			try {
+				const response = await fetch(
+					"http://localhost:8080/restaurant/getAllRestaurant",
+					{
+						headers: {
+							"Content-Type": "application/json",
+							Authorization:
+								"Bearer " + localStorage.getItem("accessToken"),
+						},
+					}
+				);
+				const data = await response.json();
+				setCentre(data.data);
+			} catch (error) {
+				console.log("error", error);
+			}
+		};
+		getCentre();
 		fetchDataMonth();
 		fetchDataYear();
 		fetchDataDate();
@@ -193,21 +213,30 @@ const AdminHomeScreen = () => {
 		data: revenueAllCentreByMonth, // Changed `data` to `revenue`
 		xField: "month_year",
 		yField: "revenue",
+		height: 300,
 	};
-	const all_centre_year_chart = {
-		data: revenueAllCentreByYear, // Changed `data` to `revenue`
-		angleField: "revenue",
-		colorField: "year",
-	};
+	// const all_centre_year_chart = {
+	//     data: revenueAllCentreByYear, // Changed `data` to `revenue`
+	//     angleField: "revenue",
+	//     colorField: "year",
+	// };
 	const all_centre_date_chart = {
-			data: revenueAllCentreByDate, // Changed `data` to `revenue`
-			xField: "order_day",
-			yField: "revenue",
+		data: revenueAllCentreByDate, // Changed `data` to `revenue`
+		xField: "order_day",
+		yField: "revenue",
+		height: 250,
 	};
 	const centre_year_chart = {
 		data: revenueCentreByYear, // Changed `data` to `revenue`
 		angleField: "revenue",
 		colorField: "centre_id",
+		label: {
+			text: "revenue",
+			style: {
+				fontWeight: "bold",
+			},
+		},
+		height: 250,
 	};
 	const centre_month_chart = {
 		data: revenueCentreByMonth, // Changed `data` to `revenue`
@@ -222,30 +251,59 @@ const AdminHomeScreen = () => {
 	return (
 		<div className="admin-home-screen">
 			<AdminHeader label="admin" />
-			<div className="all-centre-date-chart">
-				all-centre-date-chart
-				<Column {...all_centre_date_chart} />
+			<div className="admin-charts">
+				<div className="row-0">
+					<Card title="Tổng số nhà hàng">
+						<Statistic value={centre.length} />
+					</Card>
+					<Card title="Tổng doanh thu năm nay của hệ thống">
+						<Statistic
+							value={revenueAllCentreByYear.reduce(
+								(acc, item) => acc + item.revenue,
+								0
+							)}
+						/>
+					</Card>
+					<Card title="Tổng doanh thu tháng này của hệ thống">
+						<Statistic
+							value={revenueCentreByMonth.reduce(
+								(acc, item) => acc + item.revenue,
+								0
+							)}
+						/>
+					</Card>
+					<Card title="Tổng doanh thu trong ngày của hệ thống">
+						<Statistic
+							value={revenueCentreByDate.reduce(
+								(acc, item) => acc + item.revenue,
+								0
+							)}
+						/>
+					</Card>
+				</div>
+				<div className="row-1">
+					<div className="all-centre-date-chart">
+						<Card title="Doanh thu của hệ thống theo ngày">
+							<Column {...all_centre_date_chart} />
+						</Card>
+					</div>
+					<div className="centre-year-chart">
+						<Card
+							title="Doanh thu trong năm của các nhà hàng"
+							style={{ height: "100%" }}
+						>
+							<Pie {...centre_year_chart} />
+						</Card>
+					</div>
+				</div>
+
+				<div className="row-2">
+					<Card title="Doanh thu của hệ thống theo tháng">
+						<Column {...all_centre_month_chart} />
+					</Card>
+				</div>
 			</div>
-			<div className="all-centre-month-chart">
-				all-centre-month-chart
-				<Column {...all_centre_month_chart} />
-			</div>
-			<div className="all-centre-year-chart">
-				all-centre-year-chart
-				<Pie {...all_centre_year_chart} />
-			</div>
-			<div className="centre-year-chart">
-				centre-year-chart
-				<Pie {...centre_year_chart} />
-			</div>
-			<div className="centre-month-chart">
-				centre-month-chart
-				<Column {...centre_month_chart} />
-			</div>
-			<div className="centre-date-chart">
-				centre-date-chart
-				<Column {...centre_date_chart} />
-			</div>
+			<Footer />
 		</div>
 	);
 };
