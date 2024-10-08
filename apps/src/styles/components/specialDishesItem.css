@@ -1,0 +1,35 @@
+.special-dishes-item{
+	/* background-color: azure; */
+	border-radius: 8px;
+	padding-top: 16px;
+	margin: 0 30px;
+	height: 240px;
+	background-color: #FFFFED;
+	box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
+	.special-dishes-item-image{
+		margin: auto;
+        width: 60%;
+        height: 60%;
+		img{
+			border-radius: 50%;
+			height: 100%;
+			width: 100%;
+		}
+	}
+	.special-dishes-item-info{
+		margin-top: 12px;
+		padding-left: 30px;
+		p {
+			padding: 4px 0;
+		};
+		.special-dishes-item-name{
+			font-weight: bold;
+			font-size: 16px;
+		}
+		.special-dishes-item-price{
+			font-weight: 500;
+			font-size: 14px;
+			color: #d5952f;
+		}
+	}
+}

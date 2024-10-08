@@ -287,3 +287,23 @@ exports.listMenu = async (req, res) => {
 		});
 	}
 };
+// http://localhost:8080/menu/highlightMenu
+exports.getHighlightMenu = async (req, res) => {
+	try {
+		const result = await queryDatabase(
+			`
+				select item_name, price, src from menu
+				where item_id in (8, 11, 14, 24, 25, 26)
+			`
+		)
+		return res.status(200).json({
+			status: "Success",
+			data: result,
+		});
+	} catch (err) {
+		return res.status(500).json({
+			status: "Failed",
+			error: err,
+		});
+	}
+}

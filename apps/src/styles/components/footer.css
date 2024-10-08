@@ -1,0 +1,48 @@
+.footer{
+	display: flex;
+	flex-direction: row;
+	background-color: rgb(231, 230, 230);
+	padding: 15px 20px;
+	padding-bottom: 40px;
+	>div{
+		color: black;
+		width: 25%;
+		&.footer-logo{
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			img{
+				width: 70%;
+				height: 80%;
+			}
+		}
+		&.footer-menu{
+			font-weight: 500;
+			display: flex;
+			flex-direction: column;
+			gap: 16px;
+			padding-left: 30px;
+			p:hover{
+				cursor: pointer;
+				text-decoration: underline;
+				color: #d5952f;
+			}
+		}
+		&.footer-information{
+			display: flex;
+			flex-direction: column;
+			gap: 16px;
+			padding-left: 30px;
+			p{
+				font-weight: 500;
+			}
+			span{
+				color: #ee9608;
+				font-weight: 400;
+			}
+		}
+		&.footer-copyright{
+			font-weight: bold;
+		}
+	}
+}

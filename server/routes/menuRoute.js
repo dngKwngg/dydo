@@ -10,4 +10,5 @@ router.get("/listFood", menuController.listFood);
 router.get("/listDrink", menuController.listDrink);
 router.post("/listFoodById", menuController.listFoodById);
 router.get("/listMenu", menuController.listMenu);
+router.get("/highlightMenu", menuController.getHighlightMenu);
 module.exports = router;
