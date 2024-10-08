@@ -4,6 +4,7 @@ import { Table, Button, Modal, Select, Input, message } from "antd";
 import "./../styles/screens/adminUserScreen.css";
 import {  DeleteOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import Footer from "../components/footer";
 const AdminUserScreen = () => {
 	const navigate = useNavigate();
 	const [loadingLogin, setLoadingLogin] = useState(true); // True if user is logged in
@@ -232,95 +233,102 @@ const AdminUserScreen = () => {
 		return <div></div>;
 	}
 	return (
-		<div className="admin-user-screen">
-			{contextHolder}
-			<AdminHeader label="user" />
-			<div className="add-user-btn">
-				<Button
-					onClick={() => {
-						showAddModal();
-					}}
-				>
-					Add User
-				</Button>
-				<Modal
-					title="Add User"
-					open={isModalAddVisible}
-					onOk={handleAddOk}
-					onCancel={handleAddCancel}
-				>
-					<div>
-						<label>Centre ID: </label>
-						<Select
-							value={formValues.centre_id}
-							onChange={handleAddSelectCentreChange}
-							style={{ width: 100 }}
-						>
-							{centres.map((centre) => (
-								<Select.Option key={centre} value={centre}>
-									{centre}
-								</Select.Option>
-							))}
-						</Select>
-					</div>
-					<div>
-						<label>Role: </label>
-						<Select
-							value={formValues.role}
-							onChange={handleAddSelectRoleChange}
-							style={{ width: 100 }}
-						>
-							<Select.Option value="admin">admin</Select.Option>
-							<Select.Option value="staff">staff</Select.Option>
-						</Select>
-					</div>
-					<div>
-						<label>Email: </label>
-						<Input
-							type="text"
-							name="email"
-							value={formValues.email}
-							onChange={handleAddInputChange}
-						/>
-					</div>
-					<div>
-						<label>Password: </label>
-						<Input.Password
-							name="password"
-							placeholder="input password"
-							value={formValues.password}
-							onChange={handleAddInputChange}
-						/>
-					</div>
-					<div>
-						<label>Confirm Password: </label>
-						<Input.Password
-							name="confirm_password"
-							placeholder="input password"
-							value={formValues.confirm_password}
-							onChange={handleAddInputChange}
-						/>
-					</div>
-				</Modal>
+        <div className="admin-user-screen">
+            {contextHolder}
+            <AdminHeader label="user" />
+            <div className="admin-user-content">
+                <div className="add-user-btn">
+                    <Button
+                        onClick={() => {
+                            showAddModal();
+                        }}
+                    >
+                        Add User
+                    </Button>
+                    <Modal
+                        title="Add User"
+                        open={isModalAddVisible}
+                        onOk={handleAddOk}
+                        onCancel={handleAddCancel}
+                    >
+                        <div>
+                            <label>Centre ID: </label>
+                            <Select
+                                value={formValues.centre_id}
+                                onChange={handleAddSelectCentreChange}
+                                style={{ width: 100 }}
+                            >
+                                {centres.map((centre) => (
+                                    <Select.Option key={centre} value={centre}>
+                                        {centre}
+                                    </Select.Option>
+                                ))}
+                            </Select>
+                        </div>
+                        <div>
+                            <label>Role: </label>
+                            <Select
+                                value={formValues.role}
+                                onChange={handleAddSelectRoleChange}
+                                style={{ width: 100 }}
+                            >
+                                <Select.Option value="admin">
+                                    admin
+                                </Select.Option>
+                                <Select.Option value="staff">
+                                    staff
+                                </Select.Option>
+                            </Select>
+                        </div>
+                        <div>
+                            <label>Email: </label>
+                            <Input
+                                type="text"
+                                name="email"
+                                value={formValues.email}
+                                onChange={handleAddInputChange}
+                            />
+                        </div>
+                        <div>
+                            <label>Password: </label>
+                            <Input.Password
+                                name="password"
+                                placeholder="input password"
+                                value={formValues.password}
+                                onChange={handleAddInputChange}
+                            />
+                        </div>
+                        <div>
+                            <label>Confirm Password: </label>
+                            <Input.Password
+                                name="confirm_password"
+                                placeholder="input password"
+                                value={formValues.confirm_password}
+                                onChange={handleAddInputChange}
+                            />
+                        </div>
+                    </Modal>
+                </div>
+                <Table
+                    dataSource={users}
+                    columns={columns}
+                    rowKey="user_id"
+                    pagination={{ pageSize: 5 }}
+                />
+                <Modal
+                    title="Confirm Delete ?"
+                    open={isModalDeleteVisible}
+                    onOk={handleDeleteOk}
+                    onCancel={handleDeleteCancel}
+                >
+                    <p>Are you sure you want to delete this user?</p>
+                    <div>
+                        <label>Email: </label>
+                    </div>
+                </Modal>
 			</div>
-			<Table
-				dataSource={users}
-				columns={columns}
-				rowKey="user_id"
-				pagination={{ pageSize: 5 }}
-			/>
-			<Modal
-				title="Confirm Delete ?"
-				open={isModalDeleteVisible}
-				onOk={handleDeleteOk}
-				onCancel={handleDeleteCancel}
-			>
-				<p>Are you sure you want to delete this user?</p>
-				<div>
-					<label>Email: </label>
-				</div>
-			</Modal>
-		</div>
-	);
+			<Footer	/>
+        </div>
+    );
 };
 export default AdminUserScreen;

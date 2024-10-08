@@ -23,37 +23,40 @@ const AdminHeader = ({ label }) => {
 		},
 	];
 	return (
-		<div className="admin-header">
-			<div className="home-header">
-				<div className="logo">
-					<a href="/admin" className="main-logo">
-						DYDO
-					</a>
-				</div>
-				{menu_labels_admin.map((item, index) => {
-					return (
-						<MenuHeader
-							number={index + 1}
-							name={item.name}
-							onClick={() => {
-								navigate(`/${item.navigate}`);
-							}}
-							isActive={item.navigate === label}
-						></MenuHeader>
-					);
-				})}
-				<div
-					className="log-out"
-					onClick={() => {
-						localStorage.removeItem("accessToken");
-						navigate(`/login`);
-					}}
-				>
-					Đăng xuất
+        <div className="admin-header">
+            <div className="home-header">
+                <div className="logo">
+                    <a href="/admin" className="main-logo">
+                        <img
+                            src={`${process.env.PUBLIC_URL}/images/dydo.png`}
+                        ></img>
+                    </a>
+                </div>
+                <div className="menu-header-btns">
+                    {menu_labels_admin.map((item, index) => {
+                        return (
+                            <MenuHeader
+                                number={index + 1}
+                                name={item.name}
+                                onClick={() => {
+                                    navigate(`/${item.navigate}`);
+                                }}
+                                isActive={item.navigate === label}
+                            ></MenuHeader>
+                        );
+                    })}
+                    <div
+                        className="log-out"
+                        onClick={() => {
+                            localStorage.removeItem("accessToken");
+                            navigate(`/login`);
+                        }}
+                    >
+                        Đăng xuất
+                    </div>
 				</div>
 			</div>
-			
-		</div>
-	);
+        </div>
+    );
 };
 export default AdminHeader;

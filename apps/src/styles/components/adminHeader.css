@@ -1,3 +1,6 @@
 .admin-header{
     margin-bottom: 20px;
+	.menu-header-btns{
+		gap:12px;
+	}
 }

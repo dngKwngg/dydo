@@ -3,6 +3,7 @@ import { Table, Button, Modal } from "antd";
 import Header from "./../components/header";
 import "./../styles/screens/historyScreen.css";
 import { useNavigate } from "react-router-dom";
+import Footer from "../components/footer";
 const HistoryScreen = () => {
 	const navigate = useNavigate();
 	const [modalsState, setModalsState] = useState({});
@@ -120,7 +121,10 @@ const HistoryScreen = () => {
 			render: (_, record) => (
 				<Button
 					type="primary"
-					onClick={() => showModal(record.orders_id)}
+					onClick={() => {
+						console.log(record)
+						showModal(record.orders_id)
+					}}
 				>
 					Xem chi tiết tại đây
 				</Button>
@@ -131,7 +135,7 @@ const HistoryScreen = () => {
 		return <div></div>;
 	}
 	return (
-		<div>
+		<div className="history-screen">
 			<Header label="history" />
 			<Table
 				dataSource={history}
@@ -181,6 +185,7 @@ const HistoryScreen = () => {
 					))}
 				</Modal>
 			))}
+			<Footer />
 		</div>
 	);
 };

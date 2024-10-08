@@ -4,6 +4,7 @@ import { Table, Button, Modal, Select, Badge, Input, message } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import "./../styles/screens/adminRestaurantScreen.css";
 import { useNavigate } from "react-router-dom";
+import Footer from "../components/footer";
 const { Option } = Select;
 const AdminRestaurantScreen = () => {
 	const navigate = useNavigate();
@@ -273,200 +274,205 @@ const AdminRestaurantScreen = () => {
 		return <div></div>;
 	}
 	return (
-		<div className="admin-restaurant-screen">
-			{contextHolder}
-			<AdminHeader label="restaurant" />
-			<div className="add-restaurant-btn">
-				<Button
-					onClick={() => {
-						showAddModal();
-					}}
-				>
-					Add Restaurant
-				</Button>
-				<Modal
-					title="Add Restaurant"
-					open={isModalAddVisible}
-					onCancel={handleAddCancel}
-					onOk={handleAddOk}
-				>
-					<div>
-						<label>Name:</label>
-						<Input
-							name="name"
-							value={formValues.name}
-							onChange={handleEditInputChange}
-						/>
-					</div>
-					<div>
-						<label>Address:</label>
-						<Input
-							name="address"
-							value={formValues.address}
-							onChange={handleEditInputChange}
-						/>
-					</div>
-					<div>
-						<label>Area:</label>
-						<Input
-							name="area"
-							value={formValues.area}
-							onChange={handleEditInputChange}
-						/>
-					</div>
-					<div>
-						<label>Hotline:</label>
-						<Input
-							name="hotline"
-							type="number"
-							value={formValues.hotline}
-							onChange={handleEditInputChange}
-						/>
-					</div>
-					<div>
-						<label>Opening_month: </label>
-						<Select
-							value={formValues.opening_month}
-							style={{ width: 120 }}
-							onChange={handleEditMonthSelectChange}
-						>
-							{[...Array(12).keys()].map((month) => (
-								<Option key={month} value={month + 1}>
-									{month + 1}
-								</Option>
-							))}
-						</Select>
-					</div>
-					<div>
-						<label>Opening_year:</label>
-						<Input
-							name="opening_year"
-							type="number"
-							value={formValues.opening_year}
-							onChange={handleEditInputChange}
-						/>
-					</div>
-					<div>
-						<label>Active: </label>
-						<Select
-							value={
-								formValues.active
-									? "Đang hoạt động"
-									: "Đã đóng cửa"
-							}
-							onChange={handleEditActiveSelectChange}
-						>
-							<Option value={true}>Đang hoạt động</Option>
-							<Option value={false}>Đã đóng cửa</Option>
-						</Select>
-					</div>
+        <div className="admin-restaurant-screen">
+            {contextHolder}
+            <AdminHeader label="restaurant" />
+            <div className="admin-restaurant-content">
+                <div className="add-restaurant-btn">
+                    <Button
+                        onClick={() => {
+                            showAddModal();
+                        }}
+                    >
+                        Add Restaurant
+                    </Button>
+                    <Modal
+                        title="Add Restaurant"
+                        open={isModalAddVisible}
+                        onCancel={handleAddCancel}
+                        onOk={handleAddOk}
+                    >
+                        <div>
+                            <label>Name:</label>
+                            <Input
+                                name="name"
+                                value={formValues.name}
+                                onChange={handleEditInputChange}
+                            />
+                        </div>
+                        <div>
+                            <label>Address:</label>
+                            <Input
+                                name="address"
+                                value={formValues.address}
+                                onChange={handleEditInputChange}
+                            />
+                        </div>
+                        <div>
+                            <label>Area:</label>
+                            <Input
+                                name="area"
+                                value={formValues.area}
+                                onChange={handleEditInputChange}
+                            />
+                        </div>
+                        <div>
+                            <label>Hotline:</label>
+                            <Input
+                                name="hotline"
+                                type="number"
+                                value={formValues.hotline}
+                                onChange={handleEditInputChange}
+                            />
+                        </div>
+                        <div>
+                            <label>Opening_month: </label>
+                            <Select
+                                value={formValues.opening_month}
+                                style={{ width: 120 }}
+                                onChange={handleEditMonthSelectChange}
+                            >
+                                {[...Array(12).keys()].map((month) => (
+                                    <Option key={month} value={month + 1}>
+                                        {month + 1}
+                                    </Option>
+                                ))}
+                            </Select>
+                        </div>
+                        <div>
+                            <label>Opening_year:</label>
+                            <Input
+                                name="opening_year"
+                                type="number"
+                                value={formValues.opening_year}
+                                onChange={handleEditInputChange}
+                            />
+                        </div>
+                        <div>
+                            <label>Active: </label>
+                            <Select
+                                value={
+                                    formValues.active
+                                        ? "Đang hoạt động"
+                                        : "Đã đóng cửa"
+                                }
+                                onChange={handleEditActiveSelectChange}
+                            >
+                                <Option value={true}>Đang hoạt động</Option>
+                                <Option value={false}>Đã đóng cửa</Option>
+                            </Select>
+                        </div>
 
-					<div>
-						<label>Quantity Table:</label>
-						<Input
-							name="quantity_table"
-							type="number"
-							value={formValues.quantity_table}
-							onChange={handleEditInputChange}
-						/>
-					</div>
-				</Modal>
-			</div>
-			<Table
-				columns={columns}
-				dataSource={allRestaurant}
-				rowKey="centre_id"
-				pagination={{ pageSize: 5 }}
-			/>
-			<Modal
-				title="Edit Restaurant"
-				open={isModalEditVisible}
-				onOk={handleEditOk}
-				onCancel={handleEditCancel}
-			>
-				<div>
-					<label>Centre ID: {formValues.centre_id}</label>
-				</div>
-				<div>
-					<label>Name:</label>
-					<Input
-						name="name"
-						value={formValues.name}
-						onChange={handleEditInputChange}
-					/>
-				</div>
-				<div>
-					<label>Address:</label>
-					<Input
-						name="address"
-						value={formValues.address}
-						onChange={handleEditInputChange}
-					/>
-				</div>
-				<div>
-					<label>Area:</label>
-					<Input
-						name="area"
-						value={formValues.area}
-						onChange={handleEditInputChange}
-					/>
-				</div>
-				<div>
-					<label>Hotline:</label>
-					<Input
-						name="hotline"
-						type="number"
-						value={formValues.hotline}
-						onChange={handleEditInputChange}
-					/>
-				</div>
-				<div>
-					<label>Opening_month: </label>
-					<Select
-						value={formValues.opening_month}
-						style={{ width: 120 }}
-						onChange={handleEditMonthSelectChange}
-					>
-						{[...Array(12).keys()].map((month) => (
-							<Option key={month} value={month + 1}>
-								{month + 1}
-							</Option>
-						))}
-					</Select>
-				</div>
-				<div>
-					<label>Opening_year:</label>
-					<Input
-						name="opening_year"
-						type="number"
-						value={formValues.opening_year}
-						onChange={handleEditInputChange}
-					/>
-				</div>
-				<div>
-					<label>Active: </label>
-					<Select
-						value={
-							formValues.active ? "Đang hoạt động" : "Đã đóng cửa"
-						}
-						onChange={handleEditActiveSelectChange}
-					>
-						<Option value={true}>Đang hoạt động</Option>
-						<Option value={false}>Đã đóng cửa</Option>
-					</Select>
-				</div>
+                        <div>
+                            <label>Quantity Table:</label>
+                            <Input
+                                name="quantity_table"
+                                type="number"
+                                value={formValues.quantity_table}
+                                onChange={handleEditInputChange}
+                            />
+                        </div>
+                    </Modal>
+                </div>
+                <Table
+                    columns={columns}
+                    dataSource={allRestaurant}
+                    rowKey="centre_id"
+                    pagination={{ pageSize: 5 }}
+                />
+                <Modal
+                    title="Edit Restaurant"
+                    open={isModalEditVisible}
+                    onOk={handleEditOk}
+                    onCancel={handleEditCancel}
+                >
+                    <div>
+                        <label>Centre ID: {formValues.centre_id}</label>
+                    </div>
+                    <div>
+                        <label>Name:</label>
+                        <Input
+                            name="name"
+                            value={formValues.name}
+                            onChange={handleEditInputChange}
+                        />
+                    </div>
+                    <div>
+                        <label>Address:</label>
+                        <Input
+                            name="address"
+                            value={formValues.address}
+                            onChange={handleEditInputChange}
+                        />
+                    </div>
+                    <div>
+                        <label>Area:</label>
+                        <Input
+                            name="area"
+                            value={formValues.area}
+                            onChange={handleEditInputChange}
+                        />
+                    </div>
+                    <div>
+                        <label>Hotline:</label>
+                        <Input
+                            name="hotline"
+                            type="number"
+                            value={formValues.hotline}
+                            onChange={handleEditInputChange}
+                        />
+                    </div>
+                    <div>
+                        <label>Opening_month: </label>
+                        <Select
+                            value={formValues.opening_month}
+                            style={{ width: 120 }}
+                            onChange={handleEditMonthSelectChange}
+                        >
+                            {[...Array(12).keys()].map((month) => (
+                                <Option key={month} value={month + 1}>
+                                    {month + 1}
+                                </Option>
+                            ))}
+                        </Select>
+                    </div>
+                    <div>
+                        <label>Opening_year:</label>
+                        <Input
+                            name="opening_year"
+                            type="number"
+                            value={formValues.opening_year}
+                            onChange={handleEditInputChange}
+                        />
+                    </div>
+                    <div>
+                        <label>Active: </label>
+                        <Select
+                            value={
+                                formValues.active
+                                    ? "Đang hoạt động"
+                                    : "Đã đóng cửa"
+                            }
+                            onChange={handleEditActiveSelectChange}
+                        >
+                            <Option value={true}>Đang hoạt động</Option>
+                            <Option value={false}>Đã đóng cửa</Option>
+                        </Select>
+                    </div>
 
-				<div>
-					<label>Quantity Table:</label>
-					<Input
-						name="quantity_table"
-						type="number"
-						value={formValues.quantity_table}
-						onChange={handleEditInputChange}
-					/>
-				</div>
-			</Modal>
-		</div>
-	);
+                    <div>
+                        <label>Quantity Table:</label>
+                        <Input
+                            name="quantity_table"
+                            type="number"
+                            value={formValues.quantity_table}
+                            onChange={handleEditInputChange}
+                        />
+                    </div>
+                </Modal>
+            </div>
+            <Footer />
+        </div>
+    );
 };
 export default AdminRestaurantScreen;

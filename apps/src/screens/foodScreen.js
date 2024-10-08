@@ -5,6 +5,7 @@ import MenuItem from "../components/menuItem";
 import Loading from "./../components/loading";
 import ResetButton from "../components/resetButton";
 import { useNavigate } from "react-router-dom";
+import Footer from "../components/footer";
 const FoodScreen = () => {
 	const navigate = useNavigate();
 	const [foods, setFoods] = useState([]);
@@ -56,7 +57,7 @@ const FoodScreen = () => {
 			return <div></div>;
 		}
 	return (
-		<div>
+		<div className="food-screen">
 			<Header label="food" />
 			{loading ? (
 				<Loading loading={loading} />
@@ -81,6 +82,7 @@ const FoodScreen = () => {
 					</div>
 				</div>
 			)}
+			<Footer />
 		</div>
 	);
 };

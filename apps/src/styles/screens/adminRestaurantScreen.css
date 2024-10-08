@@ -1,6 +1,9 @@
-
-.add-restaurant-btn{
-	display: flex;
-    justify-content: end;
-    margin-right: 30px;
+.admin-restaurant-content{
+	margin-bottom: 50px;
+	.add-restaurant-btn{
+		display: flex;
+		justify-content: end;
+		margin-right: 30px;
+		margin-bottom: 16px;
+	}
 }

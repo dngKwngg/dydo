@@ -7,6 +7,7 @@ import Loading from "../components/loading";
 import { useNavigate } from "react-router-dom";
 import { Button } from "antd";
 import create from "@ant-design/icons/lib/components/IconFont";
+import Footer from "../components/footer";
 const ReceiptScreen = () => {
 	const navigate = useNavigate();
 	const { list, setList } = useContext(ListContext);
@@ -156,7 +157,7 @@ const ReceiptScreen = () => {
 		return <div></div>;
 	}
 	return (
-		<div>
+		<div className="receipt-screen">
 			<Header label="receipt" />
 			{loading ? (
 				<Loading loading={loading} />
@@ -189,6 +190,7 @@ const ReceiptScreen = () => {
 					</div>
 				</div>
 			)}
+			<Footer />
 		</div>
 	);
 };

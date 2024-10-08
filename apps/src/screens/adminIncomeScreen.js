@@ -3,6 +3,7 @@ import AdminHeader from "../components/adminHeader";
 import { Table, Button, Modal, Select, DatePicker, Space } from "antd";
 import "./../styles/screens/adminIncomeScreen.css";
 import { useNavigate } from "react-router-dom";
+import Footer from "../components/footer";
 const AdminIncomeScreen = () => {
 	const navigate = useNavigate();
 	const [loadingLogin, setLoadingLogin] = useState(true); // True if user is logged in
@@ -186,79 +187,82 @@ const AdminIncomeScreen = () => {
 		return <div></div>;
 	}
 	return (
-		<div className="admin-income-screen">
-			<AdminHeader label="income" />
-			<div class="filter">
-				<Space direction="vertical">
-					<DatePicker
-						onChange={onChange}
-						placeholder="Filter by date"
-					/>
-				</Space>
-				<Select
-					value={selectedCentre}
-					onChange={handleFilterChange}
-					style={{ width: 200 }}
-				>
-					<Select.Option value="all">
-						Tất cả các trung tâm
-					</Select.Option>
-					{centres.map((centre) => (
-						<Select.Option key={centre} value={centre}>
-							Trung tâm {centre}
-						</Select.Option>
-					))}
-				</Select>
-			</div>
+        <div className="admin-income-screen">
+            <AdminHeader label="income" />
+            <div className="admin-income-content">
+                <div class="filter">
+                    <Space direction="vertical">
+                        <DatePicker
+                            onChange={onChange}
+                            placeholder="Filter by date"
+                        />
+                    </Space>
+                    <Select
+                        value={selectedCentre}
+                        onChange={handleFilterChange}
+                        style={{ width: 200 }}
+                    >
+                        <Select.Option value="all">
+                            Tất cả các trung tâm
+                        </Select.Option>
+                        {centres.map((centre) => (
+                            <Select.Option key={centre} value={centre}>
+                                Trung tâm {centre}
+                            </Select.Option>
+                        ))}
+                    </Select>
+                </div>
 
-			<Table
-				dataSource={filteredHistory}
-				columns={columns}
-				rowKey="orders_id"
-				pagination={{ pageSize: 5 }}
-			/>
-			{allHistory.map((item) => (
-				<Modal
-					key={item.orders_id}
-					title={`Table ${item.table_id} of Centre ${item.centre_id}`}
-					open={modalsState[item.orders_id] || false}
-					onCancel={() => handleCancel(item.orders_id)}
-					footer={[
-						<Button
-							key="back"
-							onClick={() => handleCancel(item.orders_id)}
-						>
-							Close
-						</Button>,
-					]}
-				>
-					{detail.map((item_detail) => (
-						<div key={item_detail.id}>
-							<div className="menu-item">
-								<div className="image">
-									<img src={item_detail.src} alt="" />
-								</div>
-								<div className="item-info">
-									<div className="info">
-										<h3>{item_detail.item_name}</h3>
-										<p>
-											{new Intl.NumberFormat(
-												"vi-VN"
-											).format(item_detail.price)}
-										</p>
-									</div>
-									<div className="count-quantity">
-										<h3>
-											Quantity: {item_detail.quantity}
-										</h3>
-									</div>
-								</div>
-							</div>
-						</div>
-					))}
-				</Modal>
-			))}
-		</div>
-	);
+                <Table
+                    dataSource={filteredHistory}
+                    columns={columns}
+                    rowKey="orders_id"
+                    pagination={{ pageSize: 5 }}
+                />
+                {allHistory.map((item) => (
+                    <Modal
+                        key={item.orders_id}
+                        title={`Table ${item.table_id} of Centre ${item.centre_id}`}
+                        open={modalsState[item.orders_id] || false}
+                        onCancel={() => handleCancel(item.orders_id)}
+                        footer={[
+                            <Button
+                                key="back"
+                                onClick={() => handleCancel(item.orders_id)}
+                            >
+                                Close
+                            </Button>,
+                        ]}
+                    >
+                        {detail.map((item_detail) => (
+                            <div key={item_detail.id}>
+                                <div className="menu-item">
+                                    <div className="image">
+                                        <img src={item_detail.src} alt="" />
+                                    </div>
+                                    <div className="item-info">
+                                        <div className="info">
+                                            <h3>{item_detail.item_name}</h3>
+                                            <p>
+                                                {new Intl.NumberFormat(
+                                                    "vi-VN"
+                                                ).format(item_detail.price)}
+                                            </p>
+                                        </div>
+                                        <div className="count-quantity">
+                                            <h3>
+                                                Quantity: {item_detail.quantity}
+                                            </h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </Modal>
+                ))}
+			</div>
+			<Footer	/>
+        </div>
+    );
 };
 export default AdminIncomeScreen;

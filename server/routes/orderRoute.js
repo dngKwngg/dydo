@@ -5,94 +5,93 @@ const authController = require("../controllers/authController");
 
 // Protected routes (with authentication)
 router.post(
-	"/create",
-	authController.authenticateToken,
-	orderController.createOrder
+    "/create",
+    authController.authenticateToken,
+    orderController.createOrder
 );
 router.get(
-	"/getOrderHistory",
-	authController.authenticateToken,
-	orderController.getOrderHistory
+    "/getOrderHistory",
+    authController.authenticateToken,
+    orderController.getOrderHistory
 );
 router.post(
-	"/getOrderDetail",
-	authController.authenticateToken,
-	orderController.getOrderDetail
+    "/getOrderDetail",
+    authController.authenticateToken,
+    orderController.getOrderDetail
 );
 router.get(
-	"/getAllOrderHistory",
-	authController.authenticateToken,
-	orderController.getAllOrderHistory
+    "/getAllOrderHistory",
+    authController.authenticateToken,
+    orderController.getAllOrderHistory
 );
 router.post(
-	"/createPayOs",
-	authController.authenticateToken,
-	orderController.createPayOsOrder
+    "/createPayOs",
+    authController.authenticateToken,
+    orderController.createPayOsOrder
 );
 router.get(
-	"/getPayOsOrder/:orderId",
-	authController.authenticateToken,
-	orderController.getPayOsOrderInfo
+    "/getPayOsOrder/:orderId",
+    authController.authenticateToken,
+    orderController.getPayOsOrderInfo
 );
 router.put(
-	"/cancelPayOsOrder/:orderId",
-	authController.authenticateToken,
-	orderController.cancelPayOsOrder
+    "/cancelPayOsOrder/:orderId",
+    authController.authenticateToken,
+    orderController.cancelPayOsOrder
 );
 router.post(
-	"/confirmPayOsWebhookData",
-	authController.authenticateToken,
-	orderController.confirmPayOsWebhook
+    "/confirmPayOsWebhookData",
+    authController.authenticateToken,
+    orderController.confirmPayOsWebhook
 );
 
 // Unprotected route (no authentication for receiveHook)
 router.post("/receiveHook", orderController.receiveWebhook);
 router.post("/updateFailedStatus", orderController.updateFailedOrderStatus);
 
-
-router.post(
-	"/getRevenueByMonthForAdmin",
-	authController.authenticateToken,
-	orderController.getRevenueByMonthForAdmin
+router.get(
+    "/getRevenueByMonthForAdmin",
+    authController.authenticateToken,
+    orderController.getRevenueByMonthForAdmin
 );
 router.get(
-	"/getAllRevenueByMonthForAdmin",
-	authController.authenticateToken,
-	orderController.getAllRevenueByMonthForAdmin
-);
-router.post(
-	"/getRevenueByDateForAdmin",
-	authController.authenticateToken,
-	orderController.getRevenueByDateForAdmin
+    "/getAllRevenueByMonthForAdmin",
+    authController.authenticateToken,
+    orderController.getAllRevenueByMonthForAdmin
 );
 router.get(
-	"/getAllRevenueByDateForAdmin",
-	authController.authenticateToken,
-	orderController.getAllRevenueByDateForAdmin
-);
-router.post(
-	"/getRevenueByYearForAdmin",
-	authController.authenticateToken,
-	orderController.getRevenueByYearForAdmin
+    "/getRevenueByDateForAdmin",
+    authController.authenticateToken,
+    orderController.getRevenueByDateForAdmin
 );
 router.get(
-	"/getAllRevenueByYearForAdmin",
-	authController.authenticateToken,
-	orderController.getAllRevenueByYearForAdmin
+    "/getAllRevenueByDateForAdmin",
+    authController.authenticateToken,
+    orderController.getAllRevenueByDateForAdmin
 );
 router.get(
-	"/getRevenueByMonthForStaff",
-	authController.authenticateToken,
-	orderController.getRevenueByMonthForStaff
+    "/getRevenueByYearForAdmin",
+    authController.authenticateToken,
+    orderController.getRevenueByYearForAdmin
 );
 router.get(
-	"/getRevenueByYearForStaff",
-	authController.authenticateToken,
-	orderController.getRevenueByYearForStaff
+    "/getAllRevenueByYearForAdmin",
+    authController.authenticateToken,
+    orderController.getAllRevenueByYearForAdmin
 );
 router.get(
-	"/getRevenueByDateForStaff",
-	authController.authenticateToken,
-	orderController.getRevenueByDateForStaff
+    "/getRevenueByMonthForStaff",
+    authController.authenticateToken,
+    orderController.getRevenueByMonthForStaff
+);
+router.get(
+    "/getRevenueByYearForStaff",
+    authController.authenticateToken,
+    orderController.getRevenueByYearForStaff
+);
+router.get(
+    "/getRevenueByDateForStaff",
+    authController.authenticateToken,
+    orderController.getRevenueByDateForStaff
 );
 module.exports = router;

@@ -5,6 +5,7 @@ import Header from "./../components/header";
 import ResetButton from "../components/resetButton";
 import Loading from "./../components/loading";
 import { useNavigate } from "react-router-dom";
+import Footer from "../components/footer";
 const DrinkScreen = () => {
 	const navigate = useNavigate();
 	const [drinks, setDrinks] = useState([]);
@@ -63,6 +64,7 @@ const DrinkScreen = () => {
 					</div>
 				</div>
 			)}
+			<Footer />
 		</div>
 	);
 };

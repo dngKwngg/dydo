@@ -4,6 +4,7 @@ import { Table, Button, Modal, Select, Input, message } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import "./../styles/screens/adminMenuManager.css";
 import { useNavigate } from "react-router-dom";
+import Footer from "../components/footer";
 const { Option } = Select;
 const AdminMenuManagerScreen = () => {
 	const navigate = useNavigate();
@@ -290,123 +291,130 @@ const AdminMenuManagerScreen = () => {
 		return <div></div>;
 	}
 	return (
-		<div className="admin-menu-screen">
-			<AdminHeader label="menuManager" />
-			<div className="add-item-btn">
-				<Button
-					onClick={() => {
-						showAddModal();
-					}}
-				>
-					Add Item
-				</Button>
+        <div className="admin-menu-screen">
+            <AdminHeader label="menuManager" />
+            <div className="admin-menu-content">
+                <div className="add-item-btn">
+                    <Button
+                        onClick={() => {
+                            showAddModal();
+                        }}
+                    >
+                        Add Item
+                    </Button>
+                </div>
+                <Modal
+                    title="Add Menu Item"
+                    open={isModalAddVisible}
+                    onCancel={handleCancelAdd}
+                    onOk={handleOkAdd}
+                >
+                    <div>
+                        <label>Item Name:</label>
+                        <Input
+                            name="item_name"
+                            value={formValues.item_name}
+                            onChange={handleInputChange}
+                        />
+                    </div>
+                    <div style={{ marginTop: 10 }}>
+                        <label>Type:</label>
+                        <Select
+                            value={formValues.type}
+                            onChange={handleSelectChange}
+                            style={{ width: "100%" }}
+                        >
+                            <Option value="Đồ uống">Đồ uống</Option>
+                            <Option value="Đồ nướng than hoa">
+                                Đồ nướng than hoa
+                            </Option>
+                            <Option value="Lẩu Thái Tomyum">
+                                Lẩu Thái Tomyum
+                            </Option>
+                        </Select>
+                    </div>
+                    <div style={{ marginTop: 10 }}>
+                        <label>Price:</label>
+                        <Input
+                            name="price"
+                            type="number"
+                            value={formValues.price}
+                            onChange={handleInputChange}
+                        />
+                    </div>
+                    <div>
+                        <label>Image Link: </label>
+                        <Input
+                            name="src"
+                            value={formValues.src}
+                            onChange={handleInputChange}
+                        />
+                    </div>
+                </Modal>
+                <Table
+                    dataSource={allMenu}
+                    columns={columns}
+                    rowKey="item_id"
+                    pagination={{ pageSize: 7 }}
+                />
+                {contextHolder}
+                <Modal
+                    title="Edit Menu Item"
+                    open={isModalEditVisible}
+                    onCancel={handleCancelEdit}
+                    onOk={handleOkEdit}
+                >
+                    <div>
+                        <label>Item Name:</label>
+                        <Input
+                            name="item_name"
+                            value={formValues.item_name}
+                            onChange={handleInputChange}
+                        />
+                    </div>
+                    <div style={{ marginTop: 10 }}>
+                        <label>Type:</label>
+                        <Select
+                            value={formValues.type}
+                            onChange={handleSelectChange}
+                            style={{ width: "100%" }}
+                        >
+                            <Option value="Đồ uống">Đồ uống</Option>
+                            <Option value="Đồ nướng than hoa">
+                                Đồ nướng than hoa
+                            </Option>
+                            <Option value="Lẩu Thái Tomyum">
+                                Lẩu Thái Tomyum
+                            </Option>
+                        </Select>
+                    </div>
+                    <div style={{ marginTop: 10 }}>
+                        <label>Price:</label>
+                        <Input
+                            name="price"
+                            type="number"
+                            value={formValues.price}
+                            onChange={handleInputChange}
+                        />
+                    </div>
+                    <div>
+                        <label>Image Link: </label>
+                        <Input
+                            name="src"
+                            value={formValues.src}
+                            onChange={handleInputChange}
+                        />
+                    </div>
+                </Modal>
+                <Modal
+                    title="Confirm Delete ?"
+                    open={isModalDeleteVisible}
+                    onCancel={handleCancelDelete}
+                    onOk={handleOkDelete}
+				></Modal>
 			</div>
-			<Modal
-				title="Add Menu Item"
-				open={isModalAddVisible}
-				onCancel={handleCancelAdd}
-				onOk={handleOkAdd}
-			>
-				<div>
-					<label>Item Name:</label>
-					<Input
-						name="item_name"
-						value={formValues.item_name}
-						onChange={handleInputChange}
-					/>
-				</div>
-				<div style={{ marginTop: 10 }}>
-					<label>Type:</label>
-					<Select
-						value={formValues.type}
-						onChange={handleSelectChange}
-						style={{ width: "100%" }}
-					>
-						<Option value="Đồ uống">Đồ uống</Option>
-						<Option value="Đồ nướng than hoa">
-							Đồ nướng than hoa
-						</Option>
-						<Option value="Lẩu Thái Tomyum">Lẩu Thái Tomyum</Option>
-					</Select>
-				</div>
-				<div style={{ marginTop: 10 }}>
-					<label>Price:</label>
-					<Input
-						name="price"
-						type="number"
-						value={formValues.price}
-						onChange={handleInputChange}
-					/>
-				</div>
-				<div>
-					<label>Image Link: </label>
-					<Input
-						name="src"
-						value={formValues.src}
-						onChange={handleInputChange}
-					/>
-				</div>
-			</Modal>
-			<Table
-				dataSource={allMenu}
-				columns={columns}
-				rowKey="item_id"
-				pagination={{ pageSize: 7 }}
-			/>
-			{contextHolder}
-			<Modal
-				title="Edit Menu Item"
-				open={isModalEditVisible}
-				onCancel={handleCancelEdit}
-				onOk={handleOkEdit}
-			>
-				<div>
-					<label>Item Name:</label>
-					<Input
-						name="item_name"
-						value={formValues.item_name}
-						onChange={handleInputChange}
-					/>
-				</div>
-				<div style={{ marginTop: 10 }}>
-					<label>Type:</label>
-					<Select
-						value={formValues.type}
-						onChange={handleSelectChange}
-						style={{ width: "100%" }}
-					>
-						<Option value="Đồ uống">Đồ uống</Option>
-						<Option value="Đồ nướng than hoa">
-							Đồ nướng than hoa
-						</Option>
-						<Option value="Lẩu Thái Tomyum">Lẩu Thái Tomyum</Option>
-					</Select>
-				</div>
-				<div style={{ marginTop: 10 }}>
-					<label>Price:</label>
-					<Input
-						name="price"
-						type="number"
-						value={formValues.price}
-						onChange={handleInputChange}
-					/>
-				</div>
-				<div>
-					<label>Image Link: </label>
-					<Input
-						name="src"
-						value={formValues.src}
-						onChange={handleInputChange}
-					/>
-				</div>
-			</Modal>
-			<Modal
-				title="Confirm Delete ?"
-				open={isModalDeleteVisible}
-				onCancel={handleCancelDelete}
-				onOk={handleOkDelete}
-			></Modal>
-		</div>
-	);
+			<Footer />
+        </div>
+    );
 };
 export default AdminMenuManagerScreen;
