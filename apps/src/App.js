@@ -14,7 +14,9 @@ import AdminRestaurantScreen from "./screens/adminRestaurantScreen";
 import SuccessPaymentScreen from "./screens/successPaymentScreen.js";
 import CancelPaymentScreen from "./screens/cancelPaymentScreen.js";
 import AdminUserScreen from "./screens/adminUserScreen.js";
+import ForgotPasswordScreen from "./screens/forgotPasswordScreen.js";
 import { ListProvider } from "./components/ListContext";
+import ResetPasswordScreen from "./screens/resetPasswordScreen.js";
 const App = () => {
 	return (
 		<BrowserRouter>
@@ -40,6 +42,14 @@ const App = () => {
 					/>
 					<Route path="/success" element={<SuccessPaymentScreen />} />
 					<Route path="/cancel" element={<CancelPaymentScreen />} />
+					<Route
+						path="/forgot-password"
+						element={<ForgotPasswordScreen />}
+					/>
+					<Route
+						path="/reset-password"
+						element={<ResetPasswordScreen />}
+					/>
 				</Routes>
 			</ListProvider>
 		</BrowserRouter>

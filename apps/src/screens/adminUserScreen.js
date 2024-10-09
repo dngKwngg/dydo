@@ -178,7 +178,7 @@ const AdminUserScreen = () => {
 		setIsModalDeleteVisible(false);
 	};
 	const fetchAllUsers = async () => {
-		const response = await fetch("http://localhost:8080/auth/getAllUsers", {
+		const response = await fetch("http://localhost:8080/user/getAllUsers", {
 			headers: {
 				"Content-Type": "application/json",
 				Authorization: `Bearer ${localStorage.getItem("accessToken")}`,

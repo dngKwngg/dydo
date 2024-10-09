@@ -1,7 +1,7 @@
 import React from "react";
 import "./../styles/screens/loginScreen.css";
-import { Typography, Input, Button, Form, message} from "antd";
-import {useNavigate} from "react-router-dom"
+import { Typography, Input, Button, Form, message } from "antd";
+import { useNavigate } from "react-router-dom";
 const { Text } = Typography;
 
 const LoginScreen = () => {
@@ -11,25 +11,22 @@ const LoginScreen = () => {
 			type: "error",
 			content: "Wrong Username or Password ",
 		});
-
 	};
-	
-	const navigate = useNavigate()
+
+	const navigate = useNavigate();
 	const onFinish = async (values) => {
 		console.log("Success:", values);
-		console.log(JSON.stringify(values))
-		
+		console.log(JSON.stringify(values));
+
 		// Fetch data
 		try {
-			const response = await fetch(`http://localhost:8080/auth/login`,
-				{
-					method: "POST",
-					headers: {
-                        "Content-Type": "application/json",
-                    },
-					body: JSON.stringify(values)
-				}
-			);
+			const response = await fetch(`http://localhost:8080/auth/login`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(values),
+			});
 
 			const res = await response.json();
 			console.log(res.status);
@@ -42,9 +39,9 @@ const LoginScreen = () => {
 				} else {
 					navigate("/home");
 				}
-				
-			} else {loginFailed();}
-
+			} else {
+				loginFailed();
+			}
 		} catch (e) {
 			console.error(e);
 		}
@@ -54,17 +51,15 @@ const LoginScreen = () => {
 	};
 	return (
 		<div className="container">
-		{contextHolder}
+			{contextHolder}
 			<div className="form">
 				<div className="login-header">
 					<h1>Welcome to DYDO!</h1>
 					<p>Nhập thông tin đăng nhập</p>
 				</div>
 				<div className="login-form">
-					
 					<Form
 						name="basic"
-						
 						wrapperCol={{
 							span: 16,
 						}}
@@ -104,13 +99,6 @@ const LoginScreen = () => {
 							<Input.Password />
 						</Form.Item>
 
-						{/* <Form.Item
-							name="remember"
-							valuePropName="checked"
-						>
-							<Checkbox>Remember me</Checkbox>
-						</Form.Item> */}
-
 						<Form.Item>
 							<Button type="primary" htmlType="submit">
 								Submit
@@ -119,8 +107,13 @@ const LoginScreen = () => {
 					</Form>
 
 					<div className="login-footer">
-						<p>Quên mật khẩu?</p>
+						<a href="/forgot-password">
+							<p>Quên mật khẩu?</p>
+						</a>
 					</div>
+				</div>
+				<div className="login-crediental">
+					<p>© 2024 DyDo Restaurant</p>
 				</div>
 			</div>
 
