@@ -9,6 +9,11 @@ router.post(
 	authController.authenticateToken,
 	orderController.createOrder
 );
+router.post(
+	"/createCashOrder",
+	authController.authenticateToken,
+	orderController.createCashOrder
+);
 router.get(
 	"/getOrderHistory",
 	authController.authenticateToken,

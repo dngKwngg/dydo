@@ -8,4 +8,5 @@ router.use(authController.authenticateToken);
 router.post("/addNewRestaurant", restaurantController.addNewRestaurant);
 router.post("/editRestaurant", restaurantController.editRestaurant);
 router.get("/getAllRestaurant", restaurantController.getAllRestaurant);
+router.get("/getRestaurant", restaurantController.getRestaurant);
 module.exports = router;

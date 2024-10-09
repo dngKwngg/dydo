@@ -10,6 +10,7 @@ const payOS = require("../utils/payos");
 //     {"item_id": 101, "quantity": 2},
 //     {"item_id": 102, "quantity": 1}
 //   ]
+//   "total_cost": 100000
 // }
 
 async function queryDatabase(query, params) {
@@ -40,15 +41,8 @@ async function getPrice(item_id) {
 exports.createOrder = async (req, res) => {
 	console.log(req.body);
 	const { centre_id } = req.user;
-	const { order_code, table_id, items, total } = req.body;
-	//Kiem tra  table_id co phai dang so nguyen hay khong
-	if (!Number.isInteger(table_id) || table_id <= 0) {
-		return res.status(400).json({
-			status: "Failed",
-			message: "Table ID must be an integer greater than 0",
-		});
-	}
-
+	const { order_code, table_id, items, total_cost } = req.body;
+	
 	try {
 		// kiem tra centre_if co hop le khong
 		const centres = await queryDatabase(
@@ -79,7 +73,7 @@ exports.createOrder = async (req, res) => {
 			`INSERT INTO orders (orders_id, order_code, table_id, centre_id, total_cost)
 					SELECT COALESCE(MAX(orders_id), 0) + 1, ?, ?, ?, ?
 					FROM orders`,
-			[order_code, table_id, centre_id, total]
+			[order_code, table_id, centre_id, total_cost]
 		);
 
 		// Tạo mảng chứa các trường tương đương 1 hàng trong orders_items
@@ -121,7 +115,84 @@ exports.createOrder = async (req, res) => {
 		});
 	}
 };
+//http://localhost:8080/order/createCashOrder
+exports.createCashOrder = async (req, res) => {
+	console.log(req.body);
+	const { centre_id } = req.user;
+	const { order_code, table_id, items, total_cost } = req.body;
 
+	try {
+		// kiem tra centre_if co hop le khong
+		const centres = await queryDatabase(
+			`SELECT * FROM restaurant_centre WHERE centre_id = ?`,
+			[centre_id]
+		);
+		if (centres.length === 0) {
+			return res.status(404).json({
+				status: "Failed",
+				message: "No restaurant_centre found",
+			});
+		}
+		const table_quantity = centres[0].quantity_table;
+		if (table_id > table_quantity) {
+			return res.status(400).json({
+				status: "Failed",
+				message: "Table ID is invalid",
+			});
+		}
+		// tìm thấy bản ghi phù hợp
+		// tạo bản ghi bảng orders
+		const orders = await queryDatabase(
+			`SELECT * FROM orders WHERE table_id = ? AND centre_id = ?`,
+			[table_id, centre_id]
+		);
+
+		await queryDatabase(
+			`INSERT INTO orders (orders_id, order_code, table_id, centre_id, total_cost, status)
+					SELECT COALESCE(MAX(orders_id), 0) + 1, ?, ?, ?, ?, 'PAID'
+					FROM orders`,
+			[order_code, table_id, centre_id, total_cost]
+		);
+
+		// Tạo mảng chứa các trường tương đương 1 hàng trong orders_items
+		const itemPrices = await Promise.all(
+			items.map(async (item) => {
+				const price = await getPrice(item.item_id);
+				// Fetch the max orders_id from the orders table
+				const [orderIdResult] = await queryDatabase(
+					`SELECT COALESCE(MAX(orders_id), 0) as maxOrderId FROM orders`
+				);
+				const orders_id = orderIdResult.maxOrderId;
+
+				return [
+					orders_id,
+					centre_id,
+					table_id,
+					item.item_id,
+					item.quantity,
+					price,
+				];
+			})
+		);
+
+		// Insert into order_item table
+		await queryDatabase(
+			`INSERT INTO order_item (orders_id, centre_id, table_id, item_id, quantity, price_item)
+	VALUES ?`,
+			[itemPrices]
+		);
+
+		return res.status(200).json({
+			status: "Success",
+			message: "Done add",
+		});
+	} catch (err) {
+		return res.status(500).json({
+			status: "Failed",
+			error: err.message,
+		});
+	}
+};
 // lấy ra lịch sử đơn hàng theo centre_id
 // http://localhost:8080/order/getOrderHistory
 exports.getOrderHistory = async (req, res) => {
@@ -214,6 +285,7 @@ exports.createPayOsOrder = async (req, res) => {
 		cancelUrl,
 		returnUrl,
 	};
+	console.log(body);
 
 	try {
 		const paymentLinkRes = await payOS.createPaymentLink(body);

@@ -148,3 +148,20 @@ exports.getAllRestaurant = async (req, res) => {
 		});
 	}
 };
+
+//http://localhost:8080/restaurant/getRestaurant
+exports.getRestaurant = async (req, res) => {
+	const { centre_id } = req.user;
+	try {
+		const result = await queryDatabase(`SELECT * FROM restaurant_centre WHERE centre_id = ?`, [centre_id]);
+		return res.status(200).json({
+			status: "Success",
+			data: result,
+		});
+	} catch (err) {
+		return res.status(500).json({
+			status: "Failed",
+			error: err,
+		});
+	}
+};

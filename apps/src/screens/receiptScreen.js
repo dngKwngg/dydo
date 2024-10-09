@@ -5,7 +5,7 @@ import { ListContext } from "../components/ListContext";
 import MenuItem from "../components/menuItem";
 import Loading from "../components/loading";
 import { useNavigate } from "react-router-dom";
-import { Button } from "antd";
+import { Button, Modal, Select, message, Input } from "antd";
 import create from "@ant-design/icons/lib/components/IconFont";
 import Footer from "../components/footer";
 const ReceiptScreen = () => {
@@ -15,10 +15,26 @@ const ReceiptScreen = () => {
 	const [listItem, setListItem] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [total, setTotal] = useState(0);
+	const [isModalCheckOutVisible, setIsModalCheckOutVisible] = useState(false);
 	// const [orderCode, setOrderCode] = useState(0);
-	const [check, setCheck] = useState(false);
+	const [isCashConfirmModalVisible, setCashConfirmModalVisible] = useState(false);
+	const [paymentMethod, setPaymentMethod] = useState("");
 	const [loadingLogin, setLoadingLogin] = useState(true);
-
+	const [tableId, setTableId] = useState(0);
+	const [quantity_table, setQuantityTable] = useState(0);
+	const [messageApi, contextHolder] = message.useMessage();
+	const addSuccess = () => {
+		messageApi.open({
+			type: "success",
+			content: "Add order successful",
+		});
+	};
+	const failedTableId = () => {
+		messageApi.open({
+			type: "error",
+			content: "Failed to create order. Please check table ID",
+		});
+	};
 	const createOrder = async (orderCode) => {
 		try {
 			const response = await fetch("http://localhost:8080/order/create", {
@@ -30,9 +46,9 @@ const ReceiptScreen = () => {
 				},
 				body: JSON.stringify({
 					order_code: orderCode, // Pass the PayOS order code here
-					table_id: 1,
+					table_id: tableId,
 					items: list,
-					total: total,
+					total_cost: total,
 				}),
 			});
 
@@ -82,7 +98,31 @@ const ReceiptScreen = () => {
 			throw error;
 		}
 	};
+	const createCashOrder = async () => {
+		try {
+			const response = await fetch("http://localhost:8080/order/createCashOrder", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization:
+						"Bearer " + localStorage.getItem("accessToken"),
+				},
+				body: JSON.stringify({
+					order_code: 0, // Pass the PayOS order code here
+					table_id: tableId,
+					items: list,
+					total_cost: total,
+					
+				}),
+			});
 
+
+			
+			console.log("dataaaaa", tableId);
+		} catch (error) {
+			console.error("Error creating order:", error);
+		}
+	}
 	const handleCheckout = async () => {
 		try {
 			const payOsResult = await createPayOsPayment(); // Get the order code and checkout URL from PayOS
@@ -132,7 +172,29 @@ const ReceiptScreen = () => {
 
 		fetchData();
 	}, [list]);
-
+	useEffect(() => {
+		const fetchQuantityTable = async () => {
+			try {
+				const response = await fetch(
+					"http://localhost:8080/restaurant/getRestaurant",
+					{
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json",
+							Authorization:
+								"Bearer " + localStorage.getItem("accessToken"),
+						},
+					}
+				);
+				const data = await response.json();
+				// console.log(data.data[0].quantity_table);
+				setQuantityTable(data.data[0].quantity_table);
+			} catch (error) {
+				console.error("Error fetching data:", error);
+			}
+		};
+		fetchQuantityTable();
+	}, []);
 	useEffect(() => {
 		const getPrice = async () => {
 			let current_price = 0;
@@ -156,8 +218,59 @@ const ReceiptScreen = () => {
 	if (loadingLogin) {
 		return <div></div>;
 	}
+	const showCheckoutModal = () => {	
+		setIsModalCheckOutVisible(true);
+	};
+	const handleCancelCheckout = () => {
+		setIsModalCheckOutVisible(false);
+	};
+	const handleOkCheckout = () => {
+		if(paymentMethod === "cash") {
+			if(tableId <= 0 || tableId > parseInt(quantity_table)) {
+			failedTableId();
+			setIsModalCheckOutVisible(false);
+		} else {
+			setIsModalCheckOutVisible(false);
+			showConfirmCheckoutModal(); 
+		}
+			
+		}
+		else if (paymentMethod === "QR") {
+			if(tableId <= 0 || tableId > parseInt(quantity_table)) {
+			failedTableId();
+			setIsModalCheckOutVisible(false);
+		} else {
+			handleCheckout();
+			setIsModalCheckOutVisible(false);
+		}
+		}
+		setPaymentMethod("");
+	};
+	const showConfirmCheckoutModal = () => {
+		setCashConfirmModalVisible(true);
+	};
+	const handleCancelConfirmCheckout = () => {
+		setCashConfirmModalVisible(false);
+	};
+	const handleOkConfirmCheckout = () => {
+		setCashConfirmModalVisible(false);
+		
+			createCashOrder();
+			setList([]);
+			// navigate("/food");
+			setTableId(0);
+			addSuccess();
+		
+	};
+	const handleSelectChange = (value) => {
+		setPaymentMethod(value);
+	};
+	const handleInputChange = (e) => {
+		setTableId(e.target.value);
+	};
 	return (
 		<div className="receipt-screen">
+			{contextHolder}
 			<Header label="receipt" />
 			{loading ? (
 				<Loading loading={loading} />
@@ -176,17 +289,64 @@ const ReceiptScreen = () => {
 							);
 						})
 					)}
+					<div className="table-input">
+						<label>Table ID:</label>
+						<Input
+							name="tableId"
+							value={tableId}
+							onChange={handleInputChange}
+						/>
+					</div>
 					<div className="total">
 						<h2>
 							Tổng số tiền:{" "}
-							{new Intl.NumberFormat("vi-VN").format(total)}
+							{new Intl.NumberFormat("vi-VN").format(total)} VND
 						</h2>
 					</div>
 					{/* Add button to checkout */}
+
 					<div className="checkout-btn">
-						<Button type="primary" onClick={handleCheckout}>
+						<Button
+							type="primary"
+							onClick={() => {
+								showCheckoutModal();
+							}}
+						>
 							Checkout
 						</Button>
+						<Modal
+							title="Xác nhận thanh toán"
+							open={isModalCheckOutVisible}
+							onOk={handleOkCheckout}
+							onCancel={handleCancelCheckout}
+						>
+							<div>
+								<label>Chọn phương thức thanh toán:</label>
+								<Select
+									value={paymentMethod}
+									onChange={handleSelectChange}
+									style={{ width: "100%" }}
+								>
+									<Select.Option value="cash">
+										Tiền mặt
+									</Select.Option>
+
+									<Select.Option value="QR">
+										Quét QR
+									</Select.Option>
+								</Select>
+							</div>
+						</Modal>
+						<Modal
+							title="Xác nhận thanh toán tiền mặt"
+							open={isCashConfirmModalVisible}
+							onOk={handleOkConfirmCheckout}
+							onCancel={handleCancelConfirmCheckout}
+						>
+							<div>
+								<h3>Đã thanh toán bằng tiền mặt?</h3>
+							</div>
+						</Modal>
 					</div>
 				</div>
 			)}

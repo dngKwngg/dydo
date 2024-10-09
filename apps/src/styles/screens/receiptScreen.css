@@ -3,6 +3,7 @@
 	min-height: calc(100vh - 270px);
 	margin: auto;
     font-family: "IBM Plex Sans", sans-serif;
+	margin-bottom: 50px;
 	.receipt {
 		margin-top: 30px;
 	}
@@ -11,5 +12,15 @@
 		font-weight: bold;
 		text-transform: uppercase;
 		margin-top: 30px;
+	}
+	.table-input{
+		margin-top: 20px;
+	}
+
+	.checkout-btn{
+		margin-top: 16px;
+		button{
+			width: 100%;
+		}
 	}
 }
