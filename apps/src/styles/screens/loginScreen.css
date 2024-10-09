@@ -24,21 +24,44 @@
 		margin-top: 40px;
 		button {
 			background: #ddc092;
+			color: #000;
 		}
 
 		button:hover {
-			background: #a1dd92 !important;
+			background: #99ea85 !important;
 		}
 
 		.ant-checkbox-checked .ant-checkbox-inner{
 			background-color: #a1dd92;
     		border-color: #a1dd92;
 		}
+
+		.ant-form-item-row{
+			display: flex;
+			gap:10px;
+		}
+
+		.ant-form-item-label{
+			width: 100px;
+		}
 	}
 	
     .login-footer{
         margin-top: 12px;
+		a{
+			color: #000;
+			text-decoration: none;
+			p:hover{
+				cursor: pointer;
+				color: blue;
+				text-decoration: underline;
+			}
+		}
     }
+
+	.login-crediental{
+		padding-top: 100px;
+	}
 }
 
 .ant-input-outlined {

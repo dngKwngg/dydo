@@ -1,6 +1,8 @@
 const connection = require("../config/connection");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const nodemailer = require("nodemailer");
+const crypto = require("crypto");
 
 const generateAccessToken = (user, res) => {
 	const accessToken = jwt.sign(
@@ -76,104 +78,211 @@ exports.login = async (req, res) => {
 		}
 	);
 };
+
 exports.authenticateToken = async (req, res, next) => {
-	try {
-		let token;
-		if (
-			req.headers.authorization &&
-			req.headers.authorization.startsWith("Bearer")
-		) {
-			token = req.headers.authorization.split(" ")[1];
-		}
-		console.log(req.headers);
-		if (!token) {
-			return res.status(401).json({
-				status: "Failed",
-				error: "No token provided. Please login",
-			});
-		}
-		const decode = jwt.verify(token, process.env.JWT_SECRET);
-		console.log(decode);
+    try {
+        let token;
+        if (
+            req.headers.authorization &&
+            req.headers.authorization.startsWith("Bearer")
+        ) {
+            token = req.headers.authorization.split(" ")[1];
+        }
+        if (!token) {
+            return res.status(401).json({
+                status: "Failed",
+                error: "No token provided. Please login",
+            });
+        }
+        const decode = jwt.verify(token, process.env.JWT_SECRET);
+        console.log(decode);
 
-		connection.query(
-			`SELECT * FROM users WHERE user_id = ${decode.id}`,
-			(err, currentUser, fields) => {
-				if (currentUser.length == 0) {
-					return res.status(401).json({
-						status: "Failed",
-						error: "User not found",
-					});
-				}
+        connection.query(
+            `SELECT * FROM users WHERE user_id = ${decode.id}`,
+            (err, currentUser, fields) => {
+                if (currentUser.length == 0) {
+                    return res.status(401).json({
+                        status: "Failed",
+                        error: "User not found",
+                    });
+                }
 
-				if (currentUser[0].last_change_password_date) {
-					console.log(
-						"check",
-						decode.iat,
-						parseInt(
-							currentUser[0].last_change_password_date.getTime() /
-								1000,
-							10
-						)
-					);
-					// check if user is using old token which was generated before changing password
-					if (
-						decode.iat <
-						parseInt(
-							currentUser[0].last_change_password_date.getTime() /
-								1000,
-							10
-						)
-					) {
-						return res.status(400).json({
-							status: "Failed",
-							error: "Your password has changed, please login again!",
-						});
-					}
+                if (currentUser[0].last_change_password_date) {
+                    console.log(
+                        "check",
+                        decode.iat,
+                        parseInt(
+                            currentUser[0].last_change_password_date.getTime() /
+                                1000,
+                            10
+                        )
+                    );
+                    // check if user is using old token which was generated before changing password
+                    if (
+                        decode.iat <
+                        parseInt(
+                            currentUser[0].last_change_password_date.getTime() /
+                                1000,
+                            10
+                        )
+                    ) {
+                        return res.status(400).json({
+                            status: "Failed",
+                            error: "Your password has changed, please login again!",
+                        });
+                    }
 
-					const currentTime = new Date(
-						new Date().setTime(
-							new Date().getTime() + 7 * 60 * 60 * 1000
-						)
-					);
-					// check if token's expired date > current date
-					if (decode.exp < parseInt(currentTime / 1000, 10)) {
-						return res.status(400).json({
-							status: "Failed",
-							error: "Your token is expired!",
-						});
-					}
-				}
+                    const currentTime = new Date(
+                        new Date().setTime(
+                            new Date().getTime() + 7 * 60 * 60 * 1000
+                        )
+                    );
+                    // check if token's expired date > current date
+                    if (decode.exp < parseInt(currentTime / 1000, 10)) {
+                        return res.status(400).json({
+                            status: "Failed",
+                            error: "Your token is expired!",
+                        });
+                    }
+                }
 
-				req.user = currentUser[0];
-				console.log("auth success");
-				next();
-			}
-		);
-	} catch (e) {
-		statusCode = 500 || e.statusCode;
-		return res.status(statusCode).json({
-			status: "Failed",
-			error: e,
-		});
-	}
+                req.user = currentUser[0];
+                console.log("auth success");
+                next();
+            }
+        );
+    } catch (e) {
+        statusCode = 500 || e.statusCode;
+        return res.status(statusCode).json({
+            status: "Failed",
+            error: e,
+        });
+    }
 };
 
-//lấy ra danh sách user	
-// http://localhost:8080/auth/getAllUsers
-exports.getAllUsers = async (req, res) => {
-	connection.query(
-		"SELECT * FROM users",
-		(err, result, fields) => {
-			if (err) {
-				return res.status(500).json({
-					status: "Failed",
-					error: err,
-				});
-			}
-			return res.status(200).json({
-				status: "Success",
-				data: result,
-			});
-		}
-	);
-}
+exports.forgotPassword = (req, res) => {
+    const { email } = req.body;
+
+    // Check if user exists
+    connection.query(
+        "SELECT * FROM users WHERE email = ?",
+        [email],
+        (err, result) => {
+            if (err) {
+                return res.status(500).json({ status: "Failed", error: err });
+            }
+            if (!result[0]) {
+                return res
+                    .status(404)
+                    .json({ status: "Failed", message: "User not found" });
+            }
+
+            // Generate OTP
+            const otp = crypto.randomInt(100000, 999999).toString(); // Generate a 6-digit OTP
+            const otpExpires = Date.now() + 10 * 60 * 1000; // OTP expires in 10 minutes
+
+            // Update user's record with the OTP and expiry time
+            connection.query(
+                "UPDATE users SET otp = ?, otp_expires = ? WHERE email = ?",
+                [otp, otpExpires, email],
+                (err, updateResult) => {
+                    if (err) {
+                        return res
+                            .status(500)
+                            .json({ status: "Failed", error: err });
+                    }
+
+                    // Configure Nodemailer to send email
+                    const transporter = nodemailer.createTransport({
+                        host: "sandbox.smtp.mailtrap.io",
+                        port: 2525,
+                        auth: {
+                            user: process.env.MAILTRAP_USER,
+                            pass: process.env.MAILTRAP_PASS,
+                        },
+                    });
+
+
+                    // Email message
+                    const mailOptions = {
+                        from: "no-reply@mailtrap.io",
+                        to: email,
+                        subject: "Password Reset OTP",
+                        text: `Your OTP for password reset is: ${otp}. It expires in 10 minutes.`,
+                    };
+
+                    // Send email
+                    transporter.sendMail(mailOptions, (err, info) => {
+                        if (err) {
+                            return res.status(500).json({
+                                status: "Failed",
+                                error: "Failed to send email",
+                            });
+                        }
+
+                        // OTP email sent successfully
+                        return res.status(200).json({
+                            status: "Success",
+                            message: "OTP sent to email successfully",
+                        });
+                    });
+                }
+            );
+        }
+    );
+};
+
+exports.verifyOtpAndResetPassword = (req, res) => {
+    const { email, otp, newPassword } = req.body;
+
+    // Check if user exists and OTP matches
+    connection.query(
+        "SELECT * FROM users WHERE email = ? AND otp = ?",
+        [email, otp],
+        (err, result) => {
+            if (err) {
+                return res.status(500).json({ status: "Failed", error: err });
+            }
+            if (!result[0]) {
+                return res
+                    .status(400)
+                    .json({ status: "Failed", message: "Invalid OTP" });
+            }
+
+            // Check if OTP has expired
+            if (Date.now() > result[0].otp_expires) {
+                return res
+                    .status(400)
+                    .json({ status: "Failed", message: "OTP has expired" });
+            }
+
+            // Hash the new password
+            bcrypt.hash(newPassword, 10, (err, hashedPassword) => {
+                if (err) {
+                    return res
+                        .status(500)
+                        .json({ status: "Failed", error: err });
+                }
+
+                // Update user's password and clear OTP
+                connection.query(
+                    "UPDATE users SET password = ?, otp = NULL, otp_expires = NULL WHERE email = ?",
+                    [hashedPassword, email],
+                    (err, updateResult) => {
+                        if (err) {
+                            return res
+                                .status(500)
+                                .json({ status: "Failed", error: err });
+                        }
+
+                        // Password updated successfully
+                        return res.status(200).json({
+                            status: "Success",
+                            message: "Password has been reset successfully",
+                        });
+                    }
+                );
+            });
+        }
+    );
+};
