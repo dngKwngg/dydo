@@ -13,3 +13,6 @@ This is an app about booking in restaurant, usage for employee and manager in re
 * Run `npm install` to install node dependencies in each folder (apps & server)
 * Run `npm run dev` to start the server
 * Run `npm start` to start the apps
+
+Tài khoản staff: VD: staffmydinh1@gmail.com, mật khẩu: 123456
+Tài khoản admin: VD: admin1@gmail.com, mật khẩu: 123456
