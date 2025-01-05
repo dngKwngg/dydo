@@ -1,4 +1,4 @@
-const connection = require("../config/connection");
+import prisma from "../shared/prisma";
 
 async function queryDatabase(query, params) {
 	return new Promise((resolve, reject) => {

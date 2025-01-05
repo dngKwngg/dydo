@@ -1,4 +1,4 @@
-const connection = require("../config/connection");
+const connection = require("../shared/prisma");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");

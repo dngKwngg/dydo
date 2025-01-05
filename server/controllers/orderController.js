@@ -1,4 +1,4 @@
-const connection = require("../config/connection");
+const connection = require("../shared/prisma");
 const payOS = require("../utils/payos");
 
 //Tạo một order
