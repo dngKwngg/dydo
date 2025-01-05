@@ -1,5 +1,5 @@
-const connection = require("../config/connection");
-const bcrypt = require("bcrypt");
+import prisma from "../shared/prisma.js";
+import bcrypt from "bcrypt";
 async function queryDatabase(query, params) {
 	return new Promise((resolve, reject) => {
 		connection.query(query, params, (err, result, fields) => {
@@ -9,7 +9,7 @@ async function queryDatabase(query, params) {
 	});
 }
 //http://localhost:8080/user/addUser
-exports.addUser = async (req, res) => {
+const addUser = async (req, res) => {
 	const { centre_id, role, email, password } = req.body;
 	const bcryptPassword = bcrypt.hashSync(password, 10);
 	try {
@@ -28,7 +28,7 @@ exports.addUser = async (req, res) => {
 		});
 	}
 };
-exports.DeleteUser = async (req, res) => {
+const deleteUser = async (req, res) => {
 	const { email } = req.body;
 	try {
 		await queryDatabase(`DELETE FROM users WHERE email = ?`, [email]);
@@ -44,7 +44,7 @@ exports.DeleteUser = async (req, res) => {
 	}
 };
 
-exports.getAllUsers = async (req, res) => {
+const getAllUsers = async (req, res) => {
 	connection.query("SELECT * FROM users", (err, result, fields) => {
 		if (err) {
 			return res.status(500).json({
@@ -58,3 +58,9 @@ exports.getAllUsers = async (req, res) => {
 		});
 	});
 };
+
+export default {
+	addUser,
+	deleteUser,
+	getAllUsers,
+}

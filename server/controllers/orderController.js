@@ -1,5 +1,6 @@
-const connection = require("../shared/prisma");
-const payOS = require("../utils/payos");
+
+// const payOS = require("../utils/payos");
+import payOS from "../utils/payos.js";
 
 //Tạo một order
 //done
@@ -38,7 +39,8 @@ async function getPrice(item_id) {
 	}
 	return result[0].price;
 }
-exports.createOrder = async (req, res) => {
+
+const createOrder = async (req, res) => {
 	console.log(req.body);
 	const { centre_id } = req.user;
 	const { order_code, table_id, items, total_cost } = req.body;
@@ -116,7 +118,7 @@ exports.createOrder = async (req, res) => {
 	}
 };
 //http://localhost:8080/order/createCashOrder
-exports.createCashOrder = async (req, res) => {
+const createCashOrder = async (req, res) => {
 	console.log(req.body);
 	const { centre_id } = req.user;
 	const { order_code, table_id, items, total_cost } = req.body;
@@ -195,7 +197,7 @@ exports.createCashOrder = async (req, res) => {
 };
 // lấy ra lịch sử đơn hàng theo centre_id
 // http://localhost:8080/order/getOrderHistory
-exports.getOrderHistory = async (req, res) => {
+const getOrderHistory = async (req, res) => {
 	console.log("req", req);
 	console.log("req.user", req.user);
 	const { centre_id } = req.user;
@@ -224,7 +226,7 @@ exports.getOrderHistory = async (req, res) => {
 
 // lấy ra chi tiết đơn hàng của 1 bàn
 // http://localhost:8080/order/getOrderDetail
-exports.getOrderDetail = async (req, res) => {
+const getOrderDetail = async (req, res) => {
 	const { orders_id } = req.body;
 	try {
 		const result = await queryDatabase(
@@ -253,7 +255,7 @@ exports.getOrderDetail = async (req, res) => {
 };
 // lấy ra tất cả lịch sử đơn hàng
 // http://localhost:8080/order/getAllOrderHistory
-exports.getAllOrderHistory = async (req, res) => {
+const getAllOrderHistory = async (req, res) => {
 	try {
 		const result = await queryDatabase(`SELECT * FROM orders `);
 		if (result.length === 0) {
@@ -276,7 +278,7 @@ exports.getAllOrderHistory = async (req, res) => {
 
 // Add payOs to order
 
-exports.createPayOsOrder = async (req, res) => {
+const createPayOsOrder = async (req, res) => {
 	const { description, returnUrl, cancelUrl, amount } = req.body;
 	const body = {
 		orderCode: Number(String(new Date().getTime()).slice(-6)),
@@ -314,7 +316,7 @@ exports.createPayOsOrder = async (req, res) => {
 	}
 };
 
-exports.getPayOsOrderInfo = async (req, res) => {
+const getPayOsOrderInfo = async (req, res) => {
 	try {
 		const order = await payOS.getPaymentLinkInformation(req.params.orderId);
 		if (!order) {
@@ -339,7 +341,7 @@ exports.getPayOsOrderInfo = async (req, res) => {
 	}
 };
 
-exports.cancelPayOsOrder = async (req, res) => {
+const cancelPayOsOrder = async (req, res) => {
 	try {
 		const { orderId } = req.params;
 		const body = req.body;
@@ -369,7 +371,7 @@ exports.cancelPayOsOrder = async (req, res) => {
 	}
 };
 
-exports.confirmPayOsWebhook = async (req, res) => {
+const confirmPayOsWebhook = async (req, res) => {
 	const { webhookUrl } = req.body;
 	try {
 		await payOS.confirmWebhook(webhookUrl);
@@ -388,7 +390,7 @@ exports.confirmPayOsWebhook = async (req, res) => {
 	}
 };
 // https://polite-aphid-large.ngrok-free.app/order/receiveHook
-exports.receiveWebhook = async (req, res) => {
+const receiveWebhook = async (req, res) => {
 	console.log("Webhook data: ", req.body);
 	const orderCode = req.body.data.orderCode;
 
@@ -405,7 +407,7 @@ exports.receiveWebhook = async (req, res) => {
 	});
 };
 
-exports.updateFailedOrderStatus = async (req, res) => {
+const updateFailedOrderStatus = async (req, res) => {
 	const { orderCode, status } = req.body;
 
 	try {
@@ -431,7 +433,7 @@ exports.updateFailedOrderStatus = async (req, res) => {
 //done - admin
 // lấy ra doanh thu của các centre_id tháng này
 // http://localhost:8080/order/getRevenueByMonthForAdmin
-exports.getRevenueByMonthForAdmin = async (req, res) => {
+const getRevenueByMonthForAdmin = async (req, res) => {
 	try {
 		const result = await queryDatabase(
 			`SELECT centre_id, 
@@ -465,7 +467,7 @@ exports.getRevenueByMonthForAdmin = async (req, res) => {
 //done - admin
 //lấy ra tổng doanh thu theo tháng và năm (all centre)
 // http://localhost:8080/order/getAllRevenueByMonthForAdmin
-exports.getAllRevenueByMonthForAdmin = async (req, res) => {
+const getAllRevenueByMonthForAdmin = async (req, res) => {
 	try {
 		const result = await queryDatabase(
 			`SELECT 
@@ -500,7 +502,7 @@ exports.getAllRevenueByMonthForAdmin = async (req, res) => {
 //done - admin
 // lấy ra doanh thu của các centre_id theo hôm nay
 // http://localhost:8080/order/getRevenueByDateForAdmin
-exports.getRevenueByDateForAdmin = async (req, res) => {
+const getRevenueByDateForAdmin = async (req, res) => {
 	try {
 		const result = await queryDatabase(
 			`SELECT centre_id, 
@@ -531,7 +533,7 @@ exports.getRevenueByDateForAdmin = async (req, res) => {
 //done - admin
 // lấy ra tổng doanh thu theo ngày tháng năm (all centre)
 // http://localhost:8080/order/getAllRevenueByDateForAdmin
-exports.getAllRevenueByDateForAdmin = async (req, res) => {
+const getAllRevenueByDateForAdmin = async (req, res) => {
 	try {
 		const result = await queryDatabase(
 			//sử dụng date format để lấy ngày tháng năm mà không bị ảnh hưởng bới múi giờ
@@ -565,7 +567,7 @@ exports.getAllRevenueByDateForAdmin = async (req, res) => {
 //done - admin
 // lấy ra doanh thu theo centre_id năm nay
 // http://localhost:8080/order/getRevenueByYearForAdmin
-exports.getRevenueByYearForAdmin = async (req, res) => {
+const getRevenueByYearForAdmin = async (req, res) => {
 	try {
 		const result = await queryDatabase(
 			`SELECT centre_id, 
@@ -596,7 +598,7 @@ exports.getRevenueByYearForAdmin = async (req, res) => {
 //done - admin
 //lấy ra tổng doanh thu theo năm (all centre)
 // http://localhost:8080/order/getAllRevenueByYearForAdmin
-exports.getAllRevenueByYearForAdmin = async (req, res) => {
+const getAllRevenueByYearForAdmin = async (req, res) => {
 	try {
 		const result = await queryDatabase(
 			`SELECT 
@@ -628,7 +630,7 @@ exports.getAllRevenueByYearForAdmin = async (req, res) => {
 //done - staff
 // lấy ra doanh thu của centre staff đang làm việc theo tháng và năm
 // http://localhost:8080/order/getRevenueByMonthForStaff
-exports.getRevenueByMonthForStaff = async (req, res) => {
+const getRevenueByMonthForStaff = async (req, res) => {
 	const { centre_id } = req.user;
 	try {
 		const result = await queryDatabase(
@@ -662,7 +664,7 @@ exports.getRevenueByMonthForStaff = async (req, res) => {
 //done - staff
 // lấy ra doanh thu của centre mà staff đang làm việc theo năm
 // http://localhost:8080/order/getRevenueByYearForStaff
-exports.getRevenueByYearForStaff = async (req, res) => {
+const getRevenueByYearForStaff = async (req, res) => {
 	const { centre_id } = req.user;
 	try {
 		const result = await queryDatabase(
@@ -695,7 +697,7 @@ exports.getRevenueByYearForStaff = async (req, res) => {
 //done - staff
 // lấy ra doanh thu của centre mà staff đang làm việc theo ngày tháng năm
 // http://localhost:8080/order/getRevenueByDateForStaff
-exports.getRevenueByDateForStaff = async (req, res) => {
+const getRevenueByDateForStaff = async (req, res) => {
 	const { centre_id } = req.user;
 	try {
 		const result = await queryDatabase(
@@ -724,4 +726,27 @@ exports.getRevenueByDateForStaff = async (req, res) => {
 			error: err.message,
 		});
 	}
+};
+
+export default {
+	createOrder,
+	createCashOrder,
+	getOrderHistory,
+	getOrderDetail,
+	getAllOrderHistory,
+	createPayOsOrder,
+	getPayOsOrderInfo,
+	cancelPayOsOrder,
+	confirmPayOsWebhook,
+	receiveWebhook,
+	updateFailedOrderStatus,
+	getRevenueByMonthForAdmin,
+	getAllRevenueByMonthForAdmin,
+	getRevenueByDateForAdmin,
+	getAllRevenueByDateForAdmin,
+	getRevenueByYearForAdmin,
+	getAllRevenueByYearForAdmin,
+	getRevenueByMonthForStaff,
+	getRevenueByYearForStaff,
+	getRevenueByDateForStaff,
 };

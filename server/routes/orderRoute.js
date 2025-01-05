@@ -1,7 +1,8 @@
-const express = require("express");
+import express from "express";
+import orderController from "../controllers/orderController.js";
+import authController from "../controllers/authController.js";
 const router = express.Router();
-const orderController = require("../controllers/orderController");
-const authController = require("../controllers/authController");
+
 
 // Protected routes (with authentication)
 router.post(
@@ -99,4 +100,5 @@ router.get(
 	authController.authenticateToken,
 	orderController.getRevenueByDateForStaff
 );
-module.exports = router;
+
+export default router;

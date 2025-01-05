@@ -1,13 +1,13 @@
-import prisma from "../shared/prisma";
+import prisma from "../shared/prisma.js";
 
-async function queryDatabase(query, params) {
-	return new Promise((resolve, reject) => {
-		connection.query(query, params, (err, result, fields) => {
-			if (err) reject(err);
-			resolve(result);
-		});
-	});
-}
+// async function queryDatabase(query, params) {
+// 	return new Promise((resolve, reject) => {
+// 		connection.query(query, params, (err, result, fields) => {
+// 			if (err) reject(err);
+// 			resolve(result);
+// 		});
+// 	});
+// }
 
 // {
 // "name" : "Chùa",
@@ -22,7 +22,7 @@ async function queryDatabase(query, params) {
 
 //http://localhost:8080/restaurant/addNewRestaurant
 //thêm cơ sở mới
-exports.addNewRestaurant = async (req, res) => {
+const addNewRestaurant = async (req, res) => {
 	const {
 		name,
 		address,
@@ -33,18 +33,17 @@ exports.addNewRestaurant = async (req, res) => {
 		quantity_table,
 	} = req.body;
 	try {
-		await queryDatabase(
-			`INSERT INTO restaurant_centre (name, address, area, hotline, opening_month, opening_year, quantity_table) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-			[
-				name,
-				address,
-				area,
-				hotline,
-				opening_month,
-				opening_year,
-				quantity_table,
-			]
-		);
+		await prisma.restaurant_centre.create({
+			data: {
+				name: name,
+				address: address,
+				area: area,
+				hotline: hotline,
+				opening_month: opening_month,
+				opening_year: opening_year,
+				quantity_table: quantity_table,
+			},
+		})
 		return res.status(200).json({
 			status: "Success",
 			message: "Done add new restaurant",
@@ -59,7 +58,7 @@ exports.addNewRestaurant = async (req, res) => {
 
 //http://localhost:8080/restaurant/editRestaurant
 //edit restaurant
-exports.editRestaurant = async (req, res) => {
+const editRestaurant = async (req, res) => {
 	const {
 		centre_id,
 		name,
@@ -134,7 +133,7 @@ exports.editRestaurant = async (req, res) => {
 };
 
 //http://localhost:8080/restaurant/getAllRestaurant
-exports.getAllRestaurant = async (req, res) => {
+const getAllRestaurant = async (req, res) => {
 	try {
 		const result = await queryDatabase(`SELECT * FROM restaurant_centre`);
 		return res.status(200).json({
@@ -150,7 +149,7 @@ exports.getAllRestaurant = async (req, res) => {
 };
 
 //http://localhost:8080/restaurant/getRestaurant
-exports.getRestaurant = async (req, res) => {
+const getRestaurant = async (req, res) => {
 	const { centre_id } = req.user;
 	try {
 		const result = await queryDatabase(`SELECT * FROM restaurant_centre WHERE centre_id = ?`, [centre_id]);
@@ -165,3 +164,10 @@ exports.getRestaurant = async (req, res) => {
 		});
 	}
 };
+
+export default {
+	addNewRestaurant,
+	editRestaurant,
+	getAllRestaurant,
+	getRestaurant
+}

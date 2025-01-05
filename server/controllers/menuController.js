@@ -1,4 +1,4 @@
-const connection = require("../config/connection");
+
 
 async function queryDatabase(query, params) {
 	return new Promise((resolve, reject) => {
@@ -32,7 +32,7 @@ async function updateParam(key, value, item_id) {
 // }
 // chỉnh sửa món ăn
 //http://localhost:8080/menu/updatePrice
-exports.updateInfoMenu = async (req, res) => {
+const updateInfoMenu = async (req, res) => {
 	const { item_id, price, item_name, type, src } = req.body;
 	if (price !== undefined) {
 		//Kiểm tra item_id có phải là số nguyên lớn hơn 0 hay không
@@ -91,7 +91,7 @@ exports.updateInfoMenu = async (req, res) => {
 // Thêm một món ăn vào menu
 //http://localhost:8080/menu/addMenuItem
 
-exports.addMenuItem = async (req, res) => {
+const addMenuItem = async (req, res) => {
 	const { type, item_name, price, src } = req.body;
 	//Kiểm tra type có phải là chuỗi hay không
 	if (typeof type !== "string") {
@@ -162,7 +162,7 @@ exports.addMenuItem = async (req, res) => {
 // }
 //Xóa món ăn khỏi menu
 // http://localhost:8080/menu/deleteMenuItem
-exports.deleteMenuItem = async (req, res) => {
+const deleteMenuItem = async (req, res) => {
 	const { item_id } = req.body;
 	//Kiểm tra item_id có phải là số nguyên lớn hơn 0 hay không
 	if (!Number.isInteger(item_id) || item_id <= 0) {
@@ -199,7 +199,7 @@ exports.deleteMenuItem = async (req, res) => {
 
 // lấy danh sách món ăn
 //http://localhost:8080/menu/listFood
-exports.listFood = async (req, res) => {
+const listFood = async (req, res) => {
 	try {
 		const result = await queryDatabase(
 			`SELECT * FROM menu where type not in ('Đồ uống') and active = 1`
@@ -218,7 +218,7 @@ exports.listFood = async (req, res) => {
 
 // lấy danh sách đồ uống
 //http://localhost:8080/menu/listDrink
-exports.listDrink = async (req, res) => {
+const listDrink = async (req, res) => {
 	try {
 		const result = await queryDatabase(
 			`SELECT * FROM menu where type in ('Đồ uống') and active = 1`
@@ -237,7 +237,7 @@ exports.listDrink = async (req, res) => {
 
 // lấy danh sách món ăn theo item_id
 //http://localhost:8080/menu/listFoodById
-exports.listFoodById = async (req, res) => {
+const listFoodById = async (req, res) => {
 	const { list_item } = req.body;
 
 	// Tạo danh sách ID từ list_item
@@ -275,7 +275,7 @@ exports.listFoodById = async (req, res) => {
 
 // lấy danh sách món ăn
 //http://localhost:8080/menu/listMenu
-exports.listMenu = async (req, res) => {
+const listMenu = async (req, res) => {
 	try {
 		const result = await queryDatabase(`SELECT * FROM menu where active = 1 `);
 		return res.status(200).json({
@@ -290,7 +290,7 @@ exports.listMenu = async (req, res) => {
 	}
 };
 // http://localhost:8080/menu/highlightMenu
-exports.getHighlightMenu = async (req, res) => {
+const getHighlightMenu = async (req, res) => {
 	try {
 		const result = await queryDatabase(
 			`
@@ -308,4 +308,15 @@ exports.getHighlightMenu = async (req, res) => {
 			error: err,
 		});
 	}
+}
+
+export default {
+	updateInfoMenu,
+	addMenuItem,
+	deleteMenuItem,
+	listFood,
+	listDrink,
+	listFoodById,
+	listMenu,
+	getHighlightMenu
 }

@@ -1,7 +1,9 @@
-const express = require("express");
+import express from "express";
+import menuController from "../controllers/menuController.js";
+import authController from "../controllers/authController.js";
+
 const router = express.Router();
-const menuController = require("../controllers/menuController");
-const authController = require("../controllers/authController");
+
 router.use(authController.authenticateToken);
 router.post("/updateInfoMenu", menuController.updateInfoMenu);
 router.post("/addMenuItem", menuController.addMenuItem);
@@ -11,4 +13,5 @@ router.get("/listDrink", menuController.listDrink);
 router.post("/listFoodById", menuController.listFoodById);
 router.get("/listMenu", menuController.listMenu);
 router.get("/highlightMenu", menuController.getHighlightMenu);
-module.exports = router;
+
+export default router;

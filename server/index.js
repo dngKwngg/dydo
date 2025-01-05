@@ -1,7 +1,7 @@
-const dotenv = require("dotenv");
-const app = require("./app.js");
+import dotenv from "dotenv";
+import app from "./app.js";
 // Temp temp temp temp temp
-const connection = require("./config/connection.js");
+// const connection = require("./config/connection.js");
 
 // Load environment variables
 dotenv.config({ path: "./.env" });

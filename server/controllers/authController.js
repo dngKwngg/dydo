@@ -1,8 +1,8 @@
-const connection = require("../shared/prisma");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
-const nodemailer = require("nodemailer");
-const crypto = require("crypto");
+
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import nodemailer from "nodemailer";
+import crypto from "crypto";
 
 const generateAccessToken = (user, res) => {
 	const accessToken = jwt.sign(
@@ -24,7 +24,7 @@ const generateAccessToken = (user, res) => {
 // http://localhost:8080/auth/login
 // "email" : "staffbadinh3@gmail.com",
 //     "password" : "123456"
-exports.login = async (req, res) => {
+const login = async (req, res) => {
 	connection.query(
 		"SELECT * FROM users WHERE email = ?",
 		[req.body.email],
@@ -77,7 +77,7 @@ exports.login = async (req, res) => {
 	);
 };
 
-exports.authenticateToken = async (req, res, next) => {
+const authenticateToken = async (req, res, next) => {
 	try {
 		let token;
 		if (
@@ -158,7 +158,7 @@ exports.authenticateToken = async (req, res, next) => {
 	}
 };
 
-exports.forgotPassword = (req, res) => {
+const forgotPassword = (req, res) => {
 	const { email } = req.body;
 
 	// Check if user exists
@@ -229,7 +229,7 @@ exports.forgotPassword = (req, res) => {
 	);
 };
 
-exports.verifyOtpAndResetPassword = (req, res) => {
+const verifyOtpAndResetPassword = (req, res) => {
 	const { email, otp, newPassword } = req.body;
 
 	// Check if user exists and OTP matches
@@ -283,3 +283,12 @@ exports.verifyOtpAndResetPassword = (req, res) => {
 		}
 	);
 };
+
+export default {
+    generateAccessToken,
+    login,
+    authenticateToken,
+    forgotPassword,
+    verifyOtpAndResetPassword,
+};
+

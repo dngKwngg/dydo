@@ -1,12 +1,14 @@
-const express = require("express");
+import express from "express";
+
+import restaurantController from "../controllers/restaurantController.js";
+import authController from "../controllers/authController.js";
+
 const router = express.Router();
-const restaurantController = require("../controllers/restaurantController");
-const addNewRestaurant = require("../controllers/restaurantController");
-const authController = require("../controllers/authController");
 
 router.use(authController.authenticateToken);
 router.post("/addNewRestaurant", restaurantController.addNewRestaurant);
 router.post("/editRestaurant", restaurantController.editRestaurant);
 router.get("/getAllRestaurant", restaurantController.getAllRestaurant);
 router.get("/getRestaurant", restaurantController.getRestaurant);
-module.exports = router;
+
+export default router;

@@ -1,4 +1,4 @@
-const connection = require("../config/connection");
+import prisma from "../shared/prisma";
 const payOS = require("../utils/payos");
 
 exports.verifyPayOsWebhookData = async function (req, res) {
