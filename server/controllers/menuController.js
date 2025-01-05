@@ -1,4 +1,5 @@
 const connection = require("../config/connection");
+
 async function queryDatabase(query, params) {
 	return new Promise((resolve, reject) => {
 		connection.query(query, params, (err, result, fields) => {
@@ -7,6 +8,7 @@ async function queryDatabase(query, params) {
 		});
 	});
 }
+
 async function updateParam(key, value, item_id) {
 	const result = await queryDatabase(`SELECT * FROM menu WHERE item_id = ?`, [
 		item_id,

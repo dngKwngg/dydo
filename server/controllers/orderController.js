@@ -387,8 +387,8 @@ exports.confirmPayOsWebhook = async (req, res) => {
 		});
 	}
 };
-//ox-peaceful-rightly.ngrok-free.app
-https: exports.receiveWebhook = async (req, res) => {
+// https://polite-aphid-large.ngrok-free.app/order/receiveHook
+exports.receiveWebhook = async (req, res) => {
 	console.log("Webhook data: ", req.body);
 	const orderCode = req.body.data.orderCode;
 

@@ -9,12 +9,12 @@ const generateAccessToken = (user, res) => {
 		{ id: user.user_id, role: user.role }, // dữ liệu được mã hóa
 		process.env.JWT_SECRET, // mã bí mật
 		{
-			expiresIn: process.env.JWT_EXPIRES_TIME * 60 * 60 * 1000, // thời gian hết hạn
+			expiresIn: process.env.JWT_EXPIRES_TIME, // thời gian hết hạn
 		}
 	);
 	const cookieOptions = {
 		exrires: new Date(
-			Date.now() + process.env.COOKIE_EXPIRES_TIME * 60 * 60 * 1000
+			Date.now() + process.env.COOKIE_EXPIRES_TIME,
 		),
 		httpOnly: true,
 	};
@@ -45,7 +45,7 @@ exports.login = async (req, res) => {
 			}
 			// tim thay user
 			else {
-				console.log(result[0]);
+				// console.log(result[0]);
 				// so sanh password
 				bcrypt.compare(
 					req.body.password,
@@ -93,7 +93,7 @@ exports.authenticateToken = async (req, res, next) => {
 			});
 		}
 		const decode = jwt.verify(token, process.env.JWT_SECRET);
-		console.log(decode);
+		// console.log(decode);
 
 		connection.query(
 			`SELECT * FROM users WHERE user_id = ${decode.id}`,
@@ -106,15 +106,15 @@ exports.authenticateToken = async (req, res, next) => {
 				}
 
 				if (currentUser[0].last_change_password_date) {
-					console.log(
-						"check",
-						decode.iat,
-						parseInt(
-							currentUser[0].last_change_password_date.getTime() /
-								1000,
-							10
-						)
-					);
+					// console.log(
+					// 	"check",
+					// 	decode.iat,
+					// 	parseInt(
+					// 		currentUser[0].last_change_password_date.getTime() /
+					// 			1000,
+					// 		10
+					// 	)
+					// );
 					// check if user is using old token which was generated before changing password
 					if (
 						decode.iat <
@@ -145,7 +145,7 @@ exports.authenticateToken = async (req, res, next) => {
 				}
 
 				req.user = currentUser[0];
-				console.log("auth success");
+				// console.log("auth success");
 				next();
 			}
 		);
