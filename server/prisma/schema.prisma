@@ -8,14 +8,18 @@ datasource db {
 }
 
 model menu {
-  item_id    Int      @id @default(autoincrement())
-  type       String?  @db.VarChar(20)
-  item_name  String?  @db.VarChar(60)
+  item_id    Int         @id @default(autoincrement())
+  type       String?     @db.VarChar(20)
+  item_name  String?     @db.VarChar(60)
   price      Int?
-  src        String?  @db.VarChar(500)
-  active     Boolean? @default(true)
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(0)
-  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(0)
+  src        String?     @db.VarChar(500)
+  active     Boolean?    @default(true)
+  createdAt  DateTime    @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt  DateTime    @default(now()) @map("updated_at") @db.Timestamp(0)
+
+  // Relation with order_item
+  // One-to-Many relation
+  orderItems order_item[] 
 }
 
 model order_item {
@@ -29,6 +33,9 @@ model order_item {
   active     Boolean? @default(true)
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(0)
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamp(0)
+
+  // Relation with menu
+  menu       menu?       @relation(fields: [item_id], references: [item_id])
 }
 
 model orders {

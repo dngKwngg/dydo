@@ -15,37 +15,36 @@ const LoginScreen = () => {
 
 	const navigate = useNavigate();
 	const onFinish = async (values) => {
-		console.log("Success:", values);
-		console.log(JSON.stringify(values));
+        try {
+            const response = await fetch(`http://localhost:8080/auth/login`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(values),
+            });
 
-		// Fetch data
-		try {
-			const response = await fetch(`http://localhost:8080/auth/login`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(values),
-			});
+            const res = await response.json();
+            const user = res.data?.user?.[0];
 
-			const res = await response.json();
-			console.log(res.status);
-			// console.log(res.user.role);
-			if (res.status == "Success") {
-				localStorage.setItem("user", JSON.stringify(res.user));
-				localStorage.setItem("accessToken", res.token);
-				if (res.user.role === "admin") {
-					navigate("/admin");
-				} else {
-					navigate("/home");
-				}
-			} else {
-				loginFailed();
-			}
-		} catch (e) {
-			console.error(e);
-		}
-	};
+            // Guard clause for invalid status or missing user data
+            if (!user || res.status !== "Success") {
+                loginFailed();
+                return;
+            }
+
+            // Proceed with valid user data
+            localStorage.setItem("user", JSON.stringify(user));
+            localStorage.setItem("accessToken", res.data.accessToken);
+
+            // Navigate based on role
+            user.role === "admin" ? navigate("/admin") : navigate("/home");
+        } catch (e) {
+            console.error(e);
+            loginFailed();
+        }
+    };
+
 	const onFinishFailed = (errorInfo) => {
 		console.log("Failed:", errorInfo);
 	};

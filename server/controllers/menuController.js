@@ -1,28 +1,37 @@
+import prisma from "../shared/prisma.js";
 
-
-async function queryDatabase(query, params) {
-	return new Promise((resolve, reject) => {
-		connection.query(query, params, (err, result, fields) => {
-			if (err) reject(err);
-			resolve(result);
-		});
-	});
-}
+// async function queryDatabase(query, params) {
+// 	return new Promise((resolve, reject) => {
+// 		connection.query(query, params, (err, result, fields) => {
+// 			if (err) reject(err);
+// 			resolve(result);
+// 		});
+// 	});
+// }
 
 async function updateParam(key, value, item_id) {
-	const result = await queryDatabase(`SELECT * FROM menu WHERE item_id = ?`, [
-		item_id,
-	]);
+	// const result = await queryDatabase(`SELECT * FROM menu WHERE item_id = ?`, [
+	// 	item_id,
+	// ]);
+	const result = await prisma.menu.findMany({
+		where: {item_id}
+	})
 	if (result.length === 0) {
 		return res.status(404).json({
 			status: "Failed",
 			message: "No menu item found",
 		});
 	}
-	await queryDatabase(`UPDATE menu SET ${key} = ? WHERE item_id = ?`, [
-		value,
-		item_id,
-	]);
+	// await queryDatabase(`UPDATE menu SET ${key} = ? WHERE item_id = ?`, [
+	// 	value,
+	// 	item_id,
+	// ]);
+	await prisma.menu.update({
+		where: {item_id},
+		data: {
+			[key]: value
+		}
+	})
 }
 // {
 // "item_id" : 1,
@@ -43,19 +52,12 @@ const updateInfoMenu = async (req, res) => {
 			});
 		}
 		//Kiểm tra price có phải là số thực hay không
-		if (isNaN(price)) {
-			return res.status(400).json({
-				status: "Failed",
-				message: "Price must be a float",
-			});
-		}
-		//Kiểm tra price có lớn hơn 0 hay không
-		if (!(price > 0)) {
-			return res.status(400).json({
-				status: "Failed",
-				message: "Price must be greater than 0",
-			});
-		}
+		if (isNaN(price) || price <= 0) {
+            return res.status(400).json({
+                status: "Failed",
+                message: "Price must be a positive number",
+            });
+        }
 
 		try {
 			await updateParam("price", price, item_id);
@@ -108,43 +110,21 @@ const addMenuItem = async (req, res) => {
 		});
 	}
 	//Kiểm tra price có phải là số thực hay không
-	if (isNaN(price)) {
-		return res.status(400).json({
-			status: "Failed",
-			message: "Price must be a float",
-		});
-	}
-	//Kiểm tra price có lớn hơn 0 hay không
-	if (!(price > 0)) {
-		return res.status(400).json({
-			status: "Failed",
-			message: "Price must be greater than 0",
-		});
-	}
-	//Thêm một món ăn vào menu
-	// connection.query(
-	// 	`INSERT INTO menu (type, item_name, price)
-	// 	VALUES (?, ?, ?)`,
-	// 	[type, item_name, price],
-	// 	(err, result, fields) => {
-	// 		if (err) {
-	// 			return res.status(500).json({
-	// 				status: "Failed",
-	// 				error: err,
-	// 			});
-	// 		} else {
-	// 			return res.status(200).json({
-	// 				status: "Success",
-	// 				message: "Done add",
-	// 			});
-	// 		}
-	// 	}
-	// );
+	if (isNaN(price) || price <= 0) {
+        return res.status(400).json({
+            status: "Failed",
+            message: "Price must be a positive number",
+        });
+    }
 	try {
-		await queryDatabase(
-			`INSERT INTO menu (type, item_name, price, src) VALUES (?, ?, ?, ?)`,
-			[type, item_name, price, src]
-		);
+		await prisma.menu.create({
+			data: {
+				type,
+				item_name,
+				price,
+				src
+			}
+		})
 		return res.status(200).json({
 			status: "Success",
 			message: "Done add",
@@ -173,18 +153,22 @@ const deleteMenuItem = async (req, res) => {
 	}
 	try {
 		//Kiểm tra item_id có tồn tại hay không
-		const result = await queryDatabase(
-			`SELECT * FROM menu WHERE item_id = ?`,
-			[item_id]
-		);
+		const result = await prisma.menu.findUnique({
+			where: {item_id}
+		})
 		//Kiểm tra nếu không tìm thấy bản ghi phù hợp
-		if (result.length === 0) {
+		if (!result) {
 			return res.status(404).json({
 				status: "Failed",
 				message: "No menu item found",
 			});
 		}
-		await queryDatabase(`UPDATE menu SET active = 0 WHERE item_id = ?`, [item_id]);
+		await prisma.menu.update({
+			where: {item_id},
+			data: {
+				active: false
+			}
+		})
 		return res.status(200).json({
 			status: "Success",
 			message: "Done delete",
@@ -201,9 +185,12 @@ const deleteMenuItem = async (req, res) => {
 //http://localhost:8080/menu/listFood
 const listFood = async (req, res) => {
 	try {
-		const result = await queryDatabase(
-			`SELECT * FROM menu where type not in ('Đồ uống') and active = 1`
-		);
+		const result = await prisma.menu.findMany({
+			where: {
+				type: {not: "Đồ uống"},
+				active: true
+			}
+		})
 		return res.status(200).json({
 			status: "Success",
 			data: result,
@@ -220,9 +207,12 @@ const listFood = async (req, res) => {
 //http://localhost:8080/menu/listDrink
 const listDrink = async (req, res) => {
 	try {
-		const result = await queryDatabase(
-			`SELECT * FROM menu where type in ('Đồ uống') and active = 1`
-		);
+		const result = await prisma.menu.findMany({
+			where: {
+				type: "Đồ uống",
+				active: true
+			}
+		})
 		return res.status(200).json({
 			status: "Success",
 			data: result,
@@ -241,24 +231,38 @@ const listFoodById = async (req, res) => {
 	const { list_item } = req.body;
 
 	// Tạo danh sách ID từ list_item
-	const list_id = list_item.map((item) => item.item_id);
+	const list_id = list_item.map((item) => item.item_id).reverse();
+	console.log(list_id);
 	//đảo ngược mảng list_item
-	const list_id_reverse = list_id.reverse();
+	// const list_id_reverse = list_id.reverse();
 
 	// Chuyển danh sách ID thành chuỗi để sử dụng trong câu lệnh SQL
-	const listIdString = list_id_reverse.join(",");
+	// const listIdString = list_id_reverse.join(",");
 
 	try {
 		// Thực hiện truy vấn và sắp xếp theo thứ tự danh sách ID
-		const query = `
-            SELECT * 
-            FROM menu 
-            WHERE item_id IN (${listIdString}) and active = 1
-            ORDER BY FIELD(item_id, ${listIdString})
-        `;
+		// const query = `
+        //     SELECT * 
+        //     FROM menu 
+        //     WHERE item_id IN (${listIdString}) and active = 1
+        //     ORDER BY FIELD(item_id, ${listIdString})
+        // `;
 
-		// Thực thi câu lệnh SQL
-		const result = await queryDatabase(query);
+		// // Thực thi câu lệnh SQL
+		// const result = await queryDatabase(query);
+		const result = await prisma.menu.findMany({
+			where: {
+				item_id: {
+					in: list_id
+				},
+				active: true
+			},
+			orderBy: {
+				item_id: {
+					in: list_id
+				}
+			}
+		})
 
 		return res.status(200).json({
 			status: "Success",
@@ -277,7 +281,11 @@ const listFoodById = async (req, res) => {
 //http://localhost:8080/menu/listMenu
 const listMenu = async (req, res) => {
 	try {
-		const result = await queryDatabase(`SELECT * FROM menu where active = 1 `);
+		const result = await prisma.menu.findMany({
+			where: {
+				active: true
+			}
+		})
 		return res.status(200).json({
 			status: "Success",
 			data: result,
@@ -292,12 +300,18 @@ const listMenu = async (req, res) => {
 // http://localhost:8080/menu/highlightMenu
 const getHighlightMenu = async (req, res) => {
 	try {
-		const result = await queryDatabase(
-			`
-				select item_name, price, src from menu
-				where item_id in (8, 11, 14, 24, 25, 26)
-			`
-		)
+		const result = await prisma.menu.findMany({
+			where: {
+				item_id: {
+					in: [8, 11, 14, 24, 25, 26]
+				}
+			},
+			select: {
+				item_name: true,
+				price: true,
+				src: true
+			}
+		})
 		return res.status(200).json({
 			status: "Success",
 			data: result,

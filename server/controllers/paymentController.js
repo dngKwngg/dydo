@@ -2,8 +2,8 @@ import prisma from "../shared/prisma";
 const payOS = require("../utils/payos");
 
 exports.verifyPayOsWebhookData = async function (req, res) {
-	console.log("payment handler");
-	console.log(req.body);
+	// console.log("payment handler");
+	// console.log(req.body);
 	const webhookData = payOS.verifyPaymentWebhookData(req.body);
 
 	if (
@@ -26,7 +26,7 @@ exports.verifyPayOsWebhookData = async function (req, res) {
 };
 
 exports.createPayOsPaymentPage = async function (req, res) {
-	console.log(req.body);
+	// console.log(req.body);
 	const YOUR_DOMAIN = "http://localhost:3000";
 	const body = {
 		orderCode: Number(String(Date.now()).slice(-6)),
