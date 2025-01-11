@@ -12,7 +12,7 @@ This is an app about booking in restaurant, usage for employee and manager in re
 * Git clone this repo [here](https://github.com/VuThiThanhVinh/DYDO).
 * Run `npm install` to install node dependencies in each folder (apps & server)
 * Run `npm run dev` to start the server side
-* In server side, run `npm prisma generate`, setup database_url in `.env` file
+* In server side, run `npx prisma generate`, setup database_url in `.env` file
 * Run `npm start` to start the apps
 
 Tài khoản staff: VD: staffmydinh1@gmail.com, mật khẩu: 123456
